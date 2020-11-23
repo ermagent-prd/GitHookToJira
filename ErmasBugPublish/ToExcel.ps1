@@ -8,15 +8,16 @@
     update-module sqlserver
 #>
 param (
-    [string]$ExcelFilePath = "C:\tmp\Bugs.xlsx",
+    [string]$ExcelFilePath = "E:\Projects\ErmasBugPublish\Work\Bugs.xlsx",
     [string]$dbServer = "ERM-DB-05",
     [string]$dbName = "GEMINI_CLOUD",
-    [string]$sheetName = "Ermas5 Bugs"
+    [string]$sheetName = "Ermas5 Bugs",
+    [string]$sqlQuery = "SELECT cast(ID as int) ID, [Bug fixing], Status, [Product Modules], Title, [Deliverable Version], [Fixed In Build], Description FROM V_BUG_LIST_ERM ORDER BY [Bug fixing] DESC"
  )
 Import-Module PSExcel
 import-module sqlserver
 
-$environmentQuery = "USE $($dbName) SELECT cast(ID as int) ID, [Bug fixing], Status, [Product Modules], Title, [Deliverable Version], [Fixed In Build], Description FROM V_BUG_LIST_ERM ORDER BY [Bug fixing] DESC"
+$environmentQuery = "USE $($dbName) " + $sqlQuery
 
 invoke-sqlcmd -query $environmentQuery -ServerInstance $dbServer | 
     Select-Object * -ExcludeProperty  "RowError","RowState","Table","ItemArray","HasErrors" | 
