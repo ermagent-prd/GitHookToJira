@@ -13,6 +13,7 @@
 try 
     {
         $basicAuth = "Basic " + [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("$($Username):$token"))
+        #$basicAuth = "Bearer $token"
         $headers = @{
         "Authorization" = $basicAuth
         "Content-Type" = "application/json"
