@@ -1,11 +1,12 @@
-[string] $target = "https://prometeia-erm.atlassian.net"
-[string] $Username = "pierluigi.nanni@prometeia.com"
-[string] $token = 'GOojveJqyGUAgi6mzSAu3FAA'
-[string] $projectKey = "SKP"
-[string] $issueType = "Story"
-[string] $summary = "Api call"
-[string] $description = "Testing api call"
-
+param (
+    [string] $target = "https://prometeia-erm.atlassian.net",
+    [string] $Username = "pierluigi.nanni@prometeia.com",
+    [string] $token = 'GOojveJqyGUAgi6mzSAu3FAA',
+    [string] $projectKey = "SKP",
+    [string] $issueType = "Story",
+    [string] $summary = "Api call",
+    [string] $description = "Testing api call"
+)
 
 
 [string] $body = "{`"fields`":{`"project`":{`"key`":`"$projectKey`"},`"issuetype`":{`"name`":`"$issueType`"},`"summary`":`"$summary`",`"description`":`"$description`"}}";
