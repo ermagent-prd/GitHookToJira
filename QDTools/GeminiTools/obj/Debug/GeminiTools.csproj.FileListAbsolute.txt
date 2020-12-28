@@ -5,3 +5,4 @@ C:\Projects\Others\Processtools\QDTools\GeminiTools\obj\Debug\GeminiTools.dll
 C:\Projects\Others\Processtools\QDTools\GeminiTools\obj\Debug\GeminiTools.pdb
 C:\Projects\Others\Processtools\QDTools\GeminiTools\obj\Debug\GeminiTools.csproj.CopyComplete
 C:\Projects\Others\Processtools\Bin\QDTools\GeminiTools\Debug\GeminiTools.dll.config
+C:\Projects\Others\Processtools\QDTools\GeminiTools\obj\Debug\GeminiTools.csprojAssemblyReference.cache

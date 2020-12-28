@@ -74,6 +74,8 @@
   <ItemGroup>
     <Compile Include="Items\ItemGetter.cs" />
     <Compile Include="Items\ItemListGetter.cs" />
+    <Compile Include="Projects\ProjectGetter.cs" />
+    <Compile Include="Projects\ProjectListGetter.cs" />
     <Compile Include="Service\ServiceManagerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
