@@ -1,0 +1,13 @@
+C:\Projects\Others\JiraApp\JiraTools\GeminiToJira\bin\Debug\GeminiToJira.exe.config
+C:\Projects\Others\JiraApp\JiraTools\GeminiToJira\bin\Debug\GeminiToJira.exe
+C:\Projects\Others\JiraApp\JiraTools\GeminiToJira\bin\Debug\GeminiToJira.pdb
+C:\Projects\Others\JiraApp\JiraTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.CoreCompileInputs.cache
+C:\Projects\Others\JiraApp\JiraTools\GeminiToJira\obj\Debug\GeminiToJira.exe
+C:\Projects\Others\JiraApp\JiraTools\GeminiToJira\obj\Debug\GeminiToJira.pdb
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToJira\Debug\GeminiToJira.exe.config
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToJira\Debug\GeminiToJira.exe
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToJira\Debug\GeminiToJira.pdb
+C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.CoreCompileInputs.cache
+C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.exe
+C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.pdb
+C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csprojAssemblyReference.cache
