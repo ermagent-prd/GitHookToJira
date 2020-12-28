@@ -2,14 +2,8 @@ param (
     [string] $target = "https://prometeia-erm.atlassian.net",
     [string] $Username = "pierluigi.nanni@prometeia.com",
     [string] $token = 'GOojveJqyGUAgi6mzSAu3FAA',
-    [string] $projectKey = "SKP",
-    [string] $issueType = "Story",
-    [string] $summary = "Api call",
-    [string] $description = "Testing api call"
+    [string] $issueKey = "ER-4364"
 )
-
-
-[string] $body = "{`"fields`":{`"project`":{`"key`":`"$projectKey`"},`"issuetype`":{`"name`":`"$issueType`"},`"summary`":`"$summary`",`"description`":`"$description`"}}";
 
 try 
     {
@@ -19,8 +13,8 @@ try
         "Content-Type" = "application/json"
         "verify" = "false"
     }
-    $requestUri = "$target/rest/api/latest/issue"
-    $response = Invoke-RestMethod -Uri $requestUri -Method POST -Headers $headers -Body $body
+    $requestUri = "$target/rest/agile/1.0/issue/$issueKey"
+    $response = Invoke-RestMethod -Uri $requestUri -Method GET -Headers $headers 
     Write-Output "ID: $($response.id)"
     Write-Output "Key: $($response.key)"
     Write-Output "Self: $($response.self)" 

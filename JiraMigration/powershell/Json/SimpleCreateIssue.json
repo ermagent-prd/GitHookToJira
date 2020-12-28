@@ -1,0 +1,12 @@
+{
+    "fields": {
+        "project": {
+            "key`": "ER"
+        },
+        "issuetype": {
+            "name": "Story"
+        },
+        "summary": "Api Test",
+        "description": "Jira create issue Api test "
+    }
+}
