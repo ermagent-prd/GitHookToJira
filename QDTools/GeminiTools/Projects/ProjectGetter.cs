@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Countersoft.Gemini.Api;
 using Countersoft.Gemini.Commons.Dto;
 
 namespace GeminiTools.Projects
@@ -10,17 +6,15 @@ namespace GeminiTools.Projects
     internal class ProjectGetter
     {
 
-        private readonly ServiceManagerFactory svcFactory;
+        private readonly ServiceManager svc;
 
-        public ProjectGetter(ServiceManagerFactory svcFactory)
+        public ProjectGetter(ServiceManager svc)
         {
-            this.svcFactory = svcFactory;
+            this.svc = svc;
         }
 
-        public ProjectDto Execute(string geminiUrl, int projectId)
+        public ProjectDto Execute(int projectId)
         {
-            var svc = this.svcFactory.Execute(geminiUrl);
-
             return svc.Projects.GetProject(projectId);
         }
 

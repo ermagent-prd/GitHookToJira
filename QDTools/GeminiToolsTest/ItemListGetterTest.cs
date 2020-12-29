@@ -12,7 +12,9 @@ namespace GeminiToolsTest
         [TestMethod]
         public void Execute_ValidIssues_ReturnIssues()
         {
-            var svc = new ServiceManagerFactory();
+            var svcmng = new ServiceManagerFactory();
+
+            var svc = svcmng.Execute(Constants.GeminiUrl);
 
             var getter = new ItemListGetter(svc);
 
@@ -23,7 +25,7 @@ namespace GeminiToolsTest
                 Projects = "38"
             };
 
-            var issues = getter.Execute(Constants.GeminiUrl, filter);
+            var issues = getter.Execute(filter);
 
             Assert.IsNotNull(issues);
         }

@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GeminiToolsTest
+﻿namespace GeminiToolsTest
 {
     internal static class Constants
     {
+        /// <summary>
+        /// ERM Gemini Url
+        /// </summary>
         public const string GeminiUrl = "https://erm-swfactory.prometeia.com/Gemini";
+
+        /// <summary>
+        /// Ermas bug project code
+        /// </summary>
+        public const string ErmBugProjectCode = "ERMBUG";
     }
 }

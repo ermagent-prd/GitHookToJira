@@ -39,6 +39,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Countersoft.Gemini.Api, Version=7.0.0.6301, Culture=neutral, PublicKeyToken=7d1cd24c5b90fda4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\GeminiTools\libs\Countersoft.Gemini.Api.dll</HintPath>
+    </Reference>
     <Reference Include="Countersoft.Gemini.Commons">
       <HintPath>..\GeminiTools\libs\Countersoft.Gemini.Commons.dll</HintPath>
     </Reference>

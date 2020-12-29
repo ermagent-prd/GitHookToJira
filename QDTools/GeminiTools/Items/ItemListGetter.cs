@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Countersoft.Gemini.Api;
 using Countersoft.Gemini.Commons.Dto;
 using Countersoft.Gemini.Commons.Entity;
 
@@ -6,17 +7,15 @@ namespace GeminiTools.Items
 {
     internal class ItemListGetter
     {
-        private readonly ServiceManagerFactory svcFactory;
+        private readonly ServiceManager svc;
 
-        public ItemListGetter(ServiceManagerFactory svcFactory)
+        public ItemListGetter(ServiceManager svc)
         {
-            this.svcFactory = svcFactory;
+            this.svc = svc;
         }
 
-        public IEnumerable<IssueDto> Execute(string geminiUrl, IssuesFilter filter)
+        public IEnumerable<IssueDto> Execute(IssuesFilter filter)
         {
-            var svc = this.svcFactory.Execute(geminiUrl);
-
             return svc.Item.GetFilteredItems(filter);
         }
     }

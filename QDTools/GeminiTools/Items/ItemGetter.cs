@@ -1,20 +1,19 @@
-﻿using Countersoft.Gemini.Commons.Dto;
+﻿using Countersoft.Gemini.Api;
+using Countersoft.Gemini.Commons.Dto;
 
 namespace GeminiTools
 {
     public class ItemGetter
     {
-        private readonly ServiceManagerFactory svcFactory;
+        private readonly ServiceManager svc;
 
-        public ItemGetter(ServiceManagerFactory svcFactory)
+        public ItemGetter(ServiceManager svcFactory)
         {
-            this.svcFactory = svcFactory;
+            this.svc = svcFactory;
         }
 
-        public IssueDto Execute(string geminiUrl, int issueId)
+        public IssueDto Execute(int issueId)
         {
-            var svc = this.svcFactory.Execute(geminiUrl);
-
             return svc.Item.Get(issueId);
         }
     }

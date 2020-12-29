@@ -10,11 +10,13 @@ namespace GeminiToolsTest
         [TestMethod]
         public void GetProjectList_ValidUrl_ReturnProjects()
         {
-            var svc = new ServiceManagerFactory();
+            var svcmng = new ServiceManagerFactory();
+
+            var svc = svcmng.Execute(Constants.GeminiUrl);
 
             var getter = new ProjectListGetter(svc);
 
-            var issues = getter.Execute(Constants.GeminiUrl);
+            var issues = getter.Execute();
 
             Assert.IsNotNull(issues);
         }
@@ -22,13 +24,31 @@ namespace GeminiToolsTest
         [TestMethod]
         public void GetProjectById_ValidUrl_ReturnProject()
         {
-            var svc = new ServiceManagerFactory();
+            var svcmng = new ServiceManagerFactory();
+
+            var svc = svcmng.Execute(Constants.GeminiUrl);
 
             var getter = new ProjectGetter(svc);
 
             int projectId = 38;
 
-            var issues = getter.Execute(Constants.GeminiUrl,projectId);
+            var issues = getter.Execute(projectId);
+
+            Assert.IsNotNull(issues);
+        }
+
+        [TestMethod]
+        public void GetProjectByCode_ValidUrl_ReturnProject()
+        {
+            var svcmng = new ServiceManagerFactory();
+
+            var svc = svcmng.Execute(Constants.GeminiUrl);
+
+            var projectGetter = new ProjectListGetter(svc);
+
+            var getter = new ProjectFinder(projectGetter);
+
+            var issues = getter.FindByCode(Constants.ErmBugProjectCode);
 
             Assert.IsNotNull(issues);
         }
