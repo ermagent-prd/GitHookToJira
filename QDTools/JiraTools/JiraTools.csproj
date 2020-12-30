@@ -56,8 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
-    <Compile Include="Container\ContainerFactory.cs" />
+    <Compile Include="Container\ContainerExtension.cs" />
     <Compile Include="Engine\AddIssueEngineTest.cs" />
     <Compile Include="Engine\AddIssueEngine.cs" />
     <Compile Include="Engine\CredentialFactory.cs" />
@@ -66,11 +65,13 @@
     <Compile Include="Model\AddIssueResponse.cs" />
     <Compile Include="Model\JiraMinimalIssue.cs" />
     <Compile Include="Model\RequestInfo.cs" />
+    <Compile Include="Parameters\IJiraToolsParameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

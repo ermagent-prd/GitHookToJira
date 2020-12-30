@@ -1,22 +1,22 @@
 ﻿using System.Collections.Generic;
-using Countersoft.Gemini.Api;
 using Countersoft.Gemini.Commons.Dto;
 using Countersoft.Gemini.Commons.Entity;
+using GeminiTools.Service;
 
 namespace GeminiTools.Items
 {
     internal class ItemListGetter
     {
-        private readonly ServiceManager svc;
+        private readonly ServiceManagerContainer svc;
 
-        public ItemListGetter(ServiceManager svc)
+        public ItemListGetter(ServiceManagerContainer svc)
         {
             this.svc = svc;
         }
 
         public IEnumerable<IssueDto> Execute(IssuesFilter filter)
         {
-            return svc.Item.GetFilteredItems(filter);
+            return svc.Service.Item.GetFilteredItems(filter);
         }
     }
 }

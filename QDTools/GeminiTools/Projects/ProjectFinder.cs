@@ -25,7 +25,6 @@ namespace GeminiTools.Projects
 
         #endregion
 
-
         #region Public methods
         public ProjectDto FindByCode(string code)
         {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraToolsTest
+namespace JiraToolsTest.Parameters
 {
     internal static class Constants
     {

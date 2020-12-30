@@ -1,8 +1,11 @@
 ﻿using GeminiTools;
 using GeminiTools.Projects;
+using GeminiToolsTest.Container;
+using GeminiToolsTest.Parameters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Unity;
 
-namespace GeminiToolsTest
+namespace GeminiToolsTest.Projects
 {
     [TestClass]
     public class ProjectGetterTest
@@ -10,11 +13,9 @@ namespace GeminiToolsTest
         [TestMethod]
         public void GetProjectList_ValidUrl_ReturnProjects()
         {
-            var svcmng = new ServiceManagerFactory();
+            var container = ContainerForTest.DefaultInstance.Value;
 
-            var svc = svcmng.Execute(Constants.GeminiUrl);
-
-            var getter = new ProjectListGetter(svc);
+            var getter = container.Resolve<ProjectListGetter>();
 
             var issues = getter.Execute();
 
@@ -24,11 +25,9 @@ namespace GeminiToolsTest
         [TestMethod]
         public void GetProjectById_ValidUrl_ReturnProject()
         {
-            var svcmng = new ServiceManagerFactory();
+            var container = ContainerForTest.DefaultInstance.Value;
 
-            var svc = svcmng.Execute(Constants.GeminiUrl);
-
-            var getter = new ProjectGetter(svc);
+            var getter = container.Resolve<ProjectGetter>();
 
             int projectId = 38;
 
@@ -40,13 +39,9 @@ namespace GeminiToolsTest
         [TestMethod]
         public void GetProjectByCode_ValidUrl_ReturnProject()
         {
-            var svcmng = new ServiceManagerFactory();
+            var container = ContainerForTest.DefaultInstance.Value;
 
-            var svc = svcmng.Execute(Constants.GeminiUrl);
-
-            var projectGetter = new ProjectListGetter(svc);
-
-            var getter = new ProjectFinder(projectGetter);
+            var getter = container.Resolve<ProjectFinder>();
 
             var issues = getter.FindByCode(Constants.ErmBugProjectCode);
 

@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unity;
 using JiraTools.Engine;
 using JiraTools.Model;
+using JiraToolsTest.Container;
+using JiraToolsTest.Parameters;
 
 namespace JiraToolsTest
 {
@@ -32,7 +34,7 @@ namespace JiraToolsTest
         [TestMethod]
         public void AddSingleIssue()
         {
-            var container = ContainerFactory.Execute();
+            var container = ContainerForTest.DefaultInstance.Value;
 
             var engine = container.Resolve<AddIssueEngineTest>();
 

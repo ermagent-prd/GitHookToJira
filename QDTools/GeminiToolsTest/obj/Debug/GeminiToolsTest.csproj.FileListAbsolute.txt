@@ -23,3 +23,11 @@ C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\RestSharp.xml
 C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\GeminiToolsTest.dll.config
 C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\Newtonsoft.Json.dll
 C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\Newtonsoft.Json.xml
+C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\Unity.Abstractions.dll
+C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\Unity.Container.dll
+C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\Unity.Abstractions.pdb
+C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\Unity.Container.pdb

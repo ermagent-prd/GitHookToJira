@@ -69,8 +69,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddIssueTest.cs" />
-    <Compile Include="Constants.cs" />
+    <Compile Include="Parameters\Constants.cs" />
     <Compile Include="ContainerTest.cs" />
+    <Compile Include="Container\ContainerFactory.cs" />
+    <Compile Include="Container\ContainerForTest.cs" />
+    <Compile Include="Parameters\ParamContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace GeminiToolsTest
+﻿namespace GeminiToolsTest.Parameters
 {
     internal static class Constants
     {

@@ -1,5 +1,5 @@
-﻿using System;
-using JiraTools.Engine;
+﻿using JiraTools.Engine;
+using JiraToolsTest.Container;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unity;
 
@@ -10,11 +10,13 @@ namespace JiraToolsTest
     public class ContainerTest
     {
         [TestMethod]
-        public void GetContainerTest()
+        public void Resolve_AddissueEngine_ReturnNotNullInstance()
         {
-            var container = ContainerFactory.Execute();
+            var container = ContainerForTest.DefaultInstance.Value;
 
-            Assert.IsNotNull(container);
+            var engine = container.Resolve<AddIssueEngine>();
+
+            Assert.IsNotNull(engine);
         }
     }
 }

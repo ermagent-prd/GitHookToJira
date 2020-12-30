@@ -1,10 +1,10 @@
-﻿using System;
-using Countersoft.Gemini.Commons.Entity;
-using GeminiTools;
+﻿using Countersoft.Gemini.Commons.Entity;
 using GeminiTools.Items;
+using GeminiToolsTest.Container;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Unity;
 
-namespace GeminiToolsTest
+namespace GeminiToolsTest.Items
 {
     [TestClass]
     public class ItemListGetterTest
@@ -12,11 +12,9 @@ namespace GeminiToolsTest
         [TestMethod]
         public void Execute_ValidIssues_ReturnIssues()
         {
-            var svcmng = new ServiceManagerFactory();
+            var container = ContainerForTest.DefaultInstance.Value;
 
-            var svc = svcmng.Execute(Constants.GeminiUrl);
-
-            var getter = new ItemListGetter(svc);
+            var getter = container.Resolve<ItemListGetter>();
 
             var filter = new IssuesFilter
             {
