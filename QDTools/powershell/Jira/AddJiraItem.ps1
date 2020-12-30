@@ -2,7 +2,7 @@ param (
     [string] $target = "https://prometeia-erm.atlassian.net",
     [string] $Username = "pierluigi.nanni@prometeia.com",
     [string] $token = 'GOojveJqyGUAgi6mzSAu3FAA',
-    [string] $projectKey = "SKP",
+    [string] $projectKey = "ER",
     [string] $issueType = "Story",
     [string] $summary = "Api call",
     [string] $description = "Testing api call"

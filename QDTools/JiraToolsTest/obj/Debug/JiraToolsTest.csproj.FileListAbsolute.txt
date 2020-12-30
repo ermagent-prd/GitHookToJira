@@ -37,3 +37,4 @@ C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.cs
 C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.CopyComplete
 C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.dll
 C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.pdb
+C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\JiraToolsTest.dll.config

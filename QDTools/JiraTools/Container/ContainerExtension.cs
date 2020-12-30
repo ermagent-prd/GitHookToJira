@@ -1,4 +1,5 @@
 ﻿using JiraTools.Engine;
+using JiraTools.Service;
 using Unity;
 using Unity.Extension;
 
@@ -18,9 +19,10 @@ namespace JiraTools.Container
 
         protected override void Initialize()
         {
-            Container.RegisterType<JiraRequestFactory>();
-            Container.RegisterType<AddIssueEngine>();
-            Container.RegisterType<AddIssueEngineTest>();
+            Container.RegisterType<JqlGetter>();
+
+            Container.RegisterType<ServiceManagerContainer>();
+            
 
         }
 

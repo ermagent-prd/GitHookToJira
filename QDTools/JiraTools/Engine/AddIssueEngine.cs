@@ -1,57 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using FromGemini.Jira;
-using FromGemini.Jira.Model;
-using JiraTools.Model;
-using Newtonsoft.Json;
+﻿using System.Threading.Tasks;
+using Atlassian.Jira;
+using JiraTools.Service;
 
 namespace JiraTools.Engine
 {
     internal class AddIssueEngine
     {
-        private readonly JiraRequestFactory requestFactory;
+        private readonly ServiceManagerContainer requestFactory;
 
-        public AddIssueEngine(JiraRequestFactory requestFactory)
+        public AddIssueEngine(ServiceManagerContainer requestFactory)
         {
             this.requestFactory = requestFactory;
         }
 
-        public AddIssueResponse Execute(RequestInfo reqInfo, JiraMinimalIssue issue)
+        public Issue Execute()
         {
-            var request = this.requestFactory.Execute("POST", reqInfo);
+            var task = addIssue();
 
-            string JsonString = JsonConvert.SerializeObject(issue,Formatting.Indented);
+            task.Wait();
 
-            byte[] data = Encoding.UTF8.GetBytes(JsonString);
-
-            using(var requestStream = request.GetRequestStream()) 
-            {  
-                requestStream.Write(data, 0, data.Length);  
-                requestStream.Close();  
-            }
-
-            HttpWebResponse response = null;
-
-            using (response = request.GetResponse() as HttpWebResponse)
-            {
-                if (response.StatusCode == HttpStatusCode.Created)
-                {
-                    var reader = new StreamReader(response.GetResponseStream());
-                    string str = reader.ReadToEnd();
-                    return JsonConvert.DeserializeObject<AddIssueResponse>(str);
-                }
-                else
-                {
-                    request.Abort();
-                    return null;
-                }
-            }
-               
+            return task.Result;
         }
+
+        #region Private methods
+
+        private async Task<Issue> addIssue()
+        {
+            var newIssue = requestFactory.Service.CreateIssue("ER");
+
+            newIssue.Type = "Bug";
+            newIssue.Priority = "Medium";
+            newIssue.Summary = "Issue Summary";
+            newIssue.Description = "Test via api con Atlassian SDK";
+
+            return await newIssue.SaveChangesAsync();
+        }
+
+        #endregion
+
     }
 }

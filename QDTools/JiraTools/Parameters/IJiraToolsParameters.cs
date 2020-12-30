@@ -9,5 +9,8 @@
         string Token { get; }
 
         string IssueApi { get; }
+
+        int MaxIssuesPerRequest { get; }
+
     }
 }

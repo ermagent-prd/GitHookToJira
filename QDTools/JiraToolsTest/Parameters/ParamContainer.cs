@@ -13,5 +13,7 @@ namespace JiraToolsTest.Parameters
         public string Token => Constants.Token;
 
         public string IssueApi => Constants.IssueApi;
+
+        public int MaxIssuesPerRequest => Constants.MaxIssuesPerRequest;
     }
 }

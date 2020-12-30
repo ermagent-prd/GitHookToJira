@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace JiraToolsTest.Parameters
+﻿namespace JiraToolsTest.Parameters
 {
     internal static class Constants
     {
@@ -15,6 +9,8 @@ namespace JiraToolsTest.Parameters
         public const string JiraUrl = "https://prometeia-erm.atlassian.net/";
 
         public const string IssueApi = "rest/api/3/issue/";
+
+        public const int MaxIssuesPerRequest = 10; //Max 100 ??
 
 
     }
