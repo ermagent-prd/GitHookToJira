@@ -14,7 +14,7 @@ namespace JiraToolsTest
         {
             var container = ContainerForTest.DefaultInstance.Value;
 
-            var engine = container.Resolve<AddIssueEngine>();
+            var engine = container.Resolve<CreateIssueEngine>();
 
             Assert.IsNotNull(engine);
         }

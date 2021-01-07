@@ -64,9 +64,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\ContainerExtension.cs" />
-    <Compile Include="Engine\AddIssueEngine.cs" />
+    <Compile Include="Engine\CreateIssueEngine.cs" />
+    <Compile Include="Engine\AddCommentEngine.cs" />
+    <Compile Include="Engine\UserGetter.cs" />
     <Compile Include="Engine\ItemListGetter.cs" />
     <Compile Include="Engine\JqlGetter.cs" />
+    <Compile Include="Model\CreateIssueInfo.cs" />
+    <Compile Include="Model\CustomFieldInfo.cs" />
     <Compile Include="Parameters\IJiraToolsParameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\ServiceManagerContainer.cs" />
@@ -75,8 +79,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

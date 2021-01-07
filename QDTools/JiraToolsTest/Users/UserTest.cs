@@ -1,4 +1,7 @@
-﻿using JiraTools.Engine;
+﻿using System;
+using Atlassian.Jira;
+using JiraTools.Engine;
+using JiraTools.Model;
 using JiraToolsTest.Container;
 using JiraToolsTest.Parameters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -7,17 +10,21 @@ using Unity;
 namespace JiraToolsTest
 {
     [TestClass]
-    public class AddIssueTest
+    public class UserTest
     {
 
         [TestMethod]
-        public void AddSingleIssue()
+        public void GetUsers()
         {
             var container = ContainerForTest.DefaultInstance.Value;
 
-            var engine = container.Resolve<AddIssueEngine>();
+            var engine = container.Resolve<UserGetter>();
 
-            engine.Execute();
+
+
+            var users = engine.Execute();
+
+            Assert.IsNotNull(users);
         }
     }
 }

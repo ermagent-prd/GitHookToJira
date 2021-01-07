@@ -22,7 +22,10 @@ namespace JiraTools.Container
             Container.RegisterType<JqlGetter>();
 
             Container.RegisterType<ServiceManagerContainer>();
+            Container.RegisterType<UserGetter>();
             
+
+
 
         }
 

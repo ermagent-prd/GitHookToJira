@@ -50,6 +50,21 @@ namespace JiraToolsTest
 
             Assert.IsTrue(list.Any());
         }
+        [TestMethod]
+        public void JQL_Execute_GetSingleIssue()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<JqlGetter>();
+
+            string jsql = $"Key = \"ER-5832\"";
+
+            var issues = engine.Execute(jsql);
+
+            var issue = issues.FirstOrDefault();
+
+            Assert.IsNotNull(issue);
+        }
 
     }
 }

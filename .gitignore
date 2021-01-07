@@ -364,3 +364,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 QDTools/GeminiToolsTest/bin/Debug/GeminiToolsTest.dll
+*.dll
