@@ -11,7 +11,7 @@ namespace JiraTools.Model
             this.FixVersions = new List<string>();
             this.CustomFields = new List<CustomFieldInfo>();
             this.Components = new List<string>();
-            this.Logged = new List<string>();
+            this.Logged = new List<WorkLogInfo>();
         }
 
         public string ProjectKey { get; set; }
@@ -40,6 +40,9 @@ namespace JiraTools.Model
 
         public List<string> Components { get; set; }
 
-        public List<string> Logged { get; set; }
+
+        public List<WorkLogInfo> Logged { get; set; }
+
+        
     }
 }

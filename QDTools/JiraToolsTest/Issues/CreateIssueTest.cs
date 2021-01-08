@@ -33,9 +33,6 @@ namespace JiraToolsTest
                 
 
                 Assignee = "70121:67b933a3-5693-47d2-82c0-3f997f279387"
-
-
-
             };
 
             issueInfo.FixVersions.Add("ERMAS 5.25.0");
@@ -48,6 +45,13 @@ namespace JiraToolsTest
 
             //Components
             issueInfo.Components.Add("ILIAS");
+
+            //Logged
+            issueInfo.Logged.Add(new WorkLogInfo(
+                "Pierluigi Nanni",
+                DateTime.Now,
+                "1d",
+                "Logging test"));
 
 
             engine.Execute(issueInfo);

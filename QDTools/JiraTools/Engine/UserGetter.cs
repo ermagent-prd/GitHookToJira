@@ -33,9 +33,9 @@ namespace JiraTools.Engine
 
         #region Public methods
 
-        public IEnumerable<JiraUser> Execute()
+        public JiraUser Execute(string userName)
         {
-            var task = getUsers();
+            var task = getUser(userName);
 
             task.Wait();
 
@@ -45,14 +45,20 @@ namespace JiraTools.Engine
         #endregion
 
 
-        public async Task<IEnumerable<JiraUser>> getUsers()
+        public async Task<JiraUser> getUser(string userName)
         {
             var jira = requestFactory.Service;
 
-
-            // use LINQ syntax to retrieve issues
-            return await jira.Users.SearchUsersAsync("Pierluigi Nanni");
+            return await jira.Users.GetUserAsync(userName);
         }
+
+        public async Task<JiraUser> getMyself()
+        {
+            var jira = requestFactory.Service;
+
+            return await jira.Users.GetMyselfAsync();
+        }
+
 
     }
 }

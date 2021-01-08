@@ -9,9 +9,14 @@ namespace JiraTools.Engine
     {
         private readonly ServiceManagerContainer requestFactory;
 
-        public CreateIssueEngine(ServiceManagerContainer requestFactory)
+        private readonly AddWorklogEngine worklogEngine;
+
+        public CreateIssueEngine(
+            ServiceManagerContainer requestFactory,
+            AddWorklogEngine worklogEngine)
         {
             this.requestFactory = requestFactory;
+            this.worklogEngine = worklogEngine;
         }
 
         public Issue Execute(CreateIssueInfo issueFields)
@@ -20,17 +25,7 @@ namespace JiraTools.Engine
 
             task.Wait();
 
-            var issue = task.Result;
-
-            //var assigneeTask = assignUser(issueFields, issue);
-
-            //assigneeTask.Wait();
-
-            //var logTask = addWorkLog(issueFields, issue);
-
-            //logTask.Wait();
-
-            return issue;
+            return task.Result;
         }
 
         #region Private methods
@@ -65,11 +60,15 @@ namespace JiraTools.Engine
                 newIssue.Components.Add(comp);
 
             
-            newIssue.Assignee = fieldsInfo.Assignee;
+            //newIssue.Assignee = fieldsInfo.Assignee;
 
-            //newIssue["Owner"] = "Pierluigi Nanni";
+            var issue = await newIssue.SaveChangesAsync();
 
-            return await newIssue.SaveChangesAsync();
+            //await issue.AssignAsync("accountId=\""+ fieldsInfo.Assignee +"\"");
+
+            issue.AddWorklogAsync()
+
+            return issue;
         }
 
         private async Task assignUser(CreateIssueInfo fieldsInfo, Issue newIssue)
@@ -85,5 +84,5 @@ namespace JiraTools.Engine
 
         #endregion
 
-        }
     }
+}
