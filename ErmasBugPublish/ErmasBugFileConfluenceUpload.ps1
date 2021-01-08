@@ -36,7 +36,7 @@ param (
         {
             Try {
         
-                & "$PSScriptRoot\ToExcel.ps1" -ExcelFilePath $ExcelFilePath -dbServer $dbServer -dbName $dbName -sheetName $sheetName -sqlQuery $sqlQuery
+                & "$PSScriptRoot\BugsToExcel.ps1" -ExcelFilePath $ExcelFilePath -dbServer $dbServer -dbName $dbName -sheetName $sheetName -sqlQuery $sqlQuery
     
                 & "$PSScriptRoot\UpdateConfluenceFile.ps1" -ConfluenceURL $ConfluenceURL -pageId $pageId -fName $fName -fPath $ExcelFilePath -pswdPath $pswdPath
         
