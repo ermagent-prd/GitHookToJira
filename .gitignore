@@ -365,3 +365,4 @@ MigrationBackup/
 FodyWeavers.xsd
 QDTools/GeminiToolsTest/bin/Debug/GeminiToolsTest.dll
 *.dll
+Bin/QDTools/GeminiToJira/Debug/GeminiToJira.exe

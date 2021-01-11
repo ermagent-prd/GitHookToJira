@@ -28,6 +28,8 @@ namespace JiraTools.Model
 
         public string Assignee { get; set; }
 
+        public string AssigneeUser { get; set; }
+
         public string OriginalEstimate { get; set; }
 
         public string RemainingEstimate { get; set; }
@@ -43,6 +45,8 @@ namespace JiraTools.Model
 
         public List<WorkLogInfo> Logged { get; set; }
 
-        
+        public Worklog WorkLog { get; set; }
+
+
     }
 }

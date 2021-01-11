@@ -39,7 +39,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER");
+            var issues = engine.Execute("ER-5876");
 
             var list = new List<Issue>();
 
@@ -47,6 +47,11 @@ namespace JiraToolsTest
             {
                 list.Add(issue);
             }
+
+            //list[0].Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            //list[0].SetPropertyAsync("Assignee", "Paolo Luca").Wait();
+            list[0].Assignee = "70121:67b933a3 - 5693 - 47d2 - 82c0 - 3f997f279387";
+            list[0].SaveChanges();
 
             Assert.IsTrue(list.Any());
         }

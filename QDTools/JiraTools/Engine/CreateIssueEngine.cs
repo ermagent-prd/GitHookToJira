@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Atlassian.Jira;
 using JiraTools.Model;
 using JiraTools.Service;
@@ -10,13 +11,16 @@ namespace JiraTools.Engine
         private readonly ServiceManagerContainer requestFactory;
 
         private readonly AddWorklogEngine worklogEngine;
+        private readonly AddCommentEngine commentEngine;
 
         public CreateIssueEngine(
             ServiceManagerContainer requestFactory,
-            AddWorklogEngine worklogEngine)
+            AddWorklogEngine worklogEngine,
+            AddCommentEngine commentEngine)
         {
             this.requestFactory = requestFactory;
             this.worklogEngine = worklogEngine;
+            this.commentEngine = commentEngine;
         }
 
         public Issue Execute(CreateIssueInfo issueFields)
@@ -49,6 +53,7 @@ namespace JiraTools.Engine
             newIssue.Description = fieldsInfo.Description;
             newIssue.DueDate = fieldsInfo.DueDate;
 
+            newIssue.Assignee = "lucap";
 
             foreach (var v in fieldsInfo.FixVersions)
                 newIssue.FixVersions.Add(v);
@@ -59,14 +64,24 @@ namespace JiraTools.Engine
             foreach (var comp in fieldsInfo.Components)
                 newIssue.Components.Add(comp);
 
-            
+
             //newIssue.Assignee = fieldsInfo.Assignee;
 
             var issue = await newIssue.SaveChangesAsync();
 
             //await issue.AssignAsync("accountId=\""+ fieldsInfo.Assignee +"\"");
 
-            issue.AddWorklogAsync()
+            //issue.AddWorklogAsync()
+
+            worklogEngine.Execute(issue, "Paolo Luca", "1d", DateTime.Now, "Work Log message");
+
+            commentEngine.Execute(issue, "Paolo Luca", "body comment");
+
+            //issue.Assignee = "c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            //
+            //issue.AssignAsync("c13ce356-ec00-4ffd-b615-a45a86aa99e2").Wait();
+            //
+            //issue.SetPropertyAsync("Assignee", "c13ce356-ec00-4ffd-b615-a45a86aa99e2").Wait();
 
             return issue;
         }

@@ -23,8 +23,8 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "ER",
-                Summary = "Api call Test (Atlassian SDK)",
-                Description = "This is a test " + DateTime.Now.ToString(),
+                Summary = "Api call Test PL2 assignee (Atlassian SDK)",
+                Description = "This is a (PL2 assignee) test " + DateTime.Now.ToString(),
                 Priority = "Medium",
                 Type = "Story",
                 OriginalEstimate = "1w",
@@ -32,7 +32,9 @@ namespace JiraToolsTest
                 DueDate = new DateTime(2021, 12, 31),
                 
 
-                Assignee = "70121:67b933a3-5693-47d2-82c0-3f997f279387"
+                Assignee = "70121:67b933a3-5693-47d2-82c0-3f997f279387",
+                AssigneeUser = "Paolo Luca"
+                
             };
 
             issueInfo.FixVersions.Add("ERMAS 5.25.0");
@@ -54,7 +56,15 @@ namespace JiraToolsTest
                 "Logging test"));
 
 
-            engine.Execute(issueInfo);
+            var issue = engine.Execute(issueInfo);
+
+            //issue.Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            //
+            //issue.AssignAsync("70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2").Wait();
+            //
+            //issue.SetPropertyAsync("Assignee", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2").Wait();
+            //
+            //issue.SaveChanges();
         }
     }
 }
