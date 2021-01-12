@@ -1,4 +1,5 @@
-﻿using Countersoft.Gemini.Commons.Entity;
+﻿using Countersoft.Gemini.Commons.Dto;
+using Countersoft.Gemini.Commons.Entity;
 using GeminiTools.Items;
 using GeminiToolsTest.Container;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -37,22 +38,31 @@ namespace GeminiToolsTest.Items
             string DEVELOPMENT_TYPES = "|Developer|Task|";
             List<string> DEVELOPMENT_RELEASES = new List<string> {
                 "ERMAS",
+                "ERMAS 5.24.0",
                 "ERMAS 5.24.1",
                 "ERMAS 5.25.0",
                 "ERMAS 5.26.0",
                 "ERMAS 5.27.0",
                 "ERMAS 5.28.0",
                 "ERMAS 5.29.0",
-                "0.0.0.0" };
+                "0.0.0.0"
+            };
 
-            string DEVELOPMENT_RELEASE_KEY = "Release";
+            List<string> DEVELOPMENT_LINES = new List<string> {
+                //"BSM",
+                //"ILIAS",
+                "ILIAS-STA"
+                //"Other" 
+            };
+
+            string DEVELOPMENT_RELEASE_KEY = "Release Version";
+            string DEVELOPMENT_LINE_KEY = "DVL";
 
             var filter = new IssuesFilter
             {
                 IncludeClosed = true,
-
                 Projects = DEVELOPMENT_PROJECT_ID,
-                Types = DEVELOPMENT_TYPES
+                Types = DEVELOPMENT_TYPES,
             };
 
             var container = ContainerFactory.Execute();
@@ -60,13 +70,20 @@ namespace GeminiToolsTest.Items
             var engine = container.Resolve<ItemListGetter>();
 
             var list = engine.Execute(filter);
+            List<IssueDto> filteredList = new List<IssueDto>();
 
+            foreach (var l in list.OrderBy(f => f.Id))
+            {
+                var release = l.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_RELEASE_KEY);
+                var devLine = l.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_LINE_KEY);
 
-            var filteredByReleaseList = list.Where(i => i.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_RELEASE_KEY) != null &&
-                DEVELOPMENT_RELEASES.Contains(i.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_RELEASE_KEY).FormattedData)).ToList();
+                if (release != null && devLine != null && 
+                    DEVELOPMENT_RELEASES.Contains(release.FormattedData) &&
+                    DEVELOPMENT_LINES.Contains(devLine.FormattedData))
+                    filteredList.Add(l);
+            }
 
-
-            Assert.IsTrue(list.Any());
+            Assert.IsTrue(filteredList.Any());
 
         }
     }

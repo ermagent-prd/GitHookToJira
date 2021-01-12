@@ -59,7 +59,7 @@ namespace JiraTools.Engine
                 newIssue.FixVersions.Add(v);
 
             foreach (var c in fieldsInfo.CustomFields)
-                newIssue[c.Name] = c.Value;
+                newIssue.CustomFields.Add(c.Name, c.Value);
 
             foreach (var comp in fieldsInfo.Components)
                 newIssue.Components.Add(comp);

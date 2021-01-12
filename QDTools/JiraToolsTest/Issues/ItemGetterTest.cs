@@ -2,6 +2,7 @@
 using System.Linq;
 using Atlassian.Jira;
 using JiraTools.Engine;
+using JiraTools.Model;
 using JiraToolsTest.Container;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unity;
@@ -39,7 +40,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-5876");
+            var issues = engine.Execute("ER");
 
             var list = new List<Issue>();
 
@@ -48,13 +49,9 @@ namespace JiraToolsTest
                 list.Add(issue);
             }
 
-            //list[0].Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
-            //list[0].SetPropertyAsync("Assignee", "Paolo Luca").Wait();
-            list[0].Assignee = "70121:67b933a3 - 5693 - 47d2 - 82c0 - 3f997f279387";
-            list[0].SaveChanges();
-
             Assert.IsTrue(list.Any());
         }
+
         [TestMethod]
         public void JQL_Execute_GetSingleIssue()
         {
@@ -71,5 +68,32 @@ namespace JiraToolsTest
             Assert.IsNotNull(issue);
         }
 
+        [TestMethod]
+        public void Linq_Execute_GetAndModifyIssues()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("ER", "ER-5885");
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            //list[0].Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            //list[0].SetPropertyAsync("Assignee", "Paolo Luca").Wait();
+            list[0].Assignee = "70121:67b933a3 - 5693 - 47d2 - 82c0 - 3f997f279387";
+
+            //list[0].CustomFields.First(c => c.Name == "Owner").Values = new string[] { "Paolo Luca" };
+            //list[0].CustomFields.Add("Owner", "Paolo Luca");
+            list[0].CustomFields.AddById("customfield_10040", "Paolo Luca");
+            list[0].SaveChanges();
+
+            Assert.IsTrue(list.Any());
+        }
     }
 }

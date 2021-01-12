@@ -87,7 +87,9 @@
     <Compile Include="Container\ContainerExtension.cs" />
     <Compile Include="Items\ItemGetter.cs" />
     <Compile Include="Items\ItemListGetter.cs" />
+    <Compile Include="Parameters\Constants.cs" />
     <Compile Include="Parameters\IGeminiToolsParameters.cs" />
+    <Compile Include="Parameters\ParamContainer.cs" />
     <Compile Include="Projects\ProjectGetter.cs" />
     <Compile Include="Projects\ProjectFinder.cs" />
     <Compile Include="Projects\ProjectListGetter.cs" />

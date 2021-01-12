@@ -23,8 +23,8 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "ER",
-                Summary = "Api call Test PL2 assignee (Atlassian SDK)",
-                Description = "This is a (PL2 assignee) test " + DateTime.Now.ToString(),
+                Summary = "Api call Test PL2 custom (Atlassian SDK)",
+                Description = "This is a (PL2 custom) test " + DateTime.Now.ToString(),
                 Priority = "Medium",
                 Type = "Story",
                 OriginalEstimate = "1w",
@@ -44,6 +44,16 @@ namespace JiraToolsTest
 
             //Epic link
             issueInfo.CustomFields.Add(new CustomFieldInfo("Epic Link", "ER-2859"));
+
+            //assignee and owner custom
+            issueInfo.CustomFields.Add(new CustomFieldInfo("Owner", "Paolo Luca"));
+            //issueInfo.CustomFields.Add(new CustomFieldInfo("Owner", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2"));
+            //issueInfo.CustomFields.Add(new CustomFieldInfo("Owner", "lucap"));
+            //issueInfo.CustomFields.Add(new CustomFieldInfo("Owner", "70121"));
+
+            issueInfo.CustomFields.Add(new CustomFieldInfo("AssigneeTest", "Paolo Luca"));
+
+            issueInfo.CustomFields.Add(new CustomFieldInfo("OwnerTmp", "Paolo Luca"));
 
             //Components
             issueInfo.Components.Add("ILIAS");

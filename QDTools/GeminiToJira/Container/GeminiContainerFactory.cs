@@ -2,9 +2,9 @@
 using GeminiTools.Parameters;
 using Unity;
 
-namespace GeminiToolsTest.Container
+namespace GeminiToJira.Container
 {
-    internal static class ContainerFactory
+    internal static class GeminiContainerFactory
     {
         public static IUnityContainer Execute()
         {

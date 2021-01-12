@@ -41,9 +41,24 @@ namespace JiraTools.Engine
 
             // use LINQ syntax to retrieve issues
             return from i in jira.Issues.Queryable
-                   where i.Key == projectCode   //i.Key to get a single specific item (TODOPL)
+                   where i.Project == projectCode 
                    orderby i.Created
                    select i;
+
+        }
+
+        public IEnumerable<Issue> Execute(string projectCode, string issueCode)
+        {
+            var jira = requestFactory.Service;
+
+            jira.Issues.MaxIssuesPerRequest = parameters.MaxIssuesPerRequest; //Max 100 ??
+
+            // use LINQ syntax to retrieve issues
+            return from i in jira.Issues.Queryable
+                   where i.Key == issueCode   //i.Key to get a single specific item (TODOPL)
+                   orderby i.Created
+                   select i;
+
         }
 
         #endregion

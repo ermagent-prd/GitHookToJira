@@ -5,7 +5,7 @@ using GeminiTools.Service;
 
 namespace GeminiTools.Items
 {
-    internal class ItemListGetter
+    public class ItemListGetter
     {
         private readonly ServiceManagerContainer svc;
 
