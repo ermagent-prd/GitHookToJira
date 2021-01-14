@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Atlassian.Jira;
+using JiraTools.Model;
 
 namespace JiraTools.Engine
 {
-    internal class AddWorklogEngine
+    public class AddWorklogEngine
     {
         #region Public methods
 
@@ -17,6 +19,13 @@ namespace JiraTools.Engine
             return cmtTask.Result;
 
         }
+
+        public void Execute(Issue issue, List<WorkLogInfo> workLogInfoList)
+        {
+            foreach(var workLogInfo in workLogInfoList)
+                Execute(issue, workLogInfo.Author, workLogInfo.TimeSpent, workLogInfo.StartDate, workLogInfo.Comment);
+        }
+
 
         public void Execute(Issue issue, string author, string timeSpent, DateTime startDate, string comment)
         {

@@ -1,5 +1,6 @@
 ﻿using Countersoft.Gemini.Commons.Dto;
 using Countersoft.Gemini.Commons.Entity;
+using GeminiTools.Container;
 using GeminiTools.Items;
 using GeminiToolsTest.Container;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -65,11 +66,12 @@ namespace GeminiToolsTest.Items
                 Types = DEVELOPMENT_TYPES,
             };
 
-            var container = ContainerFactory.Execute();
+            var container = GeminiContainerFactory.Execute();
 
             var engine = container.Resolve<ItemListGetter>();
 
             var list = engine.Execute(filter);
+
             List<IssueDto> filteredList = new List<IssueDto>();
 
             foreach (var l in list.OrderBy(f => f.Id))

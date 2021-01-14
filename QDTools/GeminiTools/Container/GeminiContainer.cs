@@ -1,15 +1,14 @@
-﻿using JiraTools.Container;
-using System;
+﻿using System;
 using Unity;
 
-namespace JiraToolsTest.Container
+namespace GeminiTools.Container
 {
-    internal static class ContainerForTest
+    internal static class GeminiContainer
     {
         #region Public properties
         public readonly static Lazy<IUnityContainer> DefaultInstance =
              new Lazy<IUnityContainer>(
-                 () => JiraContainerFactory.Execute());
+                 () => GeminiContainerFactory.Execute());
         #endregion
 
     }

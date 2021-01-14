@@ -16,7 +16,7 @@ namespace JiraTools.Model
 
         public string ProjectKey { get; set; }
 
-        public string ParentIssueKey { get; }
+        public string ParentIssueKey { get; set; }
 
         public IssueType Type { get; set; }
 
@@ -42,11 +42,8 @@ namespace JiraTools.Model
 
         public List<string> Components { get; set; }
 
-
         public List<WorkLogInfo> Logged { get; set; }
 
-        public Worklog WorkLog { get; set; }
-
-
+        public List<Comment> CommentList { get; set; }
     }
 }

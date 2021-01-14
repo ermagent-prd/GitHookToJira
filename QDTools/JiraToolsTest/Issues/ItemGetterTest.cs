@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Atlassian.Jira;
 using JiraTools.Engine;
-using JiraTools.Model;
+using JiraTools.Service;
 using JiraToolsTest.Container;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unity;
@@ -69,13 +70,13 @@ namespace JiraToolsTest
         }
 
         [TestMethod]
-        public void Linq_Execute_GetAndModifyIssues()
+        public void Linq_Execute_GetAndModifyAssigneeIssues()
         {
             var container = ContainerForTest.DefaultInstance.Value;
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER", "ER-5885");
+            var issues = engine.Execute("ER", "ER-5946");   //ER-5892 is a subtask of ER-5885
 
             var list = new List<Issue>();
 
@@ -86,12 +87,17 @@ namespace JiraToolsTest
 
             //list[0].Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             //list[0].SetPropertyAsync("Assignee", "Paolo Luca").Wait();
-            list[0].Assignee = "70121:67b933a3 - 5693 - 47d2 - 82c0 - 3f997f279387";
+            //list[0].Assignee = "70121:67b933a3 - 5693 - 47d2 - 82c0 - 3f997f279387";
+            //
+            //list[0].LinkToIssueAsync("ER-5886", "Subtask").Wait();
 
             //list[0].CustomFields.First(c => c.Name == "Owner").Values = new string[] { "Paolo Luca" };
             //list[0].CustomFields.Add("Owner", "Paolo Luca");
-            list[0].CustomFields.AddById("customfield_10040", "Paolo Luca");
-            list[0].SaveChanges();
+            //list[0].CustomFields.AddById("customfield_10040", "Paolo Luca");
+
+            list[0].SaveChangesAsync().Wait();
+
+            //var issueManager = ComponentManager.getInstance().getIssueManager()
 
             Assert.IsTrue(list.Any());
         }

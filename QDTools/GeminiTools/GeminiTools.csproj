@@ -85,6 +85,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\ContainerExtension.cs" />
+    <Compile Include="Container\GeminiContainer.cs" />
+    <Compile Include="Container\GeminiContainerFactory.cs" />
     <Compile Include="Items\ItemGetter.cs" />
     <Compile Include="Items\ItemListGetter.cs" />
     <Compile Include="Parameters\Constants.cs" />

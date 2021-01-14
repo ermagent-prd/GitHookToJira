@@ -38,3 +38,14 @@ C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.cs
 C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.dll
 C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.pdb
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\JiraToolsTest.dll.config
+C:\GeminiPorting\processesTools\Bin\QDTools\JiraToolsTest\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\GeminiPorting\processesTools\Bin\QDTools\JiraToolsTest\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\GeminiPorting\processesTools\Bin\QDTools\JiraToolsTest\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\GeminiPorting\processesTools\Bin\QDTools\JiraToolsTest\JiraToolsTest.dll.config
+C:\GeminiPorting\processesTools\Bin\QDTools\JiraToolsTest\JiraToolsTest.dll
+C:\GeminiPorting\processesTools\Bin\QDTools\JiraToolsTest\JiraToolsTest.pdb
+C:\GeminiPorting\processesTools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csprojAssemblyReference.cache
+C:\GeminiPorting\processesTools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.CoreCompileInputs.cache
+C:\GeminiPorting\processesTools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.CopyComplete
+C:\GeminiPorting\processesTools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.dll
+C:\GeminiPorting\processesTools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.pdb

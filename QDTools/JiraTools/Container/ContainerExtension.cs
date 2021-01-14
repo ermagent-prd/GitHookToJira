@@ -25,10 +25,7 @@ namespace JiraTools.Container
             Container.RegisterType<AddWorklogEngine>();
             Container.RegisterType<AddCommentEngine>();
             Container.RegisterType<UserGetter>();
-            
-
-
-
+            Container.RegisterType<LinkSubTaskEngine>();
         }
 
         #endregion

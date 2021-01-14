@@ -1,16 +1,15 @@
-﻿using JiraTools.Container;
-using JiraTools.Parameters;
-using JiraToolsTest.Parameters;
+﻿using GeminiTools.Container;
+using GeminiTools.Parameters;
 using Unity;
 
-namespace JiraToolsTest.Container
+namespace GeminiTools.Container
 {
-    internal static class ContainerFactory
+    public static class GeminiContainerFactory
     {
         public static IUnityContainer Execute()
         {
             IUnityContainer container = new UnityContainer();
-            container.RegisterType<IJiraToolsParameters, ParamContainer>();
+            container.RegisterType<IGeminiToolsParameters, ParamContainer>();
             container.AddNewExtension<ContainerExtension>();
             return container;
         }

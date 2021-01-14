@@ -1,10 +1,8 @@
 ﻿
 
-using JiraTools.Parameters;
-
-namespace JiraToolsTest.Parameters
+namespace JiraTools.Parameters
 {
-    internal class ParamContainer : IJiraToolsParameters
+    public class ParamContainer : IJiraToolsParameters
     {
         public string ServerUrl => Constants.JiraUrl;
 

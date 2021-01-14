@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Atlassian.Jira;
 using JiraTools.Model;
@@ -6,7 +7,7 @@ using JiraTools.Service;
 
 namespace JiraTools.Engine
 {
-    internal class CreateIssueEngine
+    public class CreateIssueEngine
     {
         private readonly ServiceManagerContainer requestFactory;
 
@@ -36,14 +37,15 @@ namespace JiraTools.Engine
 
         private async Task<Issue> addIssue(CreateIssueInfo fieldsInfo)
         {
-
-
             var fields = new CreateIssueFields(fieldsInfo.ProjectKey)
             {
                 TimeTrackingData = new IssueTimeTrackingData(
-                    fieldsInfo.OriginalEstimate, 
+                    fieldsInfo.OriginalEstimate,
                     fieldsInfo.RemainingEstimate),
             };
+
+            if (fieldsInfo.Type.Name == "Sottotask")
+                fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
 
             var newIssue = new Issue(this.requestFactory.Service, fields);
 
@@ -52,8 +54,6 @@ namespace JiraTools.Engine
             newIssue.Summary = fieldsInfo.Summary;
             newIssue.Description = fieldsInfo.Description;
             newIssue.DueDate = fieldsInfo.DueDate;
-
-            newIssue.Assignee = "lucap";
 
             foreach (var v in fieldsInfo.FixVersions)
                 newIssue.FixVersions.Add(v);
@@ -64,26 +64,26 @@ namespace JiraTools.Engine
             foreach (var comp in fieldsInfo.Components)
                 newIssue.Components.Add(comp);
 
-
-            //newIssue.Assignee = fieldsInfo.Assignee;
+            newIssue.Assignee = fieldsInfo.Assignee;
 
             var issue = await newIssue.SaveChangesAsync();
 
-            //await issue.AssignAsync("accountId=\""+ fieldsInfo.Assignee +"\"");
+            //TODO to delete
+            UpdateAssignee(issue);
 
-            //issue.AddWorklogAsync()
+            worklogEngine.Execute(issue, fieldsInfo.Logged);
 
-            worklogEngine.Execute(issue, "Paolo Luca", "1d", DateTime.Now, "Work Log message");
-
-            commentEngine.Execute(issue, "Paolo Luca", "body comment");
-
-            //issue.Assignee = "c13ce356-ec00-4ffd-b615-a45a86aa99e2";
-            //
-            //issue.AssignAsync("c13ce356-ec00-4ffd-b615-a45a86aa99e2").Wait();
-            //
-            //issue.SetPropertyAsync("Assignee", "c13ce356-ec00-4ffd-b615-a45a86aa99e2").Wait();
+            commentEngine.Execute(issue, fieldsInfo.CommentList);
 
             return issue;
+        }
+
+        //TODO to delete
+        private void UpdateAssignee(Issue issue)
+        {
+            var tmp = requestFactory.Service.Issues.GetIssueAsync(issue.Key.Value, CancellationToken.None);
+            tmp.Result.Assignee = "Paolo Luca";
+            tmp.Result.SaveChangesAsync().Wait();
         }
 
         private async Task assignUser(CreateIssueInfo fieldsInfo, Issue newIssue)

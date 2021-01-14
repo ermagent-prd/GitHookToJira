@@ -42,6 +42,9 @@
     <Reference Include="Atlassian.Jira, Version=12.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Atlassian.SDK.12.3.0\lib\net452\Atlassian.Jira.dll</HintPath>
     </Reference>
+    <Reference Include="Countersoft.Gemini.Commons">
+      <HintPath>..\GeminiTools\libs\Countersoft.Gemini.Commons.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.2.1.1\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
     </Reference>
@@ -76,9 +79,7 @@
     <Compile Include="Issues\ItemGetterTest.cs" />
     <Compile Include="Parameters\Constants.cs" />
     <Compile Include="ContainerTest.cs" />
-    <Compile Include="Container\ContainerFactory.cs" />
     <Compile Include="Container\ContainerForTest.cs" />
-    <Compile Include="Parameters\ParamContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Users\UserTest.cs" />
   </ItemGroup>
@@ -91,6 +92,9 @@
       <Project>{d089f776-b54c-4e4c-a1a1-642ffebc9da0}</Project>
       <Name>JiraTools</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,3 +6,11 @@ C:\Projects\Others\Processtools\QDTools\GeminiTools\obj\Debug\GeminiTools.pdb
 C:\Projects\Others\Processtools\QDTools\GeminiTools\obj\Debug\GeminiTools.csproj.CopyComplete
 C:\Projects\Others\Processtools\Bin\QDTools\GeminiTools\Debug\GeminiTools.dll.config
 C:\Projects\Others\Processtools\QDTools\GeminiTools\obj\Debug\GeminiTools.csprojAssemblyReference.cache
+C:\GeminiPorting\processesTools\Bin\QDTools\GeminiTools\Debug\GeminiTools.dll.config
+C:\GeminiPorting\processesTools\Bin\QDTools\GeminiTools\Debug\GeminiTools.dll
+C:\GeminiPorting\processesTools\Bin\QDTools\GeminiTools\Debug\GeminiTools.pdb
+C:\GeminiPorting\processesTools\QDTools\GeminiTools\obj\Debug\GeminiTools.csprojAssemblyReference.cache
+C:\GeminiPorting\processesTools\QDTools\GeminiTools\obj\Debug\GeminiTools.csproj.CoreCompileInputs.cache
+C:\GeminiPorting\processesTools\QDTools\GeminiTools\obj\Debug\GeminiTools.csproj.CopyComplete
+C:\GeminiPorting\processesTools\QDTools\GeminiTools\obj\Debug\GeminiTools.dll
+C:\GeminiPorting\processesTools\QDTools\GeminiTools\obj\Debug\GeminiTools.pdb

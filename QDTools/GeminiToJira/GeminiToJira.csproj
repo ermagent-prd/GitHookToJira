@@ -33,14 +33,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Atlassian.Jira">
+      <HintPath>..\packages\Atlassian.SDK.12.3.0\lib\net452\Atlassian.Jira.dll</HintPath>
+    </Reference>
     <Reference Include="Countersoft.Foundation.Commons">
       <HintPath>..\GeminiTools\libs\Countersoft.Foundation.Commons.dll</HintPath>
     </Reference>
     <Reference Include="Countersoft.Gemini.Commons">
       <HintPath>..\GeminiTools\libs\Countersoft.Gemini.Commons.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.106.11.7\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,9 +68,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Container\GeminiContainer.cs" />
-    <Compile Include="Container\GeminiContainerFactory.cs" />
-    <Compile Include="GeminiFilter\DevelopmentFilter.cs" />
+    <Compile Include="Engine\ParseCommentEngine.cs" />
+    <Compile Include="GeminiFilter\UatConstants.cs" />
+    <Compile Include="GeminiFilter\ErmBugConstants.cs" />
+    <Compile Include="GeminiFilter\DevelopmentConstants.cs" />
+    <Compile Include="GeminiFilter\Filter.cs" />
+    <Compile Include="GeminiFilter\FilterType.cs" />
+    <Compile Include="Mapper\GeminiToJiraMapper.cs" />
     <Compile Include="Parameters\GeminiParamContainer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,6 +87,11 @@
       <Project>{E0C684EB-4D0F-4B6B-985F-F6264BC47C6E}</Project>
       <Name>GeminiTools</Name>
     </ProjectReference>
+    <ProjectReference Include="..\JiraTools\JiraTools.csproj">
+      <Project>{D089F776-B54C-4E4C-A1A1-642FFEBC9DA0}</Project>
+      <Name>JiraTools</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

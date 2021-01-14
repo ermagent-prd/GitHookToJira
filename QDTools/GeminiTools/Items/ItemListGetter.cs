@@ -18,5 +18,10 @@ namespace GeminiTools.Items
         {
             return svc.Service.Item.GetFilteredItems(filter);
         }
+
+        public IssueDto Execute(int issueId)
+        {
+            return svc.Service.Item.Get(issueId);
+        }
     }
 }

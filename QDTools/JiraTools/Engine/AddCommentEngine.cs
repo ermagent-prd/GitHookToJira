@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Atlassian.Jira;
 
 namespace JiraTools.Engine
 {
-    internal class AddCommentEngine
+    public class AddCommentEngine
     {
         #region Public methods
 
@@ -26,6 +27,12 @@ namespace JiraTools.Engine
             comment.Body = body;
 
             Execute(issue, comment);
+        }
+
+        public void Execute(Issue issue, List<Comment> commentList)
+        {
+            foreach(var comment in commentList)
+                Execute(issue, comment);
         }
 
 

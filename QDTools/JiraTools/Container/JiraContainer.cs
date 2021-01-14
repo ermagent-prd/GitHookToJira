@@ -1,14 +1,14 @@
 ﻿using System;
 using Unity;
 
-namespace GeminiToJira.Container
+namespace JiraTools.Container
 {
-    internal static class GeminiContainer
+    public static class JiraContainer
     {
         #region Public properties
         public readonly static Lazy<IUnityContainer> DefaultInstance =
              new Lazy<IUnityContainer>(
-                 () => GeminiContainerFactory.Execute());
+                 () => JiraContainerFactory.Execute());
         #endregion
 
     }

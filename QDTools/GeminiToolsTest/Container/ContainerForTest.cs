@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GeminiTools.Container;
+using System;
 using Unity;
 
 namespace GeminiToolsTest.Container
@@ -8,7 +9,7 @@ namespace GeminiToolsTest.Container
         #region Public properties
         public readonly static Lazy<IUnityContainer> DefaultInstance =
              new Lazy<IUnityContainer>(
-                 () => ContainerFactory.Execute());
+                 () => GeminiContainerFactory.Execute());
         #endregion
 
     }
