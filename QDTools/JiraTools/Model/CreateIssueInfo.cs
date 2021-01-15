@@ -45,5 +45,7 @@ namespace JiraTools.Model
         public List<WorkLogInfo> Logged { get; set; }
 
         public List<Comment> CommentList { get; set; }
+
+        public List<string> Attachments { get; set; }
     }
 }

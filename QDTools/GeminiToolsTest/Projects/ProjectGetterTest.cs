@@ -1,7 +1,6 @@
-﻿using GeminiTools;
+﻿using GeminiTools.Parameters;
 using GeminiTools.Projects;
 using GeminiToolsTest.Container;
-using GeminiToolsTest.Parameters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unity;
 

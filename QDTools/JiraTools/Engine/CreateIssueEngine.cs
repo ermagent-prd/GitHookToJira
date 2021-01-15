@@ -13,15 +13,18 @@ namespace JiraTools.Engine
 
         private readonly AddWorklogEngine worklogEngine;
         private readonly AddCommentEngine commentEngine;
+        private readonly AddAttachmentEngine attachmentEngineEngine;
 
         public CreateIssueEngine(
             ServiceManagerContainer requestFactory,
             AddWorklogEngine worklogEngine,
-            AddCommentEngine commentEngine)
+            AddCommentEngine commentEngine,
+            AddAttachmentEngine attachmentEngineEngine)
         {
             this.requestFactory = requestFactory;
             this.worklogEngine = worklogEngine;
             this.commentEngine = commentEngine;
+            this.attachmentEngineEngine = attachmentEngineEngine;
         }
 
         public Issue Execute(CreateIssueInfo issueFields)
@@ -72,8 +75,8 @@ namespace JiraTools.Engine
             UpdateAssignee(issue);
 
             worklogEngine.Execute(issue, fieldsInfo.Logged);
-
             commentEngine.Execute(issue, fieldsInfo.CommentList);
+            attachmentEngineEngine.Execute(issue, fieldsInfo.Attachments);
 
             return issue;
         }

@@ -66,6 +66,7 @@
     <Compile Include="Container\ContainerExtension.cs" />
     <Compile Include="Container\JiraContainer.cs" />
     <Compile Include="Container\JiraContainerFactory.cs" />
+    <Compile Include="Engine\AddAttachmentEngine.cs" />
     <Compile Include="Engine\AddWorklogEngine.cs" />
     <Compile Include="Engine\CreateIssueEngine.cs" />
     <Compile Include="Engine\AddCommentEngine.cs" />

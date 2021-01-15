@@ -12,6 +12,6 @@
 
         public const int MaxIssuesPerRequest = 10; //Max 100 ??
 
-
+        public const string AttachmentPath = @"C:\GeminiPorting\AttachmentDownloaded\";
     }
 }

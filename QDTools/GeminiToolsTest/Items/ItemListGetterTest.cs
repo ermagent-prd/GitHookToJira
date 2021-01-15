@@ -2,9 +2,12 @@
 using Countersoft.Gemini.Commons.Entity;
 using GeminiTools.Container;
 using GeminiTools.Items;
+using GeminiTools.Parameters;
 using GeminiToolsTest.Container;
+using GeminiToolsTest.Parameters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Unity;
 
@@ -30,6 +33,28 @@ namespace GeminiToolsTest.Items
             var issues = getter.Execute(filter);
 
             Assert.IsNotNull(issues);
+        }
+
+        
+        [TestMethod]
+        public void Execute_LoadAttachmentIssue()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var getter = container.Resolve<ItemGetter>();
+
+            var issue = getter.Execute(63705);
+
+            List<IssueCommentDto> itemComments = issue.Comments;
+            var commentAttach = itemComments[9].Attachments[0];
+
+            AttachmentGetter.Save(
+                commentAttach.Entity.ProjectId,
+                commentAttach.Entity.IssueId,
+                commentAttach.Entity.Id,
+                commentAttach.Entity.Name);
+
+            Assert.IsTrue(File.Exists(Constants.SAVING_PATH + commentAttach.Entity.Name));
         }
 
         [TestMethod]
@@ -88,5 +113,7 @@ namespace GeminiToolsTest.Items
             Assert.IsTrue(filteredList.Any());
 
         }
+
+
     }
 }

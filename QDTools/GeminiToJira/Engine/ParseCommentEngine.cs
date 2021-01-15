@@ -2,7 +2,7 @@
 
 namespace GeminiToJira.Engine
 {
-    public static class ParseCommentEngine
+    internal static class ParseCommentEngine
     {
         private readonly static string HTML_TAG_PATTERN = "<.*?>";
 

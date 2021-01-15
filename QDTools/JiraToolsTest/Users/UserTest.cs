@@ -1,9 +1,5 @@
-﻿using System;
-using Atlassian.Jira;
-using JiraTools.Engine;
-using JiraTools.Model;
+﻿using JiraTools.Engine;
 using JiraToolsTest.Container;
-using JiraToolsTest.Parameters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unity;
 

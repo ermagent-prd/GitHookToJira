@@ -1,6 +1,7 @@
 ﻿using Atlassian.Jira;
 using Countersoft.Gemini.Commons.Dto;
 using GeminiToJira.Engine;
+using GeminiTools.Items;
 using JiraTools.Model;
 using System;
 using System.Collections.Generic;
@@ -51,14 +52,14 @@ namespace GeminiToJira.Mapper
             //TODO
             mappedIssue.Assignee = geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname;
 
+            //Load all issue attachment
+            LoadAttachments(mappedIssue, geminiIssue.Attachments);
+
             //Load all gemini comments
             LoadComments(mappedIssue, geminiIssue);
 
-            //custom fields
-            //TODO da caricare solo quelli creati in JIRA LoadCustomFields(mappedIssue, issue);
-            
-            mappedIssue.CustomFields.Add(new CustomFieldInfo("OwnerTmp", geminiIssue.Creator));
-            mappedIssue.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname));           
+            //Load custom fields
+            LoadCustomFields(mappedIssue, geminiIssue);
 
             //TODO Components
             //issueInfo.Components.Add("ILIAS");
@@ -71,29 +72,56 @@ namespace GeminiToJira.Mapper
                 "WorkLog Logging test"));
 
             return mappedIssue;
-
         }
 
-        private void LoadComments(CreateIssueInfo jiraIssue, IssueDto issue)
+
+        #region Private
+
+        private void LoadAttachments(CreateIssueInfo jiraIssue, List<IssueAttachmentDto> attachments)
         {
-            jiraIssue.CommentList = new List<Comment>();
+            jiraIssue.Attachments = new List<string>();
 
-            foreach(var comment in issue.Comments)
+            foreach (var attachment in attachments)
             {
-                var jiraComment = new Comment();
+                AttachmentGetter.Save(
+                    attachment.Entity.ProjectId,
+                    attachment.Entity.IssueId,
+                    attachment.Entity.Id,
+                    attachment.Entity.Name);
 
-                jiraComment.Author = comment.Entity.Fullname;
-
-                jiraComment.Body = ParseCommentEngine.Execute(comment.Entity.Comment);
-
-                jiraIssue.CommentList.Add(jiraComment);
+                jiraIssue.Attachments.Add(attachment.Entity.Name);
             }
         }
 
-        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto issue)
+        private void LoadComments(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
         {
-            foreach(var field in issue.CustomFields)
-                jiraIssue.CustomFields.Add(new CustomFieldInfo(field.Name, field.FormattedData));
+            jiraIssue.CommentList = new List<Comment>();
+
+            foreach(var comment in geminiIssue.Comments)
+            {
+                var jiraComment = new Comment();
+                jiraComment.Author = comment.Entity.Fullname;
+                jiraComment.Body = ParseCommentEngine.Execute(comment.Entity.Comment);
+                jiraIssue.CommentList.Add(jiraComment);
+
+                //Load Comment attachments
+                LoadAttachments(jiraIssue, comment.Attachments);
+            }
         }
+
+        
+
+        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        {
+            //TODO da caricare solo quelli creati in JIRA 
+            //foreach (var field in issue.CustomFields)
+            //    jiraIssue.CustomFields.Add(new CustomFieldInfo(field.Name, field.FormattedData));
+
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("OwnerTmp", geminiIssue.Creator));
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname));
+
+        }
+
+        #endregion
     }
 }

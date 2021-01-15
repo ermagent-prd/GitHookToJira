@@ -24,6 +24,7 @@ namespace JiraTools.Container
             Container.RegisterType<ServiceManagerContainer>();
             Container.RegisterType<AddWorklogEngine>();
             Container.RegisterType<AddCommentEngine>();
+            Container.RegisterType<AddAttachmentEngine>();
             Container.RegisterType<UserGetter>();
             Container.RegisterType<LinkSubTaskEngine>();
         }

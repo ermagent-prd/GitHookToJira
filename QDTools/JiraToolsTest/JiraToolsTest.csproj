@@ -77,7 +77,6 @@
   <ItemGroup>
     <Compile Include="Issues\CreateIssueTest.cs" />
     <Compile Include="Issues\ItemGetterTest.cs" />
-    <Compile Include="Parameters\Constants.cs" />
     <Compile Include="ContainerTest.cs" />
     <Compile Include="Container\ContainerForTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

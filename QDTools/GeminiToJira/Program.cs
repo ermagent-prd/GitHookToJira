@@ -42,9 +42,13 @@ namespace GeminiToJira
             return geminiIssueList;
         }
 
-        private static void SaveToJira(GeminiToJiraMapper geminiToJiraMapper, ItemListGetter geminiItemsEngine, CreateIssueEngine jiraSaveEngine, IEnumerable<IssueDto> geminiIssueList)
+        private static void SaveToJira(
+            GeminiToJiraMapper geminiToJiraMapper, 
+            ItemListGetter geminiItemsEngine, 
+            CreateIssueEngine jiraSaveEngine, 
+            IEnumerable<IssueDto> geminiIssueList)
         {
-            foreach (var geminiIssue in geminiIssueList.Where(i => i.Id == 59840).ToList())// OrderBy(f => f.Id))
+            foreach (var geminiIssue in geminiIssueList.Where(i => i.Id == 59840).ToList())// TODO OrderBy(f => f.Id))
             {
                 var jiraIssueInfo = geminiToJiraMapper.Execute(geminiIssue, StoryTpe);
                 
