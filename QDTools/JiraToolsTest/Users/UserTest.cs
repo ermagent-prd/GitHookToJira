@@ -10,7 +10,7 @@ namespace JiraToolsTest
     {
 
         [TestMethod]
-        public void GetUsers()
+        public void GetUser()
         {
             var container = ContainerForTest.DefaultInstance.Value;
 
@@ -18,12 +18,27 @@ namespace JiraToolsTest
 
 
             //var users = engine.Execute("username = pierluigi.nanni@prometeia.com");
-            var users = engine.Execute("accountId = \"70121:67b933a3-5693-47d2-82c0-3f997f279387\"");
+            //var users = engine.Execute("accountId = \"70121:67b933a3-5693-47d2-82c0-3f997f279387\"");
+            var users = engine.Execute("70121:67b933a3-5693-47d2-82c0-3f997f279387");
 
 
             //    "70121:67b933a3-5693-47d2-82c0-3f997f279387");
 
             Assert.IsNotNull(users);
+        }
+
+        [TestMethod]
+        public void GetUsers()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<UserListGetter>();
+
+            var users = engine.Execute("Administrators");
+
+            foreach (var user in users)
+                Assert.IsNotNull(user);
+
         }
     }
 }

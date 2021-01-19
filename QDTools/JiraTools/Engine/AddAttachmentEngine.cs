@@ -9,6 +9,9 @@ namespace JiraTools.Engine
     {
         public void Execute(Issue issue, List<string> files)
         {
+            if (files == null)
+                return;
+
             byte[] byteArray;
             UploadAttachmentInfo uAttachmentInfo;
 

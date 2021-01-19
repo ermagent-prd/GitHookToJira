@@ -71,22 +71,13 @@ namespace JiraTools.Engine
 
             var issue = await newIssue.SaveChangesAsync();
 
-            //TODO to delete
-            UpdateAssignee(issue);
+            
 
             worklogEngine.Execute(issue, fieldsInfo.Logged);
             commentEngine.Execute(issue, fieldsInfo.CommentList);
             attachmentEngineEngine.Execute(issue, fieldsInfo.Attachments);
 
             return issue;
-        }
-
-        //TODO to delete
-        private void UpdateAssignee(Issue issue)
-        {
-            var tmp = requestFactory.Service.Issues.GetIssueAsync(issue.Key.Value, CancellationToken.None);
-            tmp.Result.Assignee = "Paolo Luca";
-            tmp.Result.SaveChangesAsync().Wait();
         }
 
         private async Task assignUser(CreateIssueInfo fieldsInfo, Issue newIssue)

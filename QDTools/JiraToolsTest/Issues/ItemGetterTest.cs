@@ -26,7 +26,7 @@ namespace JiraToolsTest
 
             var list = new List<Issue>();
 
-            foreach(var issue in issues)
+            foreach (var issue in issues)
             {
                 list.Add(issue);
             }
@@ -98,6 +98,32 @@ namespace JiraToolsTest
             list[0].SaveChangesAsync().Wait();
 
             //var issueManager = ComponentManager.getInstance().getIssueManager()
+
+            Assert.IsTrue(list.Any());
+        }
+
+        //ER-
+
+        [TestMethod]
+        public void Linq_Execute_GetAndUpdateWorkLogAuthor()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("ER", "ER-6050");
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            var wLog = list[0].GetWorklogsAsync();
+
+            var result = wLog.Result;
+            //list[0].AddWorklogAsync(wLog);
 
             Assert.IsTrue(list.Any());
         }

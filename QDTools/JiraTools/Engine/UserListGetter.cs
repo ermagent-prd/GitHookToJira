@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Atlassian.Jira;
+﻿using Atlassian.Jira;
 using JiraTools.Parameters;
 using JiraTools.Service;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace JiraTools.Engine
 {
-    internal class UserGetter
+    internal class UserListGetter
     {
         #region Private properties
 
@@ -20,7 +21,7 @@ namespace JiraTools.Engine
 
         #region Constructor
 
-        public UserGetter(
+        public UserListGetter(
             ServiceManagerContainer requestFactory,
             IJiraToolsParameters parameters)
         {
@@ -33,9 +34,9 @@ namespace JiraTools.Engine
 
         #region Public methods
 
-        public JiraUser Execute(string userName)
+        public IEnumerable<JiraUser> Execute(string groupName)
         {
-            var task = getUser(userName);
+            var task = getUsers(groupName);
 
             task.Wait();
 
@@ -45,16 +46,13 @@ namespace JiraTools.Engine
         #endregion
 
 
-        public async Task<JiraUser> getUser(string userName)
+        public async Task<IEnumerable<JiraUser>> getUsers(string groupName)
         {
             var jira = requestFactory.Service;
+            
+            var users = await jira.Groups.GetUsersAsync(groupName);
 
-            var jiraUser = await jira.Users.GetMyselfAsync();
-
-            var author = jira.RestClient.Settings.EnableUserPrivacyMode ? jiraUser.AccountId : jiraUser.Username;
-
-
-            return await jira.Users.GetUserAsync(userName);
+            return from u in users select u;
         }
 
         public async Task<JiraUser> getMyself()
@@ -63,7 +61,5 @@ namespace JiraTools.Engine
 
             return await jira.Users.GetMyselfAsync();
         }
-
-
     }
 }

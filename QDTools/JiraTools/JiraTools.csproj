@@ -74,6 +74,7 @@
     <Compile Include="Engine\UserGetter.cs" />
     <Compile Include="Engine\ItemListGetter.cs" />
     <Compile Include="Engine\JqlGetter.cs" />
+    <Compile Include="Engine\UserListGetter.cs" />
     <Compile Include="Model\CreateIssueInfo.cs" />
     <Compile Include="Model\CustomFieldInfo.cs" />
     <Compile Include="Model\WorkLogInfo.cs" />

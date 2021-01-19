@@ -22,6 +22,9 @@ namespace JiraTools.Engine
 
         public void Execute(Issue issue, List<WorkLogInfo> workLogInfoList)
         {
+            if (workLogInfoList == null)
+                return;
+
             foreach(var workLogInfo in workLogInfoList)
                 Execute(issue, workLogInfo.Author, workLogInfo.TimeSpent, workLogInfo.StartDate, workLogInfo.Comment);
         }

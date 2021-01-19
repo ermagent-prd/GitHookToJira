@@ -56,7 +56,7 @@ namespace JiraTools.Engine
 
             // use LINQ syntax to retrieve issues
             return from i in jira.Issues.Queryable
-                   where i.Key == issueCode   //i.Key to get a single specific item (TODOPL)
+                   where i.Key == issueCode 
                    orderby i.Created
                    select i;
 

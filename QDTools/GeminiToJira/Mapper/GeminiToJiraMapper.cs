@@ -101,7 +101,7 @@ namespace GeminiToJira.Mapper
             {
                 var jiraComment = new Comment();
                 jiraComment.Author = comment.Entity.Fullname;
-                jiraComment.Body = ParseCommentEngine.Execute(comment.Entity.Comment);
+                jiraComment.Body = comment.Entity.Fullname + " : " + ParseCommentEngine.Execute(comment.Entity.Comment);
                 jiraIssue.CommentList.Add(jiraComment);
 
                 //Load Comment attachments
@@ -116,6 +116,7 @@ namespace GeminiToJira.Mapper
             //TODO da caricare solo quelli creati in JIRA 
             //foreach (var field in issue.CustomFields)
             //    jiraIssue.CustomFields.Add(new CustomFieldInfo(field.Name, field.FormattedData));
+
 
             jiraIssue.CustomFields.Add(new CustomFieldInfo("OwnerTmp", geminiIssue.Creator));
             jiraIssue.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname));

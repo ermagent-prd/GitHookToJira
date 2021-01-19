@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Atlassian.Jira;
+using Atlassian.Jira.Remote;
 using JiraTools.Engine;
 using JiraTools.Model;
 using JiraTools.Parameters;
@@ -25,8 +26,8 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "ER",
-                Summary = "Api call Test PL2 custom (Atlassian SDK)",
-                Description = "This is a (PL2 custom) test " + DateTime.Now.ToString(),
+                Summary = "Api call Test PL worklogAuthor (Atlassian SDK)",
+                Description = "This is a (PL worklogAuthor) test " + DateTime.Now.ToString(),
                 Priority = "Medium",
                 Type = "Story",
                 OriginalEstimate = "1w",
@@ -34,14 +35,21 @@ namespace JiraToolsTest
                 DueDate = new DateTime(2021, 12, 31),
                 ParentIssueKey = null,
 
-                Assignee = "70121:67b933a3-5693-47d2-82c0-3f997f279387",
+                Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2",
                 AssigneeUser = "Paolo Luca"
                 
             };
 
             issueInfo.CommentList = new List<Comment>();
-            var comment = new Comment();
-            comment.Author = "Paolo Luca";
+
+            
+            var remoteComment = new RemoteComment();
+            remoteComment.author = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
+            remoteComment.body = "Body Comment";
+            remoteComment.updateAuthor = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
+            
+            var comment = new Comment(remoteComment);
+            comment.Author = "70121:67b933a3-5693-47d2-82c0-3f997f279387";;
             comment.Body = "Body Comment";
             issueInfo.CommentList.Add(comment);
 
@@ -58,22 +66,24 @@ namespace JiraToolsTest
             issueInfo.CustomFields.Add(new CustomFieldInfo("Owner", "Paolo Luca"));
             issueInfo.CustomFields.Add(new CustomFieldInfo("AssigneeTest", "Paolo Luca"));
 
-            issueInfo.CustomFields.Add(new CustomFieldInfo("OwnerTmp", "Paolo Luca"));
+            //"70121:67b933a3-5693-47d2-82c0-3f997f279387" pierluigi
+            //"70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2" paololuca
+            issueInfo.CustomFields.Add(new CustomFieldInfo("OwnerTmp", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2"));
+            issueInfo.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", "Pierluigi Nanni"));
+
             
             //Components
             issueInfo.Components.Add("ILIAS");
 
             //Logged
             issueInfo.Logged.Add(new WorkLogInfo(
-                "Pierluigi Nanni",
+                "70121:67b933a3-5693-47d2-82c0-3f997f279387",
                 DateTime.Now,
                 "1d",
-                "Logging test"));
+                "Logging worklog test: author pierluigi"));
 
 
             var issue = engine.Execute(issueInfo);
-
-            issue.SetPropertyAsync("SubTask", "ER-5885").Wait();
 
             //issue.Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             //
@@ -119,7 +129,7 @@ namespace JiraToolsTest
 
             //Logged
             issueInfo.Logged.Add(new WorkLogInfo(
-                "Paolo Luca",
+                "Pierluigi Nanni",
                 DateTime.Now,
                 "1d",
                 "Logging attachment test"));

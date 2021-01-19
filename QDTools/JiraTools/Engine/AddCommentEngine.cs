@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Atlassian.Jira;
+using Atlassian.Jira.Remote;
 
 namespace JiraTools.Engine
 {
@@ -23,7 +24,6 @@ namespace JiraTools.Engine
             var comment = new Comment();
 
             comment.Author = author;
-
             comment.Body = body;
 
             Execute(issue, comment);
@@ -31,6 +31,9 @@ namespace JiraTools.Engine
 
         public void Execute(Issue issue, List<Comment> commentList)
         {
+            if (commentList == null)
+                return;
+
             foreach(var comment in commentList)
                 Execute(issue, comment);
         }
