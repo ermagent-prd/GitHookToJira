@@ -4,7 +4,6 @@ using GeminiTools.Container;
 using GeminiTools.Items;
 using GeminiTools.Parameters;
 using GeminiToolsTest.Container;
-using GeminiToolsTest.Parameters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +34,19 @@ namespace GeminiToolsTest.Items
             Assert.IsNotNull(issues);
         }
 
-        
+        [TestMethod]
+        public void Execute_LoadUatItem()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var getter = container.Resolve<ItemGetter>();
+
+            var issue = getter.Execute(65514);
+
+            Assert.IsNotNull(issue);
+        }
+
+
         [TestMethod]
         public void Execute_LoadAttachmentIssue()
         {
@@ -48,7 +59,7 @@ namespace GeminiToolsTest.Items
             List<IssueCommentDto> itemComments = issue.Comments;
             var commentAttach = itemComments[9].Attachments[0];
 
-            AttachmentGetter.Save(
+            AttachmentGetter.SaveAttachment(
                 commentAttach.Entity.ProjectId,
                 commentAttach.Entity.IssueId,
                 commentAttach.Entity.Id,
@@ -111,6 +122,50 @@ namespace GeminiToolsTest.Items
             }
 
             Assert.IsTrue(filteredList.Any());
+
+        }
+
+        [TestMethod]
+        public void Execute_LoadUatIssue()
+        {
+            string DEVELOPMENT_PROJECT_ID = "37";
+            string DEVELOPMENT_TYPES = "|Developer|Task|";
+            List<string> DEVELOPMENT_RELEASES = new List<string> {
+                "ERMAS",
+                "ERMAS 5.24.0",
+                "ERMAS 5.24.1",
+                "ERMAS 5.25.0",
+                "ERMAS 5.26.0",
+                "ERMAS 5.27.0",
+                "ERMAS 5.28.0",
+                "ERMAS 5.29.0",
+                "0.0.0.0"
+            };
+
+            List<string> DEVELOPMENT_LINES = new List<string> {
+                //"BSM",
+                //"ILIAS",
+                "ILIAS-STA"
+                //"Other" 
+            };
+
+            string DEVELOPMENT_RELEASE_KEY = "Release Version";
+            string DEVELOPMENT_LINE_KEY = "DVL";
+
+            var filter = new IssuesFilter
+            {
+                IncludeClosed = true,
+                Projects = DEVELOPMENT_PROJECT_ID,
+                Types = DEVELOPMENT_TYPES,
+            };
+
+            var container = GeminiContainerFactory.Execute();
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var list = engine.Execute(filter);
+
+            Assert.IsTrue(list.Any());
 
         }
 

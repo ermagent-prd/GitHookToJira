@@ -1,5 +1,4 @@
-﻿using JiraTools.Container;
-using JiraTools.Parameters;
+﻿using JiraTools.Parameters;
 using Unity;
 
 namespace JiraTools.Container

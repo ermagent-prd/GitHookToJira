@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Atlassian.Jira;
 using JiraTools.Engine;
-using JiraTools.Service;
 using JiraToolsTest.Container;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unity;
@@ -102,8 +100,6 @@ namespace JiraToolsTest
             Assert.IsTrue(list.Any());
         }
 
-        //ER-
-
         [TestMethod]
         public void Linq_Execute_GetAndUpdateWorkLogAuthor()
         {
@@ -123,7 +119,62 @@ namespace JiraToolsTest
             var wLog = list[0].GetWorklogsAsync();
 
             var result = wLog.Result;
-            //list[0].AddWorklogAsync(wLog);
+            
+            Assert.IsNotNull(result);
+            Assert.IsTrue(list.Any());
+        }
+
+        [TestMethod]
+        public void Linq_Execute_GetIssueAndUpdateSingleUserField()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("ER", "ER-6067");
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+
+            //AssigneeTest
+            //nessuno dei seguenti esempi funziona
+            //list[0].CustomFields[7].Values = new string[] { "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2" };
+            //list[0].CustomFields[7].Values = new string[] { "Paolo Luca" };
+            //list[0].CustomFields[7].Values = new string[] { "accountId = \"70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2\" "};
+            //list[0].CustomFields[7].Values = new string[] { "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2]" };
+
+            //list[0].SaveChanges();
+
+            var user = list[0].CustomFields.GetAs<JiraUser>("AssigneeTest");
+            //
+            //// Get a custom field with single value.
+            //var singleValue = list[0]["AssigneeTest"];
+            //
+            ////  Get a custom field with multiple values.
+            //var multiValue = list[0].CustomFields["AssigneeTest"].Values;
+            //
+            //// Get a cascading select custom field.
+            //var cascadingSelect = list[0].CustomFields.GetCascadingSelectField("AssigneeTest");
+            //
+            //list[0].CustomFields["AssigneeTest"].Values[0] = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            //
+            //var settings = new JiraRestClientSettings();
+            //settings.EnableUserPrivacyMode = true;
+
+            list[0]["AssigneeTest"] = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            //list[0].CustomFields.AddArray("AssigneeTest", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2");
+
+            list[0].SaveChangesAsync().Wait();
+            list[0].CustomFields.AddArray("AssigneeTest", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2");
+            //var singleAccountId = list[0]["AssigneeTest"];
+            //var multiAccounIds = list[0].CustomFields["AssigneeTest"].Values;
+
+            list[0].SaveChanges();
 
             Assert.IsTrue(list.Any());
         }

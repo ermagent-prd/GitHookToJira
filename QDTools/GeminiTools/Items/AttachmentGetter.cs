@@ -1,4 +1,7 @@
-﻿using GeminiTools.Parameters;
+﻿using Countersoft.Gemini.Commons.Dto;
+using GeminiTools.Parameters;
+using JiraTools.Model;
+using System.Collections.Generic;
 using System.Net;
 
 
@@ -8,8 +11,22 @@ namespace GeminiTools.Items
     {
         private static WebClient webClient;
 
+        public static void Execute(CreateIssueInfo jiraIssue, List<IssueAttachmentDto> attachments)
+        {
+            
+            foreach (var attachment in attachments)
+            {
+                SaveAttachment(
+                    attachment.Entity.ProjectId,
+                    attachment.Entity.IssueId,
+                    attachment.Entity.Id,
+                    attachment.Entity.Name);
 
-        public static bool Save(int projectId, int issueId, int attachmentId, string attachmentName)
+                jiraIssue.Attachments.Add(attachment.Entity.Name);
+            }
+        }
+
+        public static bool SaveAttachment(int projectId, int issueId, int attachmentId, string attachmentName)
         {
             try
             {

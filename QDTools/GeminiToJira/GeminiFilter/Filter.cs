@@ -1,6 +1,5 @@
 ﻿using Countersoft.Gemini.Commons.Dto;
 using Countersoft.Gemini.Commons.Entity;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,6 +18,14 @@ namespace GeminiToJira.GeminiFilter
                         IncludeClosed = true,
                         Projects = DevelopmentConstants.DEVELOPMENT_PROJECT_ID,
                         Types = DevelopmentConstants.DEVELOPMENT_TYPES,
+                        //TODO ?? AffectedVersions = |TRunk|Ermas x.xx....|
+                    };
+                case FilterType.UAT:
+                    return new IssuesFilter
+                    {
+                        IncludeClosed = true,
+                        Projects = UatConstants.UAT_PROJECT_ID,
+                        //Types = UatConstants.UAT_TYPES,
                     };
                 default:
                     return new IssuesFilter();

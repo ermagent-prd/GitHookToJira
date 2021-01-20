@@ -74,7 +74,8 @@
     <Compile Include="GeminiFilter\DevelopmentConstants.cs" />
     <Compile Include="GeminiFilter\Filter.cs" />
     <Compile Include="GeminiFilter\FilterType.cs" />
-    <Compile Include="Mapper\GeminiToJiraMapper.cs" />
+    <Compile Include="Mapper\CommentMapper.cs" />
+    <Compile Include="Mapper\DevelopmentIssueMapper.cs" />
     <Compile Include="Parameters\GeminiParamContainer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

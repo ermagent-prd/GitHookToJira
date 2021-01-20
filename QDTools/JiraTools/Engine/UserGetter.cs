@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Atlassian.Jira;
 using JiraTools.Parameters;
 using JiraTools.Service;
@@ -48,11 +45,6 @@ namespace JiraTools.Engine
         public async Task<JiraUser> getUser(string userName)
         {
             var jira = requestFactory.Service;
-
-            var jiraUser = await jira.Users.GetMyselfAsync();
-
-            var author = jira.RestClient.Settings.EnableUserPrivacyMode ? jiraUser.AccountId : jiraUser.Username;
-
 
             return await jira.Users.GetUserAsync(userName);
         }

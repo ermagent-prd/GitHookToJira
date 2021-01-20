@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Atlassian.Jira;
-using Atlassian.Jira.Remote;
 
 namespace JiraTools.Engine
 {

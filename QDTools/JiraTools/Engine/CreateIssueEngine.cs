@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Atlassian.Jira;
 using JiraTools.Model;
 using JiraTools.Service;
@@ -49,7 +47,7 @@ namespace JiraTools.Engine
 
             if (fieldsInfo.Type.Name == "Sottotask")
                 fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
-
+            
             var newIssue = new Issue(this.requestFactory.Service, fields);
 
             newIssue.Type = fieldsInfo.Type;
@@ -57,6 +55,8 @@ namespace JiraTools.Engine
             newIssue.Summary = fieldsInfo.Summary;
             newIssue.Description = fieldsInfo.Description;
             newIssue.DueDate = fieldsInfo.DueDate;
+            //TODO
+            //newIssue.Reporter = fieldsInfo.Reporter;
 
             foreach (var v in fieldsInfo.FixVersions)
                 newIssue.FixVersions.Add(v);
@@ -70,26 +70,16 @@ namespace JiraTools.Engine
             newIssue.Assignee = fieldsInfo.Assignee;
 
             var issue = await newIssue.SaveChangesAsync();
-
             
-
             worklogEngine.Execute(issue, fieldsInfo.Logged);
+
             commentEngine.Execute(issue, fieldsInfo.CommentList);
+
             attachmentEngineEngine.Execute(issue, fieldsInfo.Attachments);
 
             return issue;
         }
 
-        private async Task assignUser(CreateIssueInfo fieldsInfo, Issue newIssue)
-        {
-            await newIssue.AssignAsync(fieldsInfo.Assignee);
-        }
-
-
-        private async Task<Worklog> addWorkLog(CreateIssueInfo fieldsInfo, Issue newIssue)
-        {
-            return await newIssue.AddWorklogAsync("1d");
-        }
 
         #endregion
 

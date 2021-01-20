@@ -63,3 +63,7 @@ C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTes
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.csproj.CopyComplete
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.dll
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.pdb
+C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\JiraTools.dll
+C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\Atlassian.Jira.dll
+C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\JiraTools.pdb
+C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\JiraTools.dll.config

@@ -103,6 +103,11 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\JiraTools\JiraTools.csproj">
+      <Project>{D089F776-B54C-4E4C-A1A1-642FFEBC9DA0}</Project>
+      <Name>JiraTools</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

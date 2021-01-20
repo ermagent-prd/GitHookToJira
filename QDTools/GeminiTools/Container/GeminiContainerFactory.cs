@@ -1,5 +1,4 @@
-﻿using GeminiTools.Container;
-using GeminiTools.Parameters;
+﻿using GeminiTools.Parameters;
 using Unity;
 
 namespace GeminiTools.Container

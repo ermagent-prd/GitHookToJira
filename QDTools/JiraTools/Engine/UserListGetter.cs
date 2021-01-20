@@ -1,15 +1,13 @@
 ﻿using Atlassian.Jira;
 using JiraTools.Parameters;
 using JiraTools.Service;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace JiraTools.Engine
 {
-    internal class UserListGetter
+    public class UserListGetter
     {
         #region Private properties
 
