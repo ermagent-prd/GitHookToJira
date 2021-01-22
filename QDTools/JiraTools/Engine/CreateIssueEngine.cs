@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Atlassian.Jira;
 using JiraTools.Model;
 using JiraTools.Service;
@@ -7,6 +9,14 @@ namespace JiraTools.Engine
 {
     public class CreateIssueEngine
     {
+        private Dictionary<string, string> RESOLUTION_DICTIONARY = new Dictionary<string, string>()
+        {
+            { "Done",           "10000" },
+            { "Won't Do",       "10001" },
+            { "Duplicate",      "10002" },
+            {"Cannot Reproduce","10003" }
+        };
+
         private readonly ServiceManagerContainer requestFactory;
 
         private readonly AddWorklogEngine worklogEngine;
@@ -40,21 +50,34 @@ namespace JiraTools.Engine
         {
             var fields = new CreateIssueFields(fieldsInfo.ProjectKey)
             {
-                TimeTrackingData = new IssueTimeTrackingData(
-                    fieldsInfo.OriginalEstimate,
-                    fieldsInfo.RemainingEstimate),
+                
             };
+
+            if (fieldsInfo.Type != "UAT")
+                fields.TimeTrackingData = new IssueTimeTrackingData(
+                    fieldsInfo.OriginalEstimate,
+                    fieldsInfo.RemainingEstimate);
 
             if (fieldsInfo.Type.Name == "Sottotask")
                 fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
             
             var newIssue = new Issue(this.requestFactory.Service, fields);
-
+            
             newIssue.Type = fieldsInfo.Type;
             newIssue.Priority = fieldsInfo.Priority;
             newIssue.Summary = fieldsInfo.Summary;
             newIssue.Description = fieldsInfo.Description;
-            newIssue.DueDate = fieldsInfo.DueDate;
+
+            if(fieldsInfo.DueDate != DateTime.MinValue)
+                newIssue.DueDate = fieldsInfo.DueDate;
+
+            //TODO manca ermas, ed altre resolution
+            if (fieldsInfo.Resolution != null && fieldsInfo.Resolution != "")
+            {
+                string resId;
+                if (RESOLUTION_DICTIONARY.TryGetValue(fieldsInfo.Resolution, out resId))
+                    newIssue.Resolution = new IssueResolution(resId, fieldsInfo.Resolution);
+            }
             //TODO
             //newIssue.Reporter = fieldsInfo.Reporter;
 

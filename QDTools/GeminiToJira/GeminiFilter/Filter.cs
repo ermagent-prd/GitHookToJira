@@ -25,6 +25,7 @@ namespace GeminiToJira.GeminiFilter
                     {
                         IncludeClosed = true,
                         Projects = UatConstants.UAT_PROJECT_ID,
+                        Issues = "|65628|"  //TODO da eliminare, il filtro va fatto meglio
                         //Types = UatConstants.UAT_TYPES,
                     };
                 default:

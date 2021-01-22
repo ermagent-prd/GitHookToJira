@@ -75,6 +75,7 @@
     <Compile Include="GeminiFilter\Filter.cs" />
     <Compile Include="GeminiFilter\FilterType.cs" />
     <Compile Include="Mapper\CommentMapper.cs" />
+    <Compile Include="Mapper\UatIssueMapper.cs" />
     <Compile Include="Mapper\DevelopmentIssueMapper.cs" />
     <Compile Include="Parameters\GeminiParamContainer.cs" />
     <Compile Include="Program.cs" />

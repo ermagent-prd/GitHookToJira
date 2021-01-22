@@ -18,10 +18,9 @@ namespace GeminiToJira.Mapper
             {
                 var jiraComment = new Comment();
                 jiraComment.Author = comment.Entity.Fullname;
-                
-                jiraComment.Body = 
-                    "[~accountId:70121:67b933a3-5693-47d2-82c0-3f997f279387] wrote Body Comment" + //TODO dinamico con il dizionario utenti [trygetvalue from comment.Entity.Fullname]
-                    comment.Entity.Fullname + " : " + 
+
+                jiraComment.Body =
+                    GetAuthor(comment.Entity.Fullname, userDictionary) +
                     ParseCommentEngine.Execute(comment.Entity.Comment);
                 jiraIssue.CommentList.Add(jiraComment);
 
@@ -30,5 +29,14 @@ namespace GeminiToJira.Mapper
             }
         }
 
+        private static string GetAuthor(string fullname, Dictionary<string, JiraUser> userDictionary)
+        {
+            JiraUser author = null;
+            userDictionary.TryGetValue(fullname, out author);
+
+            return author != null ?
+                "[~accountId:" + author.AccountId + "]: " :
+                fullname + ": ";
+        }
     }
 }

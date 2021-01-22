@@ -81,6 +81,7 @@
     <Compile Include="Parameters\Constants.cs" />
     <Compile Include="Parameters\IJiraToolsParameters.cs" />
     <Compile Include="Parameters\ParamContainer.cs" />
+    <Compile Include="Parameters\QuerableType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\ServiceManagerContainer.cs" />
   </ItemGroup>

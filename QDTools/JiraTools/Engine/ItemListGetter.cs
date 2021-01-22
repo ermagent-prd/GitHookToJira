@@ -16,6 +16,10 @@ namespace JiraTools.Engine
 
         #endregion
 
+        #region Public
+        
+        #endregion
+
         #region Constructor
 
         public ItemListGetter(
@@ -45,17 +49,25 @@ namespace JiraTools.Engine
 
         }
 
-        public IEnumerable<Issue> Execute(string projectCode, string issueCode)
+        public IEnumerable<Issue> Execute(string filter, QuerableType type)
         {
             var jira = requestFactory.Service;
 
             jira.Issues.MaxIssuesPerRequest = parameters.MaxIssuesPerRequest; //Max 100 ??
 
-            // use LINQ syntax to retrieve issues
-            return from i in jira.Issues.Queryable
-                   where i.Key == issueCode 
-                   orderby i.Created
-                   select i;
+            if (type == QuerableType.ByCode)
+                // use LINQ syntax to retrieve issues
+                return from i in jira.Issues.Queryable
+                       where i.Key == filter
+                       orderby i.Created
+                       select i;
+            else
+                return from i in jira.Issues.Queryable
+                       where i.Summary == filter
+                       orderby i.Created
+                       select i;
+
+
 
         }
 

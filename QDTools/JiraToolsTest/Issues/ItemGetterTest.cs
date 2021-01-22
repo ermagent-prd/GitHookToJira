@@ -2,6 +2,7 @@
 using System.Linq;
 using Atlassian.Jira;
 using JiraTools.Engine;
+using JiraTools.Parameters;
 using JiraToolsTest.Container;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unity;
@@ -74,7 +75,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER", "ER-5946");   //ER-5892 is a subtask of ER-5885
+            var issues = engine.Execute("ER-5946");   //ER-5892 is a subtask of ER-5885
 
             var list = new List<Issue>();
 
@@ -101,13 +102,32 @@ namespace JiraToolsTest
         }
 
         [TestMethod]
+        public void Linq_Execute_GetUatIssues()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("ER-6068", QuerableType.ByCode);
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            Assert.IsTrue(list.Any());
+        }
+
+        [TestMethod]
         public void Linq_Execute_GetAndUpdateWorkLogAuthor()
         {
             var container = ContainerForTest.DefaultInstance.Value;
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER", "ER-6050");
+            var issues = engine.Execute("ER-6050", QuerableType.ByCode);
 
             var list = new List<Issue>();
 
@@ -131,7 +151,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER", "ER-6067");
+            var issues = engine.Execute("ER-6067", QuerableType.ByCode);
 
             var list = new List<Issue>();
 

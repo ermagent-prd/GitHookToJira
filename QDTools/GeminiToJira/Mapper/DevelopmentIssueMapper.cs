@@ -25,20 +25,20 @@ namespace GeminiToJira.Mapper
                 ProjectKey = "ER",          //TODO issue.Project.Code,
                 Summary = geminiIssue.Title,
                 Description = geminiIssue.Description + DateTime.Now.ToString(),
-                Priority = geminiIssue.Priority,
+                //Priority = geminiIssue.Priority,
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h",
                 RemainingEstimate = geminiIssue.RemainingTime,
-                DueDate = new DateTime(2021, 12, 31),
+                DueDate = new DateTime(2021, 12, 31),   //TODO
                 //TODO Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387" //TODO prendere dall'array degli accountID , partendo da geminiIssue.Reporter,
             };
 
-            //Save affected build, if present
+            //AffectedBuild
             var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == AFFECTEDBUILD);
             if(affectedBuild != null && affectedBuild.FormattedData != "")
                 jiraIssue.FixVersions.Add(affectedBuild.FormattedData);
 
-            //Save release build, if present
+            //FixVersion
             var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_RELEASE_KEY);
             if (release != null && release.FormattedData != "")
                 jiraIssue.FixVersions.Add(release.FormattedData);

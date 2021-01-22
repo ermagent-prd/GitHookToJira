@@ -25,6 +25,7 @@ namespace JiraTools.Model
         public string Summary { get; set; }
 
         public string Description { get; set; }
+
         public string Reporter { get; set; }
 
         public string Assignee { get; set; }
@@ -48,5 +49,9 @@ namespace JiraTools.Model
         public List<Comment> CommentList { get; set; }
 
         public List<string> Attachments { get; set; }
+
+        public String Resolution { get; set; }
+
+        public string RelatedDevelopment { get; set; }
     }
 }
