@@ -2,11 +2,11 @@
 
 namespace JiraTools.Engine
 {
-    public class LinkSubTaskEngine
+    public class LinkEngine
     {
         public void Execute(Issue issue, string parentKey)
         {
-            issue.LinkToIssueAsync(parentKey, "Subtask").Wait();
+            issue.LinkToIssueAsync(parentKey, "Relates").Wait();
         }
     }
 }

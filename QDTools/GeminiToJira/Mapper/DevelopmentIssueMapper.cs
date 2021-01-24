@@ -12,6 +12,8 @@ namespace GeminiToJira.Mapper
     {
         private const string AFFECTEDBUILD = "AffectedBuild";
         private const string DEVELOPMENT_RELEASE_KEY = "Release Version";
+        private const string DEVELOPMENT_LINE_KEY = "DVL";
+
 
         public DevelopmentIssueMapper()
         {
@@ -61,7 +63,9 @@ namespace GeminiToJira.Mapper
             LoadCustomFields(jiraIssue, geminiIssue);
 
             //TODO Components --> sono solo per le UAT?
-            //issueInfo.Components.Add("ILIAS");
+            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_LINE_KEY);
+            if (devLine != null)
+                jiraIssue.Components.Add(devLine.Entity.Data);
 
             //TODO 
             //mappedIssue.Logged.Add(new WorkLogInfo(
@@ -78,10 +82,7 @@ namespace GeminiToJira.Mapper
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
         {
-            //TODO da caricare solo quelli creati in JIRA 
-            //foreach (var field in issue.CustomFields)
-            //    jiraIssue.CustomFields.Add(new CustomFieldInfo(field.Name, field.FormattedData));
-
+            
             //TODO
             //Reporter
             //il valore da salvare è l'accountId, recuperato dal dizionario degli utenti
@@ -91,6 +92,17 @@ namespace GeminiToJira.Mapper
             //TODO: da stituire ResourcesTmp con AssigneeTmp, il quale dovrà essere puntato dalal regola su JIRA
             //il valore da salvare è l'accountId, recuperato dal dizionario degli utenti
             jiraIssue.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname));
+
+            //TODO JDE Code
+            //TODO Analysis Owner
+            //TODO Security Activities
+            //TODO GDPR activities
+            //TODO IT responsable
+            //TODO Test responsable
+            //TODO Analysis start date
+            //TODO test start date
+            //TODO Gemini --> da salvare per il reperimento poi dei development collegati per le UAT
+
 
         }
 

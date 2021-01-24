@@ -17,6 +17,15 @@ namespace JiraTools.Engine
             {"Cannot Reproduce","10003" }
         };
 
+        private Dictionary<string, string> RESOLUTION_MAPPING = new Dictionary<string, string>()
+        {
+            { "Complete",   "Done" },
+            { "Rejected",   "Won't Do" },
+            { "Duplicate",  "Duplicate" },
+        };
+
+
+
         private readonly ServiceManagerContainer requestFactory;
 
         private readonly AddWorklogEngine worklogEngine;
@@ -53,11 +62,13 @@ namespace JiraTools.Engine
                 
             };
 
+            //TimeTrackingData does not apply to UAT items
             if (fieldsInfo.Type != "UAT")
                 fields.TimeTrackingData = new IssueTimeTrackingData(
                     fieldsInfo.OriginalEstimate,
                     fieldsInfo.RemainingEstimate);
 
+            
             if (fieldsInfo.Type.Name == "Sottotask")
                 fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
             
@@ -71,12 +82,19 @@ namespace JiraTools.Engine
             if(fieldsInfo.DueDate != DateTime.MinValue)
                 newIssue.DueDate = fieldsInfo.DueDate;
 
+            //TDOD start date? (for dev)
+
+
             //TODO manca ermas, ed altre resolution
             if (fieldsInfo.Resolution != null && fieldsInfo.Resolution != "")
             {
-                string resId;
-                if (RESOLUTION_DICTIONARY.TryGetValue(fieldsInfo.Resolution, out resId))
-                    newIssue.Resolution = new IssueResolution(resId, fieldsInfo.Resolution);
+                string mappedResolution;
+                if (RESOLUTION_MAPPING.TryGetValue(fieldsInfo.Resolution, out mappedResolution))
+                {
+                    string jiraResolutionId;
+                    if(RESOLUTION_DICTIONARY.TryGetValue(mappedResolution, out jiraResolutionId))
+                        newIssue.Resolution = new IssueResolution(jiraResolutionId, mappedResolution);
+                }
             }
             //TODO
             //newIssue.Reporter = fieldsInfo.Reporter;

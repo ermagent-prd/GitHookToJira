@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity;
 using Atlassian.Jira;
-using System;
+using JiraTools.Parameters;
 
 namespace GeminiToJira
 {
@@ -27,17 +27,18 @@ namespace GeminiToJira
         {
 
             var geminiContainer = GeminiContainerFactory.Execute();
-            var geminiItemsEngine = geminiContainer.Resolve<ItemListGetter>();
+            var geminiItemsEngine = geminiContainer.Resolve<GeminiTools.Items.ItemListGetter>();
 
             var jiraContainer = JiraContainer.DefaultInstance.Value;
             var jiraSaveEngine = jiraContainer.Resolve<CreateIssueEngine>();
+            var jiraItemsEngine = jiraContainer.Resolve<JiraTools.Engine.ItemListGetter>();
             var userDictionary = GetUsersDictionary(jiraContainer);
 
             //var geminiDevelopmentIssueList = filterGeminiIssueList(geminiItemsEngine, FilterType.Development);
             //SaveDevelopmentToJira(geminiItemsEngine, jiraSaveEngine, geminiDevelopmentIssueList, userDictionary);
 
             var geminiUatIssueList = filterGeminiIssueList(geminiItemsEngine, FilterType.UAT);
-            SaveUatToJira(geminiItemsEngine, jiraSaveEngine, geminiUatIssueList, userDictionary);
+            SaveUatToJira(geminiItemsEngine, jiraItemsEngine, jiraSaveEngine, geminiUatIssueList, userDictionary);
 
         }
 
@@ -60,7 +61,9 @@ namespace GeminiToJira
             return result;
         }
 
-        private static IEnumerable<IssueDto> filterGeminiIssueList(ItemListGetter geminiItemsEngine, FilterType filter)
+        private static IEnumerable<IssueDto> filterGeminiIssueList(
+            GeminiTools.Items.ItemListGetter geminiItemsEngine, 
+            FilterType filter)
         {
             var geminiIssueList = geminiItemsEngine.Execute(Filter.GetFilter(filter));
             Filter.FilterIssuesList(filter, geminiIssueList);
@@ -68,14 +71,14 @@ namespace GeminiToJira
         }
 
         private static void SaveDevelopmentToJira(
-            ItemListGetter geminiItemsEngine, 
+            GeminiTools.Items.ItemListGetter geminiItemsEngine, 
             CreateIssueEngine jiraSaveEngine, 
             IEnumerable<IssueDto> geminiDevelopmentIssueList,
             Dictionary<string, JiraUser> userDictionary)
         {
             var geminiToJiraMapper = new DevelopmentIssueMapper();
 
-            foreach (var geminiIssue in geminiDevelopmentIssueList.OrderBy(f => f.Id).ToList())// TODO .Where(i => i.Id == 59685)
+            foreach (var geminiIssue in geminiDevelopmentIssueList.OrderBy(f => f.Id).ToList())// TODO .Where(i => i.Id == 59826)
             {
                 var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
 
@@ -96,10 +99,12 @@ namespace GeminiToJira
         }
 
         private static void SaveUatToJira(
-            ItemListGetter geminiItemsEngine, CreateIssueEngine jiraSaveEngine, IEnumerable<IssueDto> geminiUatIssueList, 
+            GeminiTools.Items.ItemListGetter geminiItemsEngine,
+            JiraTools.Engine.ItemListGetter jiraItemsEngine, CreateIssueEngine jiraSaveEngine, IEnumerable<IssueDto> geminiUatIssueList, 
             Dictionary<string, JiraUser> userDictionary)
         {
             var geminiToJiraMapper = new UatIssueMapper();
+            var linkEngine = new LinkEngine();
 
             foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.Id).ToList())
             {
@@ -110,17 +115,13 @@ namespace GeminiToJira
                 var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
 
                 if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")
-                    continue;
-                //TODO gestione al related development
+                {
+                    var relatedDev = jiraItemsEngine.Execute(jiraIssueInfo.RelatedDevelopment, QuerableType.BySummary);
 
-                    //var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != GroupType && i.Value.Id != geminiIssue.Id);
-                    //
-                    //foreach (var sub in hierarchy)
-                    //{
-                    //    var jiraSubTaskInfo = geminiToJiraMapper.Execute(sub.Value, SubTaskType, userDictionary);
-                    //    jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
-                    //    jiraSaveEngine.Execute(jiraSubTaskInfo);
-                    //}
+                    //if (relatedDev != null && relatedDev.Count() == 1)
+                    //    linkEngine.Execute(jiraIssue, relatedDev.ElementAt(0).Key.ToString());
+                    linkEngine.Execute(jiraIssue, "ER-6296");
+                }
             }
         }
 

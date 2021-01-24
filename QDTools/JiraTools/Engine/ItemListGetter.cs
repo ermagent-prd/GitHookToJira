@@ -6,7 +6,7 @@ using JiraTools.Service;
 
 namespace JiraTools.Engine
 {
-    internal class ItemListGetter
+    public class ItemListGetter
     {
         #region Private properties
 

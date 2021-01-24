@@ -108,7 +108,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6068", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6373", QuerableType.ByCode);
 
             var list = new List<Issue>();
 
@@ -116,6 +116,8 @@ namespace JiraToolsTest
             {
                 list.Add(issue);
             }
+
+            list[0].LinkToIssueAsync("ER-6296", "Relates").Wait();
 
             Assert.IsTrue(list.Any());
         }
@@ -143,6 +145,26 @@ namespace JiraToolsTest
             Assert.IsNotNull(result);
             Assert.IsTrue(list.Any());
         }
+
+        [TestMethod]
+        public void Linq_Execute_SearchBySummary()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("ILiAS-BSM_2 volumi", QuerableType.BySummary);
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            Assert.IsTrue(list.Any());
+        }
+
 
         [TestMethod]
         public void Linq_Execute_GetIssueAndUpdateSingleUserField()

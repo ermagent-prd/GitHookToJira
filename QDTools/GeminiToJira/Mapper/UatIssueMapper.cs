@@ -15,11 +15,14 @@ namespace GeminiToJira.Mapper
         private const string DEVELOPMENT_RELEASE_KEY = "Release Version";
         private const string FUNCTIONALITY = "Functionality";
         private const string RELATED_DEVELOPMENT = "Development";
+        private const string ISSUE_TYPE = "IssueType";
+        private const string FIXED_IN_BUILD = "FixedInBuild";
 
 
         public UatIssueMapper()
         {
         }
+
 
         public CreateIssueInfo Execute(IssueDto geminiIssue, string type, Dictionary<string, JiraUser> userDictionary)
         {
@@ -40,11 +43,11 @@ namespace GeminiToJira.Mapper
                 DueDate = DateTime.MinValue,
                 Resolution = geminiIssue.Resolution
             };
-            
 
 
-            //TODO jiraIssue.FixVersions
-
+            //TODO Fix Version??
+            if (geminiIssue.FixedInVersion != "")
+                jiraIssue.FixVersions.Add(geminiIssue.FixedInVersion);
 
             //TODO con campo temporaneo e regola post creazione
             jiraIssue.Assignee = geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname;
@@ -88,7 +91,9 @@ namespace GeminiToJira.Mapper
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
         {
             //UAT Type
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Type", "Defect"));   //TODO geminiIssue.Type : fare il mapping;
+            var issueType = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == ISSUE_TYPE);
+            if (issueType != null)
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Type", issueType.Entity.Data));
 
             //UAT Category
             if (geminiIssue.Components != null && geminiIssue.Components.Count > 0)
@@ -96,10 +101,11 @@ namespace GeminiToJira.Mapper
 
             //UAT Severity
             jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Severity", geminiIssue.Severity));
-            
-            //UAT 
-            if(geminiIssue.FixedInVersion != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Fixed In Build", geminiIssue.FixedInVersion));
+
+            //Fixed in build
+            var fixedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == FIXED_IN_BUILD);
+            if (fixedBuild != null && fixedBuild.FormattedData != "")
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Fixed In Build", fixedBuild.FormattedData));
 
             //Affected Build
             var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == AFFECTEDBUILD);
