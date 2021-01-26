@@ -6,7 +6,7 @@ using Unity.Extension;
 
 namespace GeminiTools.Container
 {
-    public class ContainerExtension : UnityContainerExtension
+    public class GeminiToolsContainerExtension : UnityContainerExtension
     {
         #region Public methods
 
@@ -19,6 +19,8 @@ namespace GeminiTools.Container
             Container.RegisterType<ItemGetter>();
             Container.RegisterType<ItemListGetter>();
             Container.RegisterType<ServiceManagerContainer>();
+
+            Container.RegisterType<AttachmentGetter>();
 
         }
 

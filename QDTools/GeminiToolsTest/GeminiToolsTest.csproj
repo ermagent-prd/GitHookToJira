@@ -77,6 +77,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\ContainerForTest.cs" />
+    <Compile Include="Container\GeminiContainerFactory.cs" />
+    <Compile Include="Parameters\GeminiToolsTestConstants.cs" />
     <Compile Include="Parameters\ParamContainer.cs" />
     <Compile Include="Projects\ProjectGetterTest.cs" />
     <Compile Include="Items\ItemListGetterTest.cs" />

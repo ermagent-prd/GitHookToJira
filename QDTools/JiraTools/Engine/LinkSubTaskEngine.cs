@@ -4,9 +4,9 @@ namespace JiraTools.Engine
 {
     public class LinkEngine
     {
-        public void Execute(Issue issue, string parentKey)
+        public void Execute(Issue issue, string parentKey, string linkName)
         {
-            issue.LinkToIssueAsync(parentKey, "Relates").Wait();
+            issue.LinkToIssueAsync(parentKey, linkName).Wait();
         }
     }
 }

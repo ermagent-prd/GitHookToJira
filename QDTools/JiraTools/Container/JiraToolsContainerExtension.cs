@@ -5,7 +5,7 @@ using Unity.Extension;
 
 namespace JiraTools.Container
 {
-    public class ContainerExtension : UnityContainerExtension
+    public class JiraToolsContainerExtension : UnityContainerExtension
     {
         #region Private properties
 

@@ -7,6 +7,7 @@ using JiraTools.Engine;
 using JiraTools.Model;
 using JiraTools.Parameters;
 using JiraToolsTest.Container;
+using JiraToolsTest.Parameters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unity;
 
@@ -26,20 +27,19 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "ER",
-                Summary = "Api call Test PL worklogAuthor assignee (Atlassian SDK)",
-                Description = "This is a (PL worklogAuthor) test " + DateTime.Now.ToString(),
-                Priority = "Medium",
+                Summary = "Api call Test PL singlepicker (Atlassian SDK)",
+                Description = "This is a (PL singlepicker) test " + DateTime.Now.ToString(),
                 Type = "Story",
                 OriginalEstimate = "1w",
                 RemainingEstimate = "1d",
                 DueDate = new DateTime(2021, 12, 31),
                 ParentIssueKey = null,
                 Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387",
-                Assignee = "Paolo Luca",
-                AssigneeUser = "Paolo Luca"
-                
-            };
+                Assignee = "70121:67b933a3-5693-47d2-82c0-3f997f279387",
+                AssigneeUser = "70121:67b933a3-5693-47d2-82c0-3f997f279387"
 
+            };
+            
             issueInfo.CommentList = new List<Comment>();
             
             var remoteComment = new RemoteComment();
@@ -62,14 +62,18 @@ namespace JiraToolsTest
             issueInfo.CustomFields.Add(new CustomFieldInfo("Epic Link", "ER-2859"));
 
             //assignee and owner custom
-            issueInfo.CustomFields.Add(new CustomFieldInfo("Owner", "[~accountId:70121:67b933a3-5693-47d2-82c0-3f997f279387]"));
-            issueInfo.CustomFields.Add(new CustomFieldInfo("AssigneeTest", "[~accountId:70121:67b933a3-5693-47d2-82c0-3f997f279387]"));
+            issueInfo.CustomFields.Add(new CustomFieldInfo("Owner", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+            issueInfo.CustomFields.Add(new CustomFieldInfo("AssigneeTest", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
 
             //"70121:67b933a3-5693-47d2-82c0-3f997f279387" pierluigi
             //"70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2" paololuca
-            issueInfo.CustomFields.Add(new CustomFieldInfo("OwnerTmp", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2"));
-            issueInfo.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2"));
-                        
+            issueInfo.CustomFields.Add(new CustomFieldInfo("OwnerTmp", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+            issueInfo.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+
+
+            issueInfo.CustomFields.Add(new CustomFieldInfo("IT Responsible", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+            issueInfo.CustomFields.Add(new CustomFieldInfo("Test Responsible", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+
             //Components
             issueInfo.Components.Add("ILIAS");
 
@@ -95,6 +99,94 @@ namespace JiraToolsTest
         }
 
         [TestMethod]
+        public void AddSingleIssue_WithSpecificCommentUser()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<CreateIssueEngine>();
+
+            var issueInfo = new CreateIssueInfo
+            {
+                ProjectKey = "ER",
+                Summary = "Api call Test PL usercomment (Atlassian SDK)",
+                Description = "This is a (PL usercomment) test " + DateTime.Now.ToString(),
+                Type = "Story",
+                OriginalEstimate = "1w",
+                RemainingEstimate = "1d",
+                DueDate = new DateTime(2021, 12, 31),
+                ParentIssueKey = null,
+                Reporter = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2",
+                Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2",
+            };
+
+            issueInfo.CommentList = new List<Comment>();
+
+            var remoteComment = new RemoteComment();
+            remoteComment.author = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
+            remoteComment.updateAuthor = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
+            remoteComment.body = "Body Comment";
+
+            var comment = new Comment(remoteComment);
+
+            comment.Author = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
+            comment.Body = "wrote Body Comment";
+            issueInfo.CommentList.Add(comment);
+
+
+            //Logged
+            issueInfo.Logged.Add(new WorkLogInfo(
+                "70121:67b933a3-5693-47d2-82c0-3f997f279387",
+                DateTime.Now,
+                "1d",
+                "Logging worklog test: author pierluigi"));
+
+
+            var issue = engine.Execute(issueInfo);
+            
+            issue.Reporter = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            issue.SaveChanges();
+
+            Assert.IsNotNull(issue);
+        }
+
+        [TestMethod]
+        public void AddSingleIssue_WithSpecificWorkLogUser()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<CreateIssueEngine>();
+
+            var issueInfo = new CreateIssueInfo
+            {
+                ProjectKey = "ER",
+                Summary = "Api call Test PL usercomment (Atlassian SDK)",
+                Description = "This is a (PL usercomment) test " + DateTime.Now.ToString(),
+                Type = "Story",
+                OriginalEstimate = "1w",
+                RemainingEstimate = "1d",
+                DueDate = new DateTime(2021, 12, 31),
+                ParentIssueKey = null,
+                Reporter = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2",
+                Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2",
+            };
+
+
+            var remoteWrkLog = new RemoteWorklog();
+            remoteWrkLog.updateAuthor = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            remoteWrkLog.author = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            remoteWrkLog.comment = "comment worklog";
+            remoteWrkLog.startDate = DateTime.Now;
+            remoteWrkLog.timeSpent = "1d";
+
+            var issue = engine.Execute(issueInfo);
+
+            issue.Reporter = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            issue.SaveChanges();
+
+            Assert.IsNotNull(issue);
+        }
+
+        [TestMethod]
         public void AddSingleIssueWithAttachment()
         {
             var container = ContainerForTest.DefaultInstance.Value;
@@ -104,7 +196,7 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "ER",
-                Summary = "Attachments Test PL custom (Atlassian SDK)",
+                Summary = "Attachments Test PL attachment (Atlassian SDK)",
                 Description = "This is a (PL attachment) test " + DateTime.Now.ToString(),
                 Priority = "Medium",
                 Type = "Story",
@@ -137,11 +229,11 @@ namespace JiraToolsTest
 
             var issue = engine.Execute(issueInfo);
 
-            var byteArray = System.IO.File.ReadAllBytes(Constants.AttachmentPath + "PD_AKBANK_PD_SML10_BAD20201031.xlsx");
+            var byteArray = System.IO.File.ReadAllBytes(JiraTestConstants.AttachmentPath + "PD_AKBANK_PD_SML10_BAD20201031.xlsx");
             var uAttachmentInfo = new UploadAttachmentInfo("PD_AKBANK_PD_SML10_BAD20201031.xlsx", byteArray);
             issue.AddAttachment(uAttachmentInfo);
 
-            byteArray = System.IO.File.ReadAllBytes(Constants.AttachmentPath + "prova.txt");
+            byteArray = System.IO.File.ReadAllBytes(JiraTestConstants.AttachmentPath + "prova.txt");
             uAttachmentInfo = new UploadAttachmentInfo("prova.txt", byteArray);
             issue.AddAttachment(uAttachmentInfo);
 

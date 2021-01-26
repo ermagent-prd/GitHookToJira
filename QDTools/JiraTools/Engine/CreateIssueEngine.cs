@@ -79,12 +79,9 @@ namespace JiraTools.Engine
             newIssue.Summary = fieldsInfo.Summary;
             newIssue.Description = fieldsInfo.Description;
 
-            if(fieldsInfo.DueDate != DateTime.MinValue)
-                newIssue.DueDate = fieldsInfo.DueDate;
-
-            //TDOD start date? (for dev)
-
-
+            if(fieldsInfo.DueDate.HasValue)
+                newIssue.DueDate = fieldsInfo.DueDate.Value;
+                        
             //TODO manca ermas, ed altre resolution
             if (fieldsInfo.Resolution != null && fieldsInfo.Resolution != "")
             {
@@ -96,6 +93,7 @@ namespace JiraTools.Engine
                         newIssue.Resolution = new IssueResolution(jiraResolutionId, mappedResolution);
                 }
             }
+
             //TODO
             //newIssue.Reporter = fieldsInfo.Reporter;
 

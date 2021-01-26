@@ -1,7 +1,9 @@
-﻿using GeminiTools.Parameters;
+﻿using GeminiTools.Container;
+using GeminiTools.Parameters;
+using GeminiToolsTest.Parameters;
 using Unity;
 
-namespace GeminiTools.Container
+namespace GeminiToolsTest.Container
 {
     public static class GeminiContainerFactory
     {
@@ -9,7 +11,7 @@ namespace GeminiTools.Container
         {
             IUnityContainer container = new UnityContainer();
             container.RegisterType<IGeminiToolsParameters, ParamContainer>();
-            container.AddNewExtension<ContainerExtension>();
+            container.AddNewExtension<GeminiToolsContainerExtension>();
             return container;
         }
     }

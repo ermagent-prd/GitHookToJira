@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Atlassian.Jira;
 using JiraTools.Engine;
@@ -173,7 +174,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6067", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6460", QuerableType.ByCode);
 
             var list = new List<Issue>();
 
@@ -211,11 +212,68 @@ namespace JiraToolsTest
             list[0]["AssigneeTest"] = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             //list[0].CustomFields.AddArray("AssigneeTest", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2");
 
+            list[0].Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
             list[0].SaveChangesAsync().Wait();
-            list[0].CustomFields.AddArray("AssigneeTest", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2");
+            //list[0].CustomFields.AddArray("AssigneeTest", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2", "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2");
             //var singleAccountId = list[0]["AssigneeTest"];
             //var multiAccounIds = list[0].CustomFields["AssigneeTest"].Values;
 
+            list[0].SaveChanges();
+
+            Assert.IsTrue(list.Any());
+        }
+
+        [TestMethod]
+        public void Linq_Execute_GetIssueAndUpdateReporter()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("ER-6460", QuerableType.ByCode);
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+                       
+            //this only works for admin user logged
+            list[0].Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
+            list[0].SaveChangesAsync().Wait();
+            
+
+            Assert.IsTrue(list.Any());
+        }
+
+        [TestMethod]
+        public void Linq_Execute_GetIssueAndUpdateWorkLog()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("ER-6464", QuerableType.ByCode);
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+
+            //this only works for admin user logged
+            var wrk = list[0].GetWorklogsAsync();
+
+            var workLog = new Worklog("1d", DateTime.Now, "comment worklog di paolo luca");
+
+            workLog.Author = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            
+            
+            list[0].AddWorklogAsync(workLog);
             list[0].SaveChanges();
 
             Assert.IsTrue(list.Any());

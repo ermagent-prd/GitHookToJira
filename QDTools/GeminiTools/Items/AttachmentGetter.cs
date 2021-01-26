@@ -7,16 +7,21 @@ using System.Net;
 
 namespace GeminiTools.Items
 {
-    public static class AttachmentGetter
+    public class AttachmentGetter
     {
-        private static WebClient webClient;
+        private readonly IGeminiToolsParameters parameters;
 
-        public static void Execute(CreateIssueInfo jiraIssue, List<IssueAttachmentDto> attachments)
+        public AttachmentGetter(IGeminiToolsParameters parameters)
+        {
+            this.parameters = parameters;
+        }
+
+        public void Execute(CreateIssueInfo jiraIssue, List<IssueAttachmentDto> attachments)
         {
             
             foreach (var attachment in attachments)
             {
-                SaveAttachment(
+                Save(
                     attachment.Entity.ProjectId,
                     attachment.Entity.IssueId,
                     attachment.Entity.Id,
@@ -26,15 +31,17 @@ namespace GeminiTools.Items
             }
         }
 
-        public static bool SaveAttachment(int projectId, int issueId, int attachmentId, string attachmentName)
+        public bool Save(int projectId, int issueId, int attachmentId, string attachmentName)
         {
             try
             {
-                CreateWebClient();
+                var webClient = new WebClient();
+
+                webClient.UseDefaultCredentials = true;
 
                 webClient.DownloadFile(
-                    Constants.GEMINI_PATH + projectId + "/item/attachment?issueid=" + issueId + "&fileid=" + attachmentId,
-                    Constants.SAVING_PATH + attachmentName);
+                    parameters.GEMINI_PATH + projectId + "/item/attachment?issueid=" + issueId + "&fileid=" + attachmentId,
+                    parameters.SAVING_PATH + attachmentName);
 
                 webClient.Dispose();
 
@@ -46,14 +53,5 @@ namespace GeminiTools.Items
             }
         }
 
-
-
-
-
-        private static void CreateWebClient()
-        {
-            webClient = new WebClient();
-            webClient.UseDefaultCredentials = true;
-        }
     }
 }

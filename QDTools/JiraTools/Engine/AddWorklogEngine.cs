@@ -32,7 +32,7 @@ namespace JiraTools.Engine
 
         public void Execute(Issue issue, string author, string timeSpent, DateTime startDate, string comment)
         {
-            var worklog = new Worklog(timeSpent,startDate, comment);
+            var worklog = new Worklog(timeSpent, startDate, comment);
 
             worklog.Author = author;
 

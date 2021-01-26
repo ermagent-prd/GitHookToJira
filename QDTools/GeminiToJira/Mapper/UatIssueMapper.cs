@@ -1,7 +1,9 @@
 ﻿using Atlassian.Jira;
 using Countersoft.Gemini.Commons.Dto;
 using GeminiToJira.Engine;
+using GeminiToJira.Parameters;
 using GeminiTools.Items;
+using GeminiTools.Parameters;
 using JiraTools.Model;
 using System;
 using System.Collections.Generic;
@@ -17,10 +19,13 @@ namespace GeminiToJira.Mapper
         private const string RELATED_DEVELOPMENT = "Development";
         private const string ISSUE_TYPE = "IssueType";
         private const string FIXED_IN_BUILD = "FixedInBuild";
+        private readonly AttachmentGetter attachmentGetter;
+        private readonly CommentMapper commentMapper;
 
-
-        public UatIssueMapper()
+        public UatIssueMapper(CommentMapper commentMapper, AttachmentGetter attachmentGetter)
         {
+            this.attachmentGetter = attachmentGetter;
+            this.commentMapper = commentMapper;
         }
 
 
@@ -39,8 +44,7 @@ namespace GeminiToJira.Mapper
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h",
                 RemainingEstimate = geminiIssue.RemainingTime,
-                //TODO
-                DueDate = DateTime.MinValue,
+                                
                 Resolution = geminiIssue.Resolution
             };
 
@@ -54,10 +58,10 @@ namespace GeminiToJira.Mapper
 
             //Load all issue's attachment
             jiraIssue.Attachments = new List<string>();
-            AttachmentGetter.Execute(jiraIssue, geminiIssue.Attachments);
+            attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments);
 
             //Load and map all gemini comments
-            CommentMapper.Execute(jiraIssue, geminiIssue, userDictionary);
+            commentMapper.Execute(jiraIssue, geminiIssue, userDictionary);
 
             //Load custom fields
             LoadCustomFields(jiraIssue, geminiIssue);
@@ -70,7 +74,7 @@ namespace GeminiToJira.Mapper
             //TODO geminiIssue.Visibility
 
             //TODO Related Dev
-            jiraIssue.RelatedDevelopment = GetRelatedDevelopment(geminiIssue);
+            SetRelatedDevelopment(jiraIssue, geminiIssue);
 
             return jiraIssue;
         }
@@ -78,14 +82,15 @@ namespace GeminiToJira.Mapper
 
         #region Private        
 
-        private string GetRelatedDevelopment(IssueDto geminiIssue)
+        private void SetRelatedDevelopment(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
         {
             //Related Development Build
             var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == RELATED_DEVELOPMENT);
             if (relatedDev != null)
-                return relatedDev.FormattedData;
-            else
-                return "";
+            {
+                jiraIssue.RelatedDevelopment = relatedDev.FormattedData;
+                jiraIssue.RelatedDevelopmentId = GeminiConstants.ErmPrefix + relatedDev.Entity.Data;
+            }
         }
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)

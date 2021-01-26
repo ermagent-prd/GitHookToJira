@@ -36,7 +36,9 @@ namespace JiraTools.Model
 
         public string RemainingEstimate { get; set; }
 
-        public DateTime DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
+
+        public DateTime? StartDate{ get; set; }
 
         public List<string> FixVersions { get; set; }
 
@@ -53,5 +55,7 @@ namespace JiraTools.Model
         public String Resolution { get; set; }
 
         public string RelatedDevelopment { get; set; }
+
+        public string RelatedDevelopmentId { get; set; }
     }
 }

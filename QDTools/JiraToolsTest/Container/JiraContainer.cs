@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity;
 
-namespace JiraTools.Container
+namespace JiraToolsTest.Container
 {
     public static class JiraContainer
     {

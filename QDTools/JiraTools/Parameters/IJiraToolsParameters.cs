@@ -12,5 +12,7 @@
 
         int MaxIssuesPerRequest { get; }
 
+        string AttachmentPath { get; }
+
     }
 }

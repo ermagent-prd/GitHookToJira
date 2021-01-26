@@ -1,6 +1,6 @@
-﻿namespace GeminiTools.Parameters
+﻿namespace GeminiToolsTest.Parameters
 {
-    public static class Constants
+    public static class GeminiToolsTestConstants
     {
         /// <summary>
         /// ERM Gemini Url
@@ -11,6 +11,8 @@
         /// Ermas bug project code
         /// </summary>
         public const string ErmBugProjectCode = "ERMBUG";
+
+        public const string ErmPrefix = "ERM-";
 
         public const string SAVING_PATH = @"C:\GeminiPorting\AttachmentDownloaded\";
         public const string GEMINI_PATH = "https://erm-swfactory.prometeia.com/Gemini/project/";

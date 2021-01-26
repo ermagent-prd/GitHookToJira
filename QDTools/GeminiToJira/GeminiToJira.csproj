@@ -68,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Container\ContainerFactory.cs" />
     <Compile Include="Engine\ParseCommentEngine.cs" />
     <Compile Include="GeminiFilter\UatConstants.cs" />
     <Compile Include="GeminiFilter\ErmBugConstants.cs" />
@@ -77,7 +78,10 @@
     <Compile Include="Mapper\CommentMapper.cs" />
     <Compile Include="Mapper\UatIssueMapper.cs" />
     <Compile Include="Mapper\DevelopmentIssueMapper.cs" />
-    <Compile Include="Parameters\GeminiParamContainer.cs" />
+    <Compile Include="Parameters\Gemini\GeminiConstants.cs" />
+    <Compile Include="Parameters\Gemini\GeminiParamContainer.cs" />
+    <Compile Include="Parameters\Jira\JiraConstants.cs" />
+    <Compile Include="Parameters\Jira\JiraParamContainer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

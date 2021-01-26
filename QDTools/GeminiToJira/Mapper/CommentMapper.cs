@@ -8,9 +8,16 @@ using System.Collections.Generic;
 
 namespace GeminiToJira.Mapper
 {
-    public static class CommentMapper
+    public class CommentMapper
     {
-        public static void Execute(CreateIssueInfo jiraIssue, IssueDto geminiIssue, Dictionary<string, JiraUser> userDictionary)
+        private readonly AttachmentGetter attachmentGetter;
+
+        public CommentMapper(AttachmentGetter attachmentGetter)
+        {
+            this.attachmentGetter = attachmentGetter;
+        }
+
+        public void Execute(CreateIssueInfo jiraIssue, IssueDto geminiIssue, Dictionary<string, JiraUser> userDictionary)
         {
             jiraIssue.CommentList = new List<Comment>();
 
@@ -25,7 +32,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.CommentList.Add(jiraComment);
 
                 //Load Comment attachments
-                AttachmentGetter.Execute(jiraIssue, comment.Attachments);
+                attachmentGetter.Execute(jiraIssue, comment.Attachments);
             }
         }
 

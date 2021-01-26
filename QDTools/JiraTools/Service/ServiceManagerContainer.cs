@@ -10,7 +10,11 @@ namespace JiraTools.Service
 
         public ServiceManagerContainer(IJiraToolsParameters parContainer)
         {
-            this.svc = new Lazy<Jira>(() => Jira.CreateRestClient(parContainer.ServerUrl, parContainer.User, parContainer.Token));
+            var settings = new JiraRestClientSettings();
+            settings.EnableUserPrivacyMode = true;
+
+            this.svc = new Lazy<Jira>(() => Jira.CreateRestClient(parContainer.ServerUrl, parContainer.User, parContainer.Token, settings));
+            
         }
 
         public Jira Service { get { return this.svc.Value; } }

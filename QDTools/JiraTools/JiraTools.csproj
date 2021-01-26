@@ -63,9 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Container\ContainerExtension.cs" />
-    <Compile Include="Container\JiraContainer.cs" />
-    <Compile Include="Container\JiraContainerFactory.cs" />
+    <Compile Include="Container\JiraToolsContainerExtension.cs" />
     <Compile Include="Engine\AddAttachmentEngine.cs" />
     <Compile Include="Engine\AddWorklogEngine.cs" />
     <Compile Include="Engine\CreateIssueEngine.cs" />
@@ -77,10 +75,9 @@
     <Compile Include="Engine\UserListGetter.cs" />
     <Compile Include="Model\CreateIssueInfo.cs" />
     <Compile Include="Model\CustomFieldInfo.cs" />
+    <Compile Include="Model\JiraErmIssue.cs" />
     <Compile Include="Model\WorkLogInfo.cs" />
-    <Compile Include="Parameters\Constants.cs" />
     <Compile Include="Parameters\IJiraToolsParameters.cs" />
-    <Compile Include="Parameters\ParamContainer.cs" />
     <Compile Include="Parameters\QuerableType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\ServiceManagerContainer.cs" />

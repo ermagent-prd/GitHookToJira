@@ -7,6 +7,13 @@ namespace JiraTools.Engine
 {
     public class AddAttachmentEngine
     {
+        private readonly IJiraToolsParameters parameters;
+
+        public AddAttachmentEngine(IJiraToolsParameters parameters)
+        {
+            this.parameters = parameters;
+        }
+
         public void Execute(Issue issue, List<string> files)
         {
             if (files == null)
@@ -17,7 +24,7 @@ namespace JiraTools.Engine
 
             foreach (var file in files)
             {
-                byteArray = File.ReadAllBytes(Constants.AttachmentPath + file);
+                byteArray = File.ReadAllBytes(this.parameters.AttachmentPath + file);
 
                 uAttachmentInfo = new UploadAttachmentInfo(file, byteArray);
 
@@ -31,11 +38,11 @@ namespace JiraTools.Engine
 
         private void deleteAttachmentsFiles(List<string> files)
         {
-            foreach(var file in files)
+            foreach (var file in files)
             {
-                if (File.Exists(Constants.AttachmentPath + file))
+                if (File.Exists(this.parameters.AttachmentPath + file))
                 {
-                    File.Delete(Constants.AttachmentPath + file);
+                    File.Delete(this.parameters.AttachmentPath + file);
                 }
             }
         }

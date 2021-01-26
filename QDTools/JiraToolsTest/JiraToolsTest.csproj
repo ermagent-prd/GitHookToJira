@@ -75,10 +75,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Container\JiraContainer.cs" />
+    <Compile Include="Container\JiraContainerFactory.cs" />
     <Compile Include="Issues\CreateIssueTest.cs" />
     <Compile Include="Issues\ItemGetterTest.cs" />
     <Compile Include="ContainerTest.cs" />
     <Compile Include="Container\ContainerForTest.cs" />
+    <Compile Include="Parameters\JiraTestConstants.cs" />
+    <Compile Include="Parameters\ParamContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Users\UserTest.cs" />
   </ItemGroup>
@@ -95,6 +99,7 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,7 +1,9 @@
-﻿using JiraTools.Parameters;
+﻿using JiraTools.Container;
+using JiraTools.Parameters;
+using JiraToolsTest.Parameters;
 using Unity;
 
-namespace JiraTools.Container
+namespace JiraToolsTest.Container
 {
     internal static class JiraContainerFactory
     {
@@ -9,7 +11,7 @@ namespace JiraTools.Container
         {
             IUnityContainer container = new UnityContainer();
             container.RegisterType<IJiraToolsParameters, ParamContainer>();
-            container.AddNewExtension<ContainerExtension>();
+            container.AddNewExtension<JiraToolsContainerExtension>();
             return container;
         }
     }

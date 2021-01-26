@@ -1,6 +1,7 @@
 ﻿using GeminiTools.Parameters;
 using GeminiTools.Projects;
 using GeminiToolsTest.Container;
+using GeminiToolsTest.Parameters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unity;
 
@@ -42,7 +43,7 @@ namespace GeminiToolsTest.Projects
 
             var getter = container.Resolve<ProjectFinder>();
 
-            var issues = getter.FindByCode(Constants.ErmBugProjectCode);
+            var issues = getter.FindByCode(GeminiToolsTestConstants.ErmBugProjectCode);
 
             Assert.IsNotNull(issues);
         }
