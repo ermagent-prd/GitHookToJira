@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\ContainerFactory.cs" />
+    <Compile Include="Engine\JiraAccountIdEngine.cs" />
     <Compile Include="Engine\ParseCommentEngine.cs" />
     <Compile Include="GeminiFilter\UatConstants.cs" />
     <Compile Include="GeminiFilter\ErmBugConstants.cs" />

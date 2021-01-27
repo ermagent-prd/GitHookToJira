@@ -21,15 +21,17 @@ namespace GeminiToJira.Mapper
         private const string FIXED_IN_BUILD = "FixedInBuild";
         private readonly AttachmentGetter attachmentGetter;
         private readonly CommentMapper commentMapper;
+        private readonly JiraAccountIdEngine accountEngine;
 
-        public UatIssueMapper(CommentMapper commentMapper, AttachmentGetter attachmentGetter)
+        public UatIssueMapper(CommentMapper commentMapper, AttachmentGetter attachmentGetter, JiraAccountIdEngine accountEngine)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
+            this.accountEngine = accountEngine;
         }
 
 
-        public CreateIssueInfo Execute(IssueDto geminiIssue, string type, Dictionary<string, JiraUser> userDictionary)
+        public CreateIssueInfo Execute(IssueDto geminiIssue, string type)
         {
             
             var jiraIssue = new CreateIssueInfo
@@ -37,7 +39,6 @@ namespace GeminiToJira.Mapper
                 ProjectKey = "ER",          //TODO issue.Project.Code,
                 Summary = geminiIssue.Title,
                 Description = ParseCommentEngine.Execute(geminiIssue.Description) + DateTime.Now.ToString(),    //TODO recueprare le immagini se presenti?
-                Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387", //TODO prendere dall'array degli accountID , partendo da geminiIssue.Reporter,
                 
                 //TODO status
                 //Priority = geminiIssue.Priority,
@@ -47,21 +48,20 @@ namespace GeminiToJira.Mapper
                                 
                 Resolution = geminiIssue.Resolution
             };
-
-
+            
             //TODO Fix Version??
             if (geminiIssue.FixedInVersion != "")
                 jiraIssue.FixVersions.Add(geminiIssue.FixedInVersion);
 
             //TODO con campo temporaneo e regola post creazione
-            jiraIssue.Assignee = geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname;
+            jiraIssue.Assignee = accountEngine.Execute(geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname);   //TODO
 
             //Load all issue's attachment
             jiraIssue.Attachments = new List<string>();
             attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments);
 
             //Load and map all gemini comments
-            commentMapper.Execute(jiraIssue, geminiIssue, userDictionary);
+            commentMapper.Execute(jiraIssue, geminiIssue);
 
             //Load custom fields
             LoadCustomFields(jiraIssue, geminiIssue);

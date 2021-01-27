@@ -1,5 +1,6 @@
 ﻿using Atlassian.Jira;
 using Countersoft.Gemini.Commons.Dto;
+using GeminiToJira.Engine;
 using GeminiToJira.Parameters;
 using GeminiTools.Items;
 using GeminiTools.Parameters;
@@ -18,14 +19,19 @@ namespace GeminiToJira.Mapper
 
         private readonly AttachmentGetter attachmentGetter;
         private readonly CommentMapper commentMapper;
+        private readonly JiraAccountIdEngine accountEngine;
 
-        public DevelopmentIssueMapper(AttachmentGetter attachmentGetter)
+        public DevelopmentIssueMapper(
+            CommentMapper commentMapper, 
+            AttachmentGetter attachmentGetter,
+            JiraAccountIdEngine accountEngine)
         {
             this.attachmentGetter = attachmentGetter;
-            this.commentMapper = new CommentMapper(attachmentGetter);
+            this.commentMapper = commentMapper;
+            this.accountEngine = accountEngine;
         }
 
-        public CreateIssueInfo Execute(IssueDto geminiIssue, string type, Dictionary<string, JiraUser> userDictionary)
+        public CreateIssueInfo Execute(IssueDto geminiIssue, string type)
         {
             
             var jiraIssue = new CreateIssueInfo
@@ -61,10 +67,10 @@ namespace GeminiToJira.Mapper
             attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments);
 
             //Load and map all gemini comments
-            commentMapper.Execute(jiraIssue, geminiIssue, userDictionary);
+            commentMapper.Execute(jiraIssue, geminiIssue);
 
             //Load custom fields
-            LoadCustomFields(jiraIssue, geminiIssue, userDictionary, type);
+            LoadCustomFields(jiraIssue, geminiIssue, type);
                         
             var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_LINE_KEY);
             if (devLine != null && devLine.Entity.Data != "")
@@ -78,7 +84,7 @@ namespace GeminiToJira.Mapper
 
         #region Private        
 
-        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, Dictionary<string, JiraUser> userDictionary, string devType)
+        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string devType)
         {
             
             //TODO
@@ -118,15 +124,15 @@ namespace GeminiToJira.Mapper
             {
                 var refAnalysis = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefAnalysis");
                 if (refAnalysis != null)
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Owner", userDictionary.First().Value.AccountId));  // TODO search dictionary by refAnalysis.FormattedData
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Owner", accountEngine.Execute(refAnalysis.FormattedData)));
 
                 var itResponsible = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefIT");
                 if (itResponsible != null)
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("IT Responsible", userDictionary.First().Value.AccountId));  // TODO search dictionary by itResponsible.FormattedData));
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("IT Responsible", accountEngine.Execute(itResponsible.FormattedData)));
 
                 var testResponsible = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefTest");
                 if (testResponsible != null)
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Responsible", userDictionary.First().Value.AccountId));// TODO search dictionary by testResponsible.FormattedData));
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Responsible", accountEngine.Execute(testResponsible.FormattedData)));
             }
 
             //TODO Analysis start date

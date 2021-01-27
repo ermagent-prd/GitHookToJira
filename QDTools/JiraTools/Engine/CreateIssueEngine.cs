@@ -59,16 +59,11 @@ namespace JiraTools.Engine
         {
             var fields = new CreateIssueFields(fieldsInfo.ProjectKey)
             {
-                
+                TimeTrackingData = new IssueTimeTrackingData(
+                    fieldsInfo.OriginalEstimate,
+                    fieldsInfo.RemainingEstimate)
             };
 
-            //TimeTrackingData does not apply to UAT items
-            if (fieldsInfo.Type != "UAT")
-                fields.TimeTrackingData = new IssueTimeTrackingData(
-                    fieldsInfo.OriginalEstimate,
-                    fieldsInfo.RemainingEstimate);
-
-            
             if (fieldsInfo.Type.Name == "Sottotask")
                 fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
             

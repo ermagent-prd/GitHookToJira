@@ -242,8 +242,7 @@ namespace JiraToolsTest
                        
             //this only works for admin user logged
             list[0].Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
-            list[0].SaveChangesAsync().Wait();
-            
+            list[0].SaveChangesAsync().Wait();            
 
             Assert.IsTrue(list.Any());
         }

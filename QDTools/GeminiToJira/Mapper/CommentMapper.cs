@@ -11,13 +11,15 @@ namespace GeminiToJira.Mapper
     public class CommentMapper
     {
         private readonly AttachmentGetter attachmentGetter;
+        private readonly JiraAccountIdEngine accountEngine;
 
-        public CommentMapper(AttachmentGetter attachmentGetter)
+        public CommentMapper(AttachmentGetter attachmentGetter, JiraAccountIdEngine accountEngine)
         {
             this.attachmentGetter = attachmentGetter;
+            this.accountEngine = accountEngine;
         }
 
-        public void Execute(CreateIssueInfo jiraIssue, IssueDto geminiIssue, Dictionary<string, JiraUser> userDictionary)
+        public void Execute(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
         {
             jiraIssue.CommentList = new List<Comment>();
 
@@ -27,7 +29,7 @@ namespace GeminiToJira.Mapper
                 jiraComment.Author = comment.Entity.Fullname;
 
                 jiraComment.Body =
-                    GetAuthor(comment.Entity.Fullname, userDictionary) +
+                    GetAuthor(comment.Entity.Fullname) +
                     ParseCommentEngine.Execute(comment.Entity.Comment);
                 jiraIssue.CommentList.Add(jiraComment);
 
@@ -36,14 +38,9 @@ namespace GeminiToJira.Mapper
             }
         }
 
-        private static string GetAuthor(string fullname, Dictionary<string, JiraUser> userDictionary)
+        private string GetAuthor(string fullname)
         {
-            JiraUser author = null;
-            userDictionary.TryGetValue(fullname, out author);
-
-            return author != null ?
-                "[~accountId:" + author.AccountId + "]: " :
-                fullname + ": ";
+            return "[~accountId:" + accountEngine.Execute(fullname) + "]: ";
         }
     }
 }
