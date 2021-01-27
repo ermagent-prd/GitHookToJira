@@ -1,4 +1,5 @@
 ﻿using Atlassian.Jira;
+using GeminiTools.Service;
 using JiraTools.Engine;
 using System;
 using System.Collections.Generic;
@@ -13,18 +14,18 @@ namespace GeminiToJira.Engine
         private readonly List<string> userGroups = new List<string>() { "Administrators" };
         private readonly Lazy<Dictionary<string, JiraUser>> userListDictionary;
 
-        public JiraAccountIdEngine(UserListGetter userListGetter)
+        public JiraAccountIdEngine(UserListGetter userListGetter, ServiceManagerContainer requestFactory)
         {
             this.userListDictionary = new Lazy<Dictionary<string, JiraUser>> (() => GetUsersDictionary(userListGetter));
         }
 
-        public string Execute(string fullname)
+        public JiraUser Execute(string fullname)
         {
             JiraUser userAccount;
             if (userListDictionary.Value.TryGetValue(fullname, out userAccount))
-                return userAccount.AccountId;
+                return userAccount;
             else
-                return userListDictionary.Value.First().Value.AccountId;    //TODO è il deafault, da eliminare
+                return userListDictionary.Value.First().Value;    //TODO è il deafault, da eliminare
         }
 
 
@@ -32,11 +33,12 @@ namespace GeminiToJira.Engine
         {
             Dictionary<string, JiraUser> result = new Dictionary<string, JiraUser>();
                         
+            //result.Add("paolo Luca", )
             foreach (var group in userGroups)
             {
-                var userList = userListGetter.Execute(group);      //TODO da fare per ogni gruppo 
+                var userList = userListGetter.Execute();      //returns all active users
                 foreach (var user in userList)
-                    result.Add(user.DisplayName, user);         //TODO solo se non già inserito
+                    result.Add(user.DisplayName, user);
             }
 
             return result;

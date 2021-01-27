@@ -18,6 +18,7 @@ namespace GeminiToJira.Container
             container.RegisterType<IJiraToolsParameters, JiraParamContainer>();
             container.RegisterType<CommentMapper>();
             container.RegisterType<JiraAccountIdEngine>();
+            container.RegisterType<ParseCommentEngine>();
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<GeminiToolsContainerExtension>();
 

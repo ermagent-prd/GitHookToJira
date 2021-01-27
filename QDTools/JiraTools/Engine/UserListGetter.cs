@@ -41,6 +41,15 @@ namespace JiraTools.Engine
             return task.Result;
         }
 
+        public IEnumerable<JiraUser> Execute()
+        {
+            var task = getUsers();
+
+            task.Wait();
+
+            return task.Result;
+        }
+
         #endregion
 
 
@@ -49,6 +58,15 @@ namespace JiraTools.Engine
             var jira = requestFactory.Service;
             
             var users = await jira.Groups.GetUsersAsync(groupName);
+            
+            return from u in users select u;
+        }
+
+        public async Task<IEnumerable<JiraUser>> getUsers()
+        {
+            var jira = requestFactory.Service;
+
+            var users = await jira.Users.SearchUsersAsync("%", JiraUserStatus.Active);
 
             return from u in users select u;
         }

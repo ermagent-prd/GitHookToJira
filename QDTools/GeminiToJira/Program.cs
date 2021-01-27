@@ -59,7 +59,7 @@ namespace GeminiToJira
             CreateIssueEngine jiraSaveEngine, 
             IEnumerable<IssueDto> geminiDevelopmentIssueList)
         {            
-            foreach (var geminiIssue in geminiDevelopmentIssueList.Where(i => i.Id == 59685))// TODO .OrderBy(f => f.Id).ToList()
+            foreach (var geminiIssue in geminiDevelopmentIssueList.Where(i => i.Id == 59680))// TODO .OrderBy(f => f.Id).ToList()
             {
                 var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
                 var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.StoryTpe);
@@ -86,7 +86,7 @@ namespace GeminiToJira
         {
             if (geminiIssue.Reporter != "")
             {
-                jiraIssue.Reporter = accountEngine.Execute(geminiIssue.Reporter);
+                jiraIssue.Reporter = accountEngine.Execute(geminiIssue.Reporter).AccountId;
                 jiraIssue.SaveChanges();
             }
         }

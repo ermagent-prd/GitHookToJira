@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Atlassian.Jira;
+using Atlassian.Jira.Remote;
 using JiraTools.Engine;
 using JiraTools.Parameters;
 using JiraToolsTest.Container;
@@ -109,7 +110,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6373", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6381", QuerableType.ByCode);
 
             var list = new List<Issue>();
 
@@ -230,7 +231,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6460", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6361", QuerableType.ByCode);
 
             var list = new List<Issue>();
 
@@ -243,6 +244,70 @@ namespace JiraToolsTest
             //this only works for admin user logged
             list[0].Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
             list[0].SaveChangesAsync().Wait();            
+
+            Assert.IsTrue(list.Any());
+        }
+
+        [TestMethod]
+        public void Linq_Execute_GetIssueAndComments()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("ER-6464", QuerableType.ByCode);
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            var comments = list[0].GetCommentsAsync();
+
+            foreach (var comment in comments.Result)
+                Console.WriteLine(comment.Body);
+            
+            Assert.IsTrue(list.Any());
+        }
+
+        [TestMethod]
+        public void Linq_Execute_GetIssueAndAddComments()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("ER-6471", QuerableType.ByCode);
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            var remoteComment = new RemoteComment();
+            remoteComment.author = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            remoteComment.updateAuthor = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            
+            remoteComment.body = "new comment da paololuca Body Comment";
+            
+            var comment = new Comment(remoteComment);
+
+            comment.Author = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            comment.Body = "new comment da paololuca Body Comment";
+            //            
+
+
+            list[0].AddCommentAsync(comment);
+            list[0].SaveChanges();
+            //list[0].UpdateCommentAsync(comment);
+            
+            list[0].SaveChangesAsync();
+
+            
 
             Assert.IsTrue(list.Any());
         }

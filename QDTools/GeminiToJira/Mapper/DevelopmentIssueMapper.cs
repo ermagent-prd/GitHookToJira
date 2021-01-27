@@ -43,7 +43,6 @@ namespace GeminiToJira.Mapper
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h",
                 RemainingEstimate = geminiIssue.RemainingTime,
-                //TODO Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387" //TODO prendere dall'array degli accountID , partendo da geminiIssue.Reporter,
             };
 
             if (geminiIssue.DueDate.HasValue)
@@ -59,8 +58,9 @@ namespace GeminiToJira.Mapper
             if (release != null && release.FormattedData != "")
                 jiraIssue.FixVersions.Add(release.FormattedData);
 
-            //TODO
-            jiraIssue.Assignee = geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname;
+            //Assignee
+            if(geminiIssue.Resources.Count > 0)
+                jiraIssue.Assignee = accountEngine.Execute(geminiIssue.Resources.First().Entity.Fullname).AccountId;
 
             //Load all issue's attachment
             jiraIssue.Attachments = new List<string>();
@@ -86,36 +86,21 @@ namespace GeminiToJira.Mapper
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string devType)
         {
-            
-            //TODO
-            //Reporter
-            //il valore da salvare è l'accountId, recuperato dal dizionario degli utenti
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("OwnerTmp", geminiIssue.Creator));
-
-            //Assignee
-            //TODO: da stituire ResourcesTmp con AssigneeTmp, il quale dovrà essere puntato dalal regola su JIRA
-            //il valore da salvare è l'accountId, recuperato dal dizionario degli utenti
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname));
-
             //Start Date
             if (geminiIssue.StartDate.HasValue)
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Start date", geminiIssue.StartDate.Value.ToString()));  //TODO non funziona il formato --> americano?
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Start date", geminiIssue.StartDate.Value.ToString("yyyy-M-d")));  //US Format
 
             //JDE Code
             var jdeCode = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "JDE Code");
             if (jdeCode != null)
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("JDE", jdeCode.FormattedData));
 
-            //TODO Security Activities
             //Security Activities
-            //"Securirty Activities"
             var securityActivities = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Security Activities");
             if (securityActivities != null)
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Security Activities", securityActivities.FormattedData));
 
-            //TODO GDPR activities
-            //GDPR Activities
-            //"GDPR Activities"
+            //GDPR activities
             var gdprActivities = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "GDPR Activities");
             if (gdprActivities != null && gdprActivities.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("GDPR Activities", gdprActivities.FormattedData));
@@ -124,41 +109,34 @@ namespace GeminiToJira.Mapper
             {
                 var refAnalysis = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefAnalysis");
                 if (refAnalysis != null)
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Owner", accountEngine.Execute(refAnalysis.FormattedData)));
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Owner", accountEngine.Execute(refAnalysis.FormattedData).AccountId));
 
                 var itResponsible = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefIT");
                 if (itResponsible != null)
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("IT Responsible", accountEngine.Execute(itResponsible.FormattedData)));
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("IT Responsible", accountEngine.Execute(itResponsible.FormattedData).AccountId));
 
                 var testResponsible = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefTest");
                 if (testResponsible != null)
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Responsible", accountEngine.Execute(testResponsible.FormattedData)));
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Responsible", accountEngine.Execute(testResponsible.FormattedData).AccountId));
             }
 
-            //TODO Analysis start date
-            //Analysis Start Date
-            //"AnalysisStartDate"
+            //Analysis start date
             var analysisStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "AnalysisStartDate");
             if (analysisStartDate != null && analysisStartDate.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Start Date", analysisStartDate.FormattedData));
 
 
-            //TODO test start date
-            //Test Start Date
-            //"Test Start Date"
+            //Test start date
             var testStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Test Start Date");
             if (testStartDate != null && testStartDate.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Start Date", testStartDate.FormattedData));
 
             //TODO BR Analysis Url
-            //BR Analysis Url
-            //"Requirements"
             var brAnalysisUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Requirements");
             if (brAnalysisUrl != null && brAnalysisUrl.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("BR Analysis Url", brAnalysisUrl.FormattedData));
 
-            //TODO Gemini --> da salvare per il reperimento poi dei development collegati per le UAT
-            //Gemini
+            //Gemini : save the original issue's code from gemini
             jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", GeminiConstants.ErmPrefix + geminiIssue.Id.ToString()));
 
         }

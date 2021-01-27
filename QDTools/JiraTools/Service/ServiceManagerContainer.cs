@@ -1,5 +1,6 @@
 ﻿using System;
 using Atlassian.Jira;
+using Atlassian.Jira.Remote;
 using JiraTools.Parameters;
 
 namespace JiraTools.Service
@@ -12,9 +13,9 @@ namespace JiraTools.Service
         {
             var settings = new JiraRestClientSettings();
             settings.EnableUserPrivacyMode = true;
+            settings.CustomFieldSerializers["com.pyxis.greenhopper.jira:gh-sprint"] = new GreenhopperSprintJsonCustomFieldValueSerialiser();
 
             this.svc = new Lazy<Jira>(() => Jira.CreateRestClient(parContainer.ServerUrl, parContainer.User, parContainer.Token, settings));
-            
         }
 
         public Jira Service { get { return this.svc.Value; } }

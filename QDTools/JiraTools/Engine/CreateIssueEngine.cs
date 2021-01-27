@@ -19,8 +19,8 @@ namespace JiraTools.Engine
 
         private Dictionary<string, string> RESOLUTION_MAPPING = new Dictionary<string, string>()
         {
-            { "Complete",   "Done" },
-            { "Rejected",   "Won't Do" },
+            { "Completed",   "Done" },
+            { "Unresolved",   "Won't Do" },
             { "Duplicate",  "Duplicate" },
         };
 
@@ -70,7 +70,9 @@ namespace JiraTools.Engine
             var newIssue = new Issue(this.requestFactory.Service, fields);
             
             newIssue.Type = fieldsInfo.Type;
-            newIssue.Priority = fieldsInfo.Priority;
+            if(fieldsInfo.Priority != null)
+                newIssue.Priority = fieldsInfo.Priority;
+
             newIssue.Summary = fieldsInfo.Summary;
             newIssue.Description = fieldsInfo.Description;
 

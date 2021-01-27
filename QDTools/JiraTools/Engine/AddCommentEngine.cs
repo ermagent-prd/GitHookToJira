@@ -44,7 +44,6 @@ namespace JiraTools.Engine
 
         private async Task<Comment> addComment(Issue issue, Comment comment)
         {
-
             return await issue.AddCommentAsync(comment);
         }
 

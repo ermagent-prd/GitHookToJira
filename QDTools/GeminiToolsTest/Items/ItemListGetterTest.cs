@@ -73,6 +73,30 @@ namespace GeminiToolsTest.Items
         }
 
         [TestMethod]
+        public void Execute_LoadAttachmentuatIssue()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var getter = container.Resolve<ItemGetter>();
+
+            var issue = getter.Execute(65628);
+
+            List<IssueCommentDto> itemComments = issue.Comments;
+            var commentAttach = itemComments[0].Attachments.FirstOrDefault();
+
+            var attachmentGetter = container.Resolve<AttachmentGetter>();
+
+            if (commentAttach != null)
+                attachmentGetter.Save(
+                    commentAttach.Entity.ProjectId,
+                    commentAttach.Entity.IssueId,
+                    commentAttach.Entity.Id,
+                    commentAttach.Entity.Name);
+
+            Assert.IsTrue(File.Exists(GeminiToolsTestConstants.SAVING_PATH + commentAttach.Entity.Name));
+        }
+
+        [TestMethod]
         public void Execute_LoadDevelopmentIssue()
         {
             string DEVELOPMENT_PROJECT_ID = "36";

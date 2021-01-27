@@ -2,9 +2,9 @@
 {
     internal static class JiraTestConstants
     {
-        public const string User = "pierluigi.nanni@prometeia.com";
+        public const string User = "pierluigi.nanni@prometeia.com"; //"paolo.luca@prometeia.com";
 
-        public const string Token = "GOojveJqyGUAgi6mzSAu3FAA";
+        public const string Token = "GOojveJqyGUAgi6mzSAu3FAA"; //"1l9yaa74u6wqg4lbhitOE7C7";
 
         public const string JiraUrl = "https://prometeia-erm.atlassian.net/";
 

@@ -4,7 +4,7 @@ namespace GeminiToJira.GeminiFilter
 {
     public static class UatConstants
     {
-        public static readonly string UAT_PROJECT_ID = "37";  //uat project
+        public static readonly string UAT_PROJECT_ID = "|37|46|";  //uat project
         //public static readonly string UAT_TYPES = "|Developer|Task|";
         public static readonly List<string> UAT_RELEASES = new List<string>() {
                 "ERMAS",

@@ -19,15 +19,22 @@ namespace GeminiToJira.Mapper
         private const string RELATED_DEVELOPMENT = "Development";
         private const string ISSUE_TYPE = "IssueType";
         private const string FIXED_IN_BUILD = "FixedInBuild";
+
         private readonly AttachmentGetter attachmentGetter;
         private readonly CommentMapper commentMapper;
         private readonly JiraAccountIdEngine accountEngine;
+        private readonly ParseCommentEngine parseCommentEngine;
 
-        public UatIssueMapper(CommentMapper commentMapper, AttachmentGetter attachmentGetter, JiraAccountIdEngine accountEngine)
+        public UatIssueMapper(
+            CommentMapper commentMapper, 
+            AttachmentGetter attachmentGetter, 
+            JiraAccountIdEngine accountEngine, 
+            ParseCommentEngine parseCommentEngine)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
             this.accountEngine = accountEngine;
+            this.parseCommentEngine = parseCommentEngine;
         }
 
 
@@ -38,7 +45,7 @@ namespace GeminiToJira.Mapper
             {
                 ProjectKey = "ER",          //TODO issue.Project.Code,
                 Summary = geminiIssue.Title,
-                Description = ParseCommentEngine.Execute(geminiIssue.Description) + DateTime.Now.ToString(),    //TODO recueprare le immagini se presenti?
+                Description = parseCommentEngine.Execute(geminiIssue.Description) + DateTime.Now.ToString(),    //TODO recueprare le immagini se presenti?
                 
                 //TODO status
                 //Priority = geminiIssue.Priority,
@@ -53,8 +60,9 @@ namespace GeminiToJira.Mapper
             if (geminiIssue.FixedInVersion != "")
                 jiraIssue.FixVersions.Add(geminiIssue.FixedInVersion);
 
-            //TODO con campo temporaneo e regola post creazione
-            jiraIssue.Assignee = accountEngine.Execute(geminiIssue.Resources.FirstOrDefault()?.Entity.Fullname);   //TODO
+            //Assignee
+            if (geminiIssue.Resources.Count > 0)
+                jiraIssue.Assignee = accountEngine.Execute(geminiIssue.Resources.First().Entity.Fullname).AccountId;
 
             //Load all issue's attachment
             jiraIssue.Attachments = new List<string>();

@@ -122,14 +122,14 @@ namespace JiraToolsTest
             issueInfo.CommentList = new List<Comment>();
 
             var remoteComment = new RemoteComment();
-            remoteComment.author = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
-            remoteComment.updateAuthor = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
+            remoteComment.author = "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2]";
+            remoteComment.updateAuthor = "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2]";
             remoteComment.body = "Body Comment";
 
             var comment = new Comment(remoteComment);
 
-            comment.Author = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
-            comment.Body = "wrote Body Comment";
+            comment.Author = "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2]"; ;
+            comment.Body = "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2] wrote Body Comment";
             issueInfo.CommentList.Add(comment);
 
 
@@ -241,5 +241,39 @@ namespace JiraToolsTest
 
             Assert.IsNotNull(issue);
         }
-    }
+
+        [TestMethod]
+        public void AddSingleIssueUat()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<CreateIssueEngine>();
+
+            var issueInfo = new CreateIssueInfo
+            {
+                ProjectKey = "ER",
+                Summary = "create Test PL UAT (Atlassian SDK)",
+                Description = "This is a (PL UAT) test " + DateTime.Now.ToString(),
+                Type = "UAT",
+                OriginalEstimate = "1w",
+                RemainingEstimate = "1d",
+
+                Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2",
+
+            };
+
+            issueInfo.CommentList = new List<Comment>();
+            var comment = new Comment();
+            comment.Author = "Paolo Luca";
+            comment.Body = "Body Comment";
+            issueInfo.CommentList.Add(comment);
+
+
+            var issue = engine.Execute(issueInfo);
+
+            
+
+            Assert.IsNotNull(issue);
+        }
+        }
 }
