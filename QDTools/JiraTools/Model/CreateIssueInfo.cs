@@ -42,6 +42,8 @@ namespace JiraTools.Model
 
         public List<string> FixVersions { get; set; }
 
+        public List<string> AffectVersions { get; set; }
+
         public List<CustomFieldInfo> CustomFields { get; set; }
 
         public List<string> Components { get; set; }

@@ -28,5 +28,6 @@ namespace GeminiToJira.GeminiFilter
         public static readonly string DEVELOPMENT_RELEASE_KEY = "Release Version";
         public static readonly string DEVELOPMENT_LINE_KEY = "DVL";
 
+        
     }
 }

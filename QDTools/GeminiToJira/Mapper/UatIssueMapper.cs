@@ -38,27 +38,27 @@ namespace GeminiToJira.Mapper
         }
 
 
-        public CreateIssueInfo Execute(IssueDto geminiIssue, string type)
+        public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode)
         {
             
             var jiraIssue = new CreateIssueInfo
             {
-                ProjectKey = "ER",          //TODO issue.Project.Code,
+                ProjectKey = projectCode,
                 Summary = geminiIssue.Title,
-                Description = parseCommentEngine.Execute(geminiIssue.Description) + DateTime.Now.ToString(),    //TODO recueprare le immagini se presenti?
+                Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(),    //TODO recueprare le immagini se presenti?
                 
                 //TODO status
-                //Priority = geminiIssue.Priority,
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h",
                 RemainingEstimate = geminiIssue.RemainingTime,
                                 
                 Resolution = geminiIssue.Resolution
             };
+
+            jiraIssue.AffectVersions = new List<string>();
+
             
-            //TODO Fix Version??
-            if (geminiIssue.FixedInVersion != "")
-                jiraIssue.FixVersions.Add(geminiIssue.FixedInVersion);
+            jiraIssue.FixVersions = new List<string>();
 
             //Assignee
             if (geminiIssue.Resources.Count > 0)
@@ -74,14 +74,12 @@ namespace GeminiToJira.Mapper
             //Load custom fields
             LoadCustomFields(jiraIssue, geminiIssue);
 
-            //TODO Components 
+            //Components 
             var functionality = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == FUNCTIONALITY);
             if (functionality != null && functionality.FormattedData != "")
                 jiraIssue.Components.Add("BSM"); //TODO manca ERMAS jiraIssue.Components.Add(functionality.FormattedData);
 
-            //TODO geminiIssue.Visibility
-
-            //TODO Related Dev
+            //Related Dev
             SetRelatedDevelopment(jiraIssue, geminiIssue);
 
             return jiraIssue;
@@ -103,6 +101,10 @@ namespace GeminiToJira.Mapper
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
         {
+            var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
+            if (owner != null && owner.FormattedData != "")
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Owner", accountEngine.Execute(owner.FormattedData).AccountId));
+
             //UAT Type
             var issueType = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == ISSUE_TYPE);
             if (issueType != null)
@@ -113,7 +115,8 @@ namespace GeminiToJira.Mapper
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Category", geminiIssue.Components[0].Entity.Name));
 
             //UAT Severity
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Severity", geminiIssue.Severity));
+            //TODO to map severity from gemini
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Severity", ParseSeverity(geminiIssue)));
 
             //Fixed in build
             var fixedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == FIXED_IN_BUILD);
@@ -130,6 +133,14 @@ namespace GeminiToJira.Mapper
             if (release != null && release.FormattedData != "")
                 jiraIssue.FixVersions.Add(release.FormattedData);
 
+        }
+
+        private static string ParseSeverity(IssueDto geminiIssue)
+        {
+            if (geminiIssue.Severity.Contains('-'))
+                return geminiIssue.Severity.Substring(geminiIssue.Severity.IndexOf("-") + 2);
+            else
+                return geminiIssue.Severity;
         }
 
         #endregion

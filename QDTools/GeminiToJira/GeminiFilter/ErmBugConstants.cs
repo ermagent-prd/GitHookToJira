@@ -4,9 +4,9 @@ namespace GeminiToJira.GeminiFilter
 {
     public static class ErmBugConstants
     {
-        public static readonly string DEVELOPMENT_PROJECT_ID = "36";  //developmente project
-        public static readonly string DEVELOPMENT_TYPES = "|Developer|Task|";
-        public static readonly List<string> DEVELOPMENT_RELEASES = new List<string>() {
+        public static readonly string ERMBUG_PROJECT_ID = "38";  //ERMBUGe project
+        public static readonly string ERMBUG_TYPES = "|Developer|Task|";
+        public static readonly List<string> ERMBUG_RELEASES = new List<string>() {
                 "ERMAS",
                 "ERMAS 5.24.0",
                 "ERMAS 5.24.1",
@@ -18,15 +18,15 @@ namespace GeminiToJira.GeminiFilter
                 "0.0.0.0"
             };
 
-        public static readonly List<string> DEVELOPMENT_LINES = new List<string> {
+        public static readonly List<string> ERMBUG_LINES = new List<string> {
                 "BSM",
                 "ILIAS",
                 "ILIAS-STA",
                 "Other"
             };
 
-        public static readonly string DEVELOPMENT_RELEASE_KEY = "Release Version";
-        public static readonly string DEVELOPMENT_LINE_KEY = "DVL";
+        public static readonly string ERMBUG_RELEASE_KEY = "Release Version";
+        public static readonly string ERMBUG_LINE_KEY = "DVL";
 
     }
 }

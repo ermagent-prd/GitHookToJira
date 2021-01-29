@@ -273,13 +273,32 @@ namespace JiraToolsTest
         }
 
         [TestMethod]
+        public void Linq_Execute_GetBugIssue()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("ER-6506", QuerableType.ByCode);
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            Assert.IsTrue(list.Any());
+        }
+
+        [TestMethod]
         public void Linq_Execute_GetIssueAndAddComments()
         {
             var container = ContainerForTest.DefaultInstance.Value;
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6471", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6476", QuerableType.ByCode);
 
             var list = new List<Issue>();
 

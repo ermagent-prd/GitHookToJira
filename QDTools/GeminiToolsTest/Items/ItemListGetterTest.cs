@@ -96,6 +96,25 @@ namespace GeminiToolsTest.Items
             Assert.IsTrue(File.Exists(GeminiToolsTestConstants.SAVING_PATH + commentAttach.Entity.Name));
         }
 
+        //59844
+        [TestMethod]
+        public void Execute_LoadAnalysisDocumentUrl()
+        { 
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var getter = container.Resolve<ItemGetter>();
+
+            var issue = getter.Execute(59844);
+
+            var attachmentGetter = container.Resolve<AttachmentGetter>();
+
+            var changesDoc = issue.CustomFields.FirstOrDefault(c => c.Name == "EDEVChangesDoc");
+
+            attachmentGetter.Save(changesDoc.FormattedData);
+            
+            Assert.IsTrue(true);
+        }
+
         [TestMethod]
         public void Execute_LoadDevelopmentIssue()
         {

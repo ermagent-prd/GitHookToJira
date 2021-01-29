@@ -17,14 +17,15 @@ namespace JiraTools.Engine
             {"Cannot Reproduce","10003" }
         };
 
+        //TODO da decidere
         private Dictionary<string, string> RESOLUTION_MAPPING = new Dictionary<string, string>()
         {
             { "Completed",   "Done" },
             { "Unresolved",   "Won't Do" },
-            { "Duplicate",  "Duplicate" },
-        };
+            { "Duplicate",  "Duplicate" },        };
 
 
+        private readonly string SubTaskType = "10003";
 
         private readonly ServiceManagerContainer requestFactory;
 
@@ -64,22 +65,22 @@ namespace JiraTools.Engine
                     fieldsInfo.RemainingEstimate)
             };
 
-            if (fieldsInfo.Type.Name == "Sottotask")
+            if (fieldsInfo.Type.Id == SubTaskType)
                 fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
             
             var newIssue = new Issue(this.requestFactory.Service, fields);
-            
-            newIssue.Type = fieldsInfo.Type;
-            if(fieldsInfo.Priority != null)
-                newIssue.Priority = fieldsInfo.Priority;
 
             newIssue.Summary = fieldsInfo.Summary;
             newIssue.Description = fieldsInfo.Description;
+            newIssue.Type = fieldsInfo.Type;
 
+            if(fieldsInfo.Priority != null)
+                newIssue.Priority = fieldsInfo.Priority;
+            
             if(fieldsInfo.DueDate.HasValue)
                 newIssue.DueDate = fieldsInfo.DueDate.Value;
                         
-            //TODO manca ermas, ed altre resolution
+            
             if (fieldsInfo.Resolution != null && fieldsInfo.Resolution != "")
             {
                 string mappedResolution;
@@ -91,11 +92,11 @@ namespace JiraTools.Engine
                 }
             }
 
-            //TODO
-            //newIssue.Reporter = fieldsInfo.Reporter;
-
             foreach (var v in fieldsInfo.FixVersions)
                 newIssue.FixVersions.Add(v);
+
+            foreach (var v in fieldsInfo.AffectVersions)
+                newIssue.AffectsVersions.Add(v);
 
             foreach (var c in fieldsInfo.CustomFields)
                 newIssue.CustomFields.Add(c.Name, c.Value);

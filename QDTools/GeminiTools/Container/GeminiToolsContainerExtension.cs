@@ -1,4 +1,5 @@
-﻿using GeminiTools.Items;
+﻿using GeminiTools.Engine;
+using GeminiTools.Items;
 using GeminiTools.Projects;
 using GeminiTools.Service;
 using Unity;
@@ -18,6 +19,7 @@ namespace GeminiTools.Container
 
             Container.RegisterType<ItemGetter>();
             Container.RegisterType<ItemListGetter>();
+            Container.RegisterType<LinkItemEngine>();
             Container.RegisterType<ServiceManagerContainer>();
 
             Container.RegisterType<AttachmentGetter>();

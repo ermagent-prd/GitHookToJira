@@ -17,9 +17,14 @@
 
         public const string AttachmentPath = @"C:\GeminiPorting\AttachmentDownloaded\";
 
-        public const string StoryTpe = "Story";
-        public const string SubTaskType = "Sottotask";
-        public const string UatType = "UAT";
+        //10014:UAT,10004:Bug,10000:Epic,10001:Story,10002:Task,10003:Sub-task]
+
+        public const string Epic = "10000";
+        public const string StoryTpe = "10001";
+        public const string Task = "10002";
+        public const string SubTaskType = "10003";
+        public const string UatType = "10014";
+        public const string BugType = "10004";
         public const string GroupType = "Group";
     }
 }

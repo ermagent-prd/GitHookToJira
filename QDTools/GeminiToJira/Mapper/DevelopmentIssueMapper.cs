@@ -2,6 +2,7 @@
 using Countersoft.Gemini.Commons.Dto;
 using GeminiToJira.Engine;
 using GeminiToJira.Parameters;
+using GeminiTools.Engine;
 using GeminiTools.Items;
 using GeminiTools.Parameters;
 using JiraTools.Model;
@@ -20,25 +21,31 @@ namespace GeminiToJira.Mapper
         private readonly AttachmentGetter attachmentGetter;
         private readonly CommentMapper commentMapper;
         private readonly JiraAccountIdEngine accountEngine;
+        private readonly ParseCommentEngine parseCommentEngine;
+        private readonly LinkItemEngine linkItemEngine; //TODO
 
         public DevelopmentIssueMapper(
             CommentMapper commentMapper, 
             AttachmentGetter attachmentGetter,
-            JiraAccountIdEngine accountEngine)
+            JiraAccountIdEngine accountEngine,
+            ParseCommentEngine parseCommentEngine,
+            LinkItemEngine linkItemEngine)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
             this.accountEngine = accountEngine;
+            this.parseCommentEngine = parseCommentEngine;
+            this.linkItemEngine = linkItemEngine;
         }
 
-        public CreateIssueInfo Execute(IssueDto geminiIssue, string type)
+        public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode)
         {
             
             var jiraIssue = new CreateIssueInfo
             {
-                ProjectKey = "ER",          //TODO issue.Project.Code,
+                ProjectKey = projectCode,
                 Summary = geminiIssue.Title,
-                Description = geminiIssue.Description + DateTime.Now.ToString(),
+                Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(),
                 //Priority = geminiIssue.Priority,
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h",
@@ -75,9 +82,7 @@ namespace GeminiToJira.Mapper
             var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_LINE_KEY);
             if (devLine != null && devLine.Entity.Data != "")
                 jiraIssue.Components.Add(devLine.Entity.Data);
-
-
-
+                       
             return jiraIssue;
         }
 
@@ -86,6 +91,10 @@ namespace GeminiToJira.Mapper
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string devType)
         {
+            var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
+            if(owner != null && owner.FormattedData != "")
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Owner", accountEngine.Execute(owner.FormattedData).AccountId));
+
             //Start Date
             if (geminiIssue.StartDate.HasValue)
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Start date", geminiIssue.StartDate.Value.ToString("yyyy-M-d")));  //US Format

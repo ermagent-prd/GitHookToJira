@@ -25,7 +25,15 @@ namespace GeminiToJira.GeminiFilter
                     {
                         IncludeClosed = true,
                         Projects = UatConstants.UAT_PROJECT_ID,
-                        Issues = "|65628|"  //TODO da eliminare, il filtro va fatto meglio
+                        Issues = "|65960|"  //TODO da eliminare, il filtro va fatto meglio
+                        //Types = UatConstants.UAT_TYPES,
+                    };
+                case FilterType.ERMBUG:
+                    return new IssuesFilter
+                    {
+                        IncludeClosed = true,
+                        Projects = ErmBugConstants.ERMBUG_PROJECT_ID,
+                        Issues = "|65194|"  //TODO da eliminare, il filtro va fatto meglio
                         //Types = UatConstants.UAT_TYPES,
                     };
                 default:
@@ -40,6 +48,9 @@ namespace GeminiToJira.GeminiFilter
             {
                 case FilterType.Development:
                     return filterDevelopmentIssuesList(list);
+                case FilterType.UAT:
+                case FilterType.ERMBUG:
+                    return list;
                 default:
                     return list;
             }
