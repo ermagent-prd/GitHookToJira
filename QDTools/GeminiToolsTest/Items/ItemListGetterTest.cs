@@ -1,6 +1,7 @@
 ﻿using Countersoft.Gemini.Commons.Dto;
 using Countersoft.Gemini.Commons.Entity;
 using GeminiTools.Container;
+using GeminiTools.Engine;
 using GeminiTools.Items;
 using GeminiTools.Parameters;
 using GeminiToolsTest.Container;
@@ -103,6 +104,7 @@ namespace GeminiToolsTest.Items
             var container = ContainerForTest.DefaultInstance.Value;
 
             var getter = container.Resolve<ItemGetter>();
+            var linkItemEngine = container.Resolve<LinkItemEngine>();
 
             var issue = getter.Execute(59844);
 
@@ -110,7 +112,7 @@ namespace GeminiToolsTest.Items
 
             var changesDoc = issue.CustomFields.FirstOrDefault(c => c.Name == "EDEVChangesDoc");
 
-            attachmentGetter.Save(changesDoc.FormattedData);
+            attachmentGetter.Save(linkItemEngine.Execute(changesDoc.FormattedData));
             
             Assert.IsTrue(true);
         }

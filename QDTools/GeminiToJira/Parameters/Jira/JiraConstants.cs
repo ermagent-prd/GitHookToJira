@@ -17,6 +17,8 @@
 
         public const string AttachmentPath = @"C:\GeminiPorting\AttachmentDownloaded\";
 
+        public const string LogDirectory = @"C:\GeminiPorting\Log\";
+
         //10014:UAT,10004:Bug,10000:Epic,10001:Story,10002:Task,10003:Sub-task]
 
         public const string Epic = "10000";

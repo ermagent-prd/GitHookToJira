@@ -42,6 +42,9 @@
     <Reference Include="Countersoft.Gemini.Commons">
       <HintPath>..\GeminiTools\libs\Countersoft.Gemini.Commons.dll</HintPath>
     </Reference>
+    <Reference Include="DotCMIS, Version=0.6.0.0, Culture=neutral, PublicKeyToken=0377a82433ccbb00, processorArchitecture=MSIL">
+      <HintPath>..\packages\Apache.DotCMIS.0.6\lib\DotCMIS.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -92,8 +95,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AlfrescoTools\AlfrescoTools.csproj">
+      <Project>{48BCEB5B-0243-49F4-84C5-F469E2D2658E}</Project>
+      <Name>AlfrescoTools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeminiTools\GeminiTools.csproj">
       <Project>{E0C684EB-4D0F-4B6B-985F-F6264BC47C6E}</Project>
       <Name>GeminiTools</Name>
@@ -103,6 +111,8 @@
       <Name>JiraTools</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Parameters\Alfresco\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

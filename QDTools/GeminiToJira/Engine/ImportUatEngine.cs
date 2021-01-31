@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Atlassian.Jira;
 using JiraTools.Parameters;
+using System;
+using System.IO;
 
 namespace GeminiToJira.Engine
 {
@@ -39,22 +41,30 @@ namespace GeminiToJira.Engine
         public void Execute(string projectCode)
         {
             var geminiUatIssueList = filterGeminiIssueList(geminiItemsEngine);
+            var uatLogFile = "UatLog_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
             foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.Id).ToList())
             {
-                var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
-
-                var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.UatType, projectCode);
-
-                var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
-                SetAndSaveReporter(jiraIssue, geminiIssue);
-
-                if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")
+                try
                 {
-                    Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo);
+                    var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
 
-                    if (relatedDev != null)
-                        linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.UatType, projectCode);
+
+                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
+                    SetAndSaveReporter(jiraIssue, geminiIssue);
+
+                    if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")
+                    {
+                        Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo);
+
+                        if (relatedDev != null)
+                            linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
+                    }
+                }
+                catch
+                {
+                    File.AppendAllText(JiraConstants.LogDirectory + uatLogFile, geminiIssue.IssueKey + Environment.NewLine);
                 }
             }
         }

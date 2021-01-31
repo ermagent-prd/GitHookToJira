@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Atlassian.Jira;
 using JiraTools.Parameters;
+using System;
+using System.IO;
 
 namespace GeminiToJira.Engine
 {
@@ -39,24 +41,26 @@ namespace GeminiToJira.Engine
         public void Execute(string projectCode)
         {
             var geminiBugIssueList = filterGeminiIssueList(geminiItemsEngine);
+            var bugLogFile = "BugLog_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+
 
             foreach (var geminiIssue in geminiBugIssueList.OrderBy(f => f.Id).ToList())
             {
-                var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
+                try
+                {
+                    var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
 
-                var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.BugType, projectCode);
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.BugType, projectCode);
 
-                var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
-                SetAndSaveReporter(jiraIssue, geminiIssue);
+                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
+                    SetAndSaveReporter(jiraIssue, geminiIssue);
+                }
+                catch
+                {
+                    File.AppendAllText(JiraConstants.LogDirectory + bugLogFile, geminiIssue + Environment.NewLine);
+                }
 
-
-                //if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")
-                //{
-                //    Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo);
-                //
-                //    if (relatedDev != null)
-                //        linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
-                //}
+                
             }
         }
 

@@ -28,8 +28,8 @@ C:\Projects\Others\Processtools\QDTools\JiraTools\obj\Debug\JiraTools.csprojAsse
 C:\GeminiPorting\processesTools\Bin\QDTools\JiraTools\Debug\JiraTools.dll.config
 C:\GeminiPorting\processesTools\Bin\QDTools\JiraTools\Debug\JiraTools.dll
 C:\GeminiPorting\processesTools\Bin\QDTools\JiraTools\Debug\JiraTools.pdb
+C:\GeminiPorting\processesTools\QDTools\JiraTools\obj\Debug\JiraTools.csprojAssemblyReference.cache
 C:\GeminiPorting\processesTools\QDTools\JiraTools\obj\Debug\JiraTools.csproj.CoreCompileInputs.cache
 C:\GeminiPorting\processesTools\QDTools\JiraTools\obj\Debug\JiraTools.csproj.CopyComplete
 C:\GeminiPorting\processesTools\QDTools\JiraTools\obj\Debug\JiraTools.dll
 C:\GeminiPorting\processesTools\QDTools\JiraTools\obj\Debug\JiraTools.pdb
-C:\GeminiPorting\processesTools\QDTools\JiraTools\obj\Debug\JiraTools.csprojAssemblyReference.cache

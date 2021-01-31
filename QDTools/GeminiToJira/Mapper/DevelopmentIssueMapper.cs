@@ -46,11 +46,13 @@ namespace GeminiToJira.Mapper
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title,
                 Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(),
-                //Priority = geminiIssue.Priority,
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h",
                 RemainingEstimate = geminiIssue.RemainingTime,
             };
+
+            if (type == JiraConstants.SubTaskType)
+                jiraIssue.Priority = geminiIssue.Priority;
 
             if (geminiIssue.DueDate.HasValue)
                 jiraIssue.DueDate = geminiIssue.DueDate.Value;
@@ -58,7 +60,7 @@ namespace GeminiToJira.Mapper
             //AffectedBuild
             var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == AFFECTEDBUILD);
             if(affectedBuild != null && affectedBuild.FormattedData != "")
-                jiraIssue.FixVersions.Add(affectedBuild.FormattedData);
+                jiraIssue.AffectVersions.Add(affectedBuild.FormattedData);
 
             //FixVersion
             var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_RELEASE_KEY);
@@ -114,11 +116,12 @@ namespace GeminiToJira.Mapper
             if (gdprActivities != null && gdprActivities.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("GDPR Activities", gdprActivities.FormattedData));
 
+            var refAnalysis = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefAnalysis");
+            if (refAnalysis != null)
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Owner", accountEngine.Execute(refAnalysis.FormattedData).AccountId));
+
             if (devType != JiraConstants.SubTaskType)
-            {
-                var refAnalysis = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefAnalysis");
-                if (refAnalysis != null)
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Owner", accountEngine.Execute(refAnalysis.FormattedData).AccountId));
+            {                
 
                 var itResponsible = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefIT");
                 if (itResponsible != null)
@@ -127,19 +130,19 @@ namespace GeminiToJira.Mapper
                 var testResponsible = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefTest");
                 if (testResponsible != null)
                     jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Responsible", accountEngine.Execute(testResponsible.FormattedData).AccountId));
+
+                //Analysis start date
+                var analysisStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "AnalysisStartDate");
+                if (analysisStartDate != null && analysisStartDate.FormattedData != "")
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Start Date", analysisStartDate.FormattedData));
+
+                //Test start date
+                var testStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Test Start Date");
+                if (testStartDate != null && testStartDate.FormattedData != "")
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Start Date", testStartDate.FormattedData));
             }
 
-            //Analysis start date
-            var analysisStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "AnalysisStartDate");
-            if (analysisStartDate != null && analysisStartDate.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Start Date", analysisStartDate.FormattedData));
-
-
-            //Test start date
-            var testStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Test Start Date");
-            if (testStartDate != null && testStartDate.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Start Date", testStartDate.FormattedData));
-
+            
             //TODO BR Analysis Url
             var brAnalysisUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Requirements");
             if (brAnalysisUrl != null && brAnalysisUrl.FormattedData != "")

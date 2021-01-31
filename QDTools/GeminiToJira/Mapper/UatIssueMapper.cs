@@ -46,8 +46,6 @@ namespace GeminiToJira.Mapper
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title,
                 Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(),    //TODO recueprare le immagini se presenti?
-                
-                //TODO status
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h",
                 RemainingEstimate = geminiIssue.RemainingTime,

@@ -85,9 +85,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\GeminiToolsContainerExtension.cs" />
+    <Compile Include="Engine\LinkItemEngine.cs" />
     <Compile Include="Items\AttachmentGetter.cs" />
     <Compile Include="Items\ItemGetter.cs" />
     <Compile Include="Items\ItemListGetter.cs" />
+    <Compile Include="Items\LinkItem.cs" />
     <Compile Include="Parameters\IGeminiToolsParameters.cs" />
     <Compile Include="Projects\ProjectGetter.cs" />
     <Compile Include="Projects\ProjectFinder.cs" />

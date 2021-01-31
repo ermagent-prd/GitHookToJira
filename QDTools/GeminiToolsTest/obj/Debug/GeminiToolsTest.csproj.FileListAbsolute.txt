@@ -48,6 +48,8 @@ C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\System.Runtime
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\System.Threading.Tasks.Extensions.dll
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\Unity.Abstractions.dll
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\Unity.Container.dll
+C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\JiraTools.dll
+C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\Atlassian.Jira.dll
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\GeminiTools.pdb
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\GeminiTools.dll.config
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
@@ -58,12 +60,10 @@ C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\System.Runtime
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\Unity.Abstractions.pdb
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\Unity.Container.pdb
+C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\JiraTools.pdb
+C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\JiraTools.dll.config
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.csprojAssemblyReference.cache
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.csproj.CoreCompileInputs.cache
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.csproj.CopyComplete
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.dll
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.pdb
-C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\JiraTools.dll
-C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\Atlassian.Jira.dll
-C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\JiraTools.pdb
-C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\bin\Debug\JiraTools.dll.config

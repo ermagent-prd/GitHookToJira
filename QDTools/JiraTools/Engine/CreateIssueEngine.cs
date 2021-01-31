@@ -79,6 +79,7 @@ namespace JiraTools.Engine
             
             if(fieldsInfo.DueDate.HasValue)
                 newIssue.DueDate = fieldsInfo.DueDate.Value;
+
                         
             
             if (fieldsInfo.Resolution != null && fieldsInfo.Resolution != "")

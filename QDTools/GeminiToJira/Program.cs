@@ -27,8 +27,8 @@ namespace GeminiToJira
 
             string projectCode = "ER";
 
-            //var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
-            //developmentEngine.Execute(projectCode);
+            var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
+            developmentEngine.Execute(projectCode);
 
             var uatEngine = unityContainer.Resolve<ImportUatEngine>();
             uatEngine.Execute(projectCode);

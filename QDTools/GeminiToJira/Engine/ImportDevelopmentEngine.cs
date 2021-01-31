@@ -6,6 +6,8 @@ using JiraTools.Engine;
 using System.Collections.Generic;
 using System.Linq;
 using Atlassian.Jira;
+using System;
+using System.IO;
 
 namespace GeminiToJira.Engine
 {
@@ -33,25 +35,34 @@ namespace GeminiToJira.Engine
         {
             var geminiDevelopmentIssueList = filterGeminiIssueList(geminiItemsEngine);
 
+            var developmentLogFile = "DevelopmentLog_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+
             foreach (var geminiIssue in geminiDevelopmentIssueList.OrderBy(f => f.Id).ToList()) // Where(i => i.Id == 59680)
             {
-                var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
-                var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.StoryTpe, projectCode);
-
-                var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
-                SetAndSaveReporter(jiraIssue, geminiIssue);
-
-                var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != JiraConstants.GroupType && i.Value.Id != currentIssue.Id);
-
-                foreach (var sub in hierarchy)
+                try
                 {
-                    if (sub.Value.Type == "Task")
+                    var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.StoryTpe, projectCode);
+
+                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
+                    SetAndSaveReporter(jiraIssue, geminiIssue);
+
+                    var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != JiraConstants.GroupType && i.Value.Id != currentIssue.Id);
+
+                    foreach (var sub in hierarchy)
                     {
-                        var jiraSubTaskInfo = geminiToJiraMapper.Execute(sub.Value, JiraConstants.SubTaskType, projectCode);
-                        jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
-                        var subissue = jiraSaveEngine.Execute(jiraSubTaskInfo);
-                        SetAndSaveReporter(subissue, sub.Value);
+                        if (sub.Value.Type == "Task")
+                        {
+                            var jiraSubTaskInfo = geminiToJiraMapper.Execute(sub.Value, JiraConstants.SubTaskType, projectCode);
+                            jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
+                            var subissue = jiraSaveEngine.Execute(jiraSubTaskInfo);
+                            SetAndSaveReporter(subissue, sub.Value);
+                        }
                     }
+                }
+                catch
+                {
+                    File.AppendAllText(JiraConstants.LogDirectory+ developmentLogFile, geminiIssue.IssueKey + Environment.NewLine);
                 }
             }
         }
