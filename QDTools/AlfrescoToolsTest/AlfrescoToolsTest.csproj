@@ -66,8 +66,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connecting\ConnectTest.cs" />
     <Compile Include="Container\ContainerForTest.cs" />
     <Compile Include="Container\AlfrescoContainerFactory.cs" />
+    <Compile Include="Folders\FoldersCreateTest.cs" />
     <Compile Include="Parameters\AlfrescoToolsTestContants.cs" />
     <Compile Include="Parameters\ParamContainer.cs" />
     <Compile Include="Folders\FoldersGetterTest.cs" />

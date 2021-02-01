@@ -38,9 +38,9 @@ namespace GeminiToJira.Mapper
             this.linkItemEngine = linkItemEngine;
         }
 
-        public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode)
+        public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode, List<string> components)
         {
-            
+
             var jiraIssue = new CreateIssueInfo
             {
                 ProjectKey = projectCode,
@@ -49,7 +49,11 @@ namespace GeminiToJira.Mapper
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h",
                 RemainingEstimate = geminiIssue.RemainingTime,
+                
             };
+                       
+            jiraIssue.AffectVersions = new List<string>();
+            jiraIssue.FixVersions = new List<string>();
 
             if (type == JiraConstants.SubTaskType)
                 jiraIssue.Priority = geminiIssue.Priority;
@@ -59,7 +63,7 @@ namespace GeminiToJira.Mapper
 
             //AffectedBuild
             var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == AFFECTEDBUILD);
-            if(affectedBuild != null && affectedBuild.FormattedData != "")
+            if (affectedBuild != null && affectedBuild.FormattedData != "")
                 jiraIssue.AffectVersions.Add(affectedBuild.FormattedData);
 
             //FixVersion
@@ -68,7 +72,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.FixVersions.Add(release.FormattedData);
 
             //Assignee
-            if(geminiIssue.Resources.Count > 0)
+            if (geminiIssue.Resources.Count > 0)
                 jiraIssue.Assignee = accountEngine.Execute(geminiIssue.Resources.First().Entity.Fullname).AccountId;
 
             //Load all issue's attachment
@@ -80,16 +84,30 @@ namespace GeminiToJira.Mapper
 
             //Load custom fields
             LoadCustomFields(jiraIssue, geminiIssue, type);
-                        
-            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_LINE_KEY);
-            if (devLine != null && devLine.Entity.Data != "")
-                jiraIssue.Components.Add(devLine.Entity.Data);
-                       
+
+            SetComponents(geminiIssue, jiraIssue, components);
+
             return jiraIssue;
         }
 
 
-        #region Private        
+
+
+        #region Private       
+
+        private static void SetComponents(IssueDto geminiIssue, CreateIssueInfo jiraIssue, List<string> components)
+        {
+            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_LINE_KEY);
+            if (devLine != null && devLine.Entity.Data != "")
+            {
+                foreach (var component in components)
+                {
+                    if (devLine.Entity.Data.Contains(component))
+                        jiraIssue.Components.Add(devLine.Entity.Data);
+                }
+            }
+        }
+
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string devType)
         {
@@ -102,13 +120,13 @@ namespace GeminiToJira.Mapper
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Start date", geminiIssue.StartDate.Value.ToString("yyyy-M-d")));  //US Format
 
             //JDE Code
-            var jdeCode = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "JDE Code");
+            var jdeCode = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "JDE");
             if (jdeCode != null)
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("JDE", jdeCode.FormattedData));
 
             //Security Activities
-            var securityActivities = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Security Activities");
-            if (securityActivities != null)
+            var securityActivities = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Securirty Activities");
+            if (securityActivities != null && securityActivities.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Security Activities", securityActivities.FormattedData));
 
             //GDPR activities
@@ -121,8 +139,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Owner", accountEngine.Execute(refAnalysis.FormattedData).AccountId));
 
             if (devType != JiraConstants.SubTaskType)
-            {                
-
+            {
                 var itResponsible = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefIT");
                 if (itResponsible != null)
                     jiraIssue.CustomFields.Add(new CustomFieldInfo("IT Responsible", accountEngine.Execute(itResponsible.FormattedData).AccountId));
@@ -140,6 +157,18 @@ namespace GeminiToJira.Mapper
                 var testStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Test Start Date");
                 if (testStartDate != null && testStartDate.FormattedData != "")
                     jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Start Date", testStartDate.FormattedData));
+            }
+            else
+            {
+                //Task Type
+                var taskType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "TaskType");
+                if (taskType != null && taskType.FormattedData != "")
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Task Type", taskType.FormattedData));
+
+                //Task Type
+                var estimateType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Estimate Type");
+                if (estimateType != null && estimateType.FormattedData != "")
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Estimate Type", estimateType.FormattedData));
             }
 
             

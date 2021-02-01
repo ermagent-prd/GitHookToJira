@@ -21,24 +21,21 @@ namespace AlfrescoTools.Service
 
         private ISession CreateSession(IAlfrescoToolsParameters parContainer)
         {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            SessionFactory sessionFactory = SessionFactory.NewInstance();
+            IDictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add(SessionParameter.User, parContainer.UserName);
+            parameters.Add(SessionParameter.Password, parContainer.Password);
+            parameters.Add(SessionParameter.AtomPubUrl, parContainer.ServerUrl);
+            parameters.Add(SessionParameter.BindingType, BindingType.AtomPub);
+            parameters.Add(SessionParameter.Compression, "true");
+            parameters.Add(SessionParameter.CacheTTLObjects, "0");
 
-            // define binding type, in our example we are using ATOMPUB as stated above  
-            parameters[DotCMIS.SessionParameter.BindingType] = BindingType.AtomPub;
-
-            // define CMIS available path which is already available under alfresco  
-            parameters[DotCMIS.SessionParameter.AtomPubUrl] = parContainer.ServerUrl;
-
-            // alfresco portal admin user name  
-            parameters[DotCMIS.SessionParameter.User] = parContainer.UserName;
-
-            // alfresco portal admin password  
-            parameters[DotCMIS.SessionParameter.Password] = parContainer.Password;
-
-            // define session factory  
-            SessionFactory factory = SessionFactory.NewInstance();
-
-            return factory.GetRepositories(parameters)[0].CreateSession();
+            // If there is only one repository exposed (e.g. Alfresco),
+            // these lines will help detect it and its ID
+            var repositories = sessionFactory.GetRepositories(parameters);
+            
+            // Create a new session with the Alfresco repository
+            return repositories[0].CreateSession();
         }
     }
 }

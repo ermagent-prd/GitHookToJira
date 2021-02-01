@@ -59,7 +59,18 @@ namespace GeminiToJira.Engine
                         Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo);
 
                         if (relatedDev != null)
+                        {
                             linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
+
+                            foreach (var v in relatedDev.FixVersions)
+                                jiraIssue.FixVersions.Add(v);
+
+                            var owner = jiraIssue.CustomFields.FirstOrDefault(c => c.Name == "Owner");
+                            if(owner == null)
+                                jiraIssue.CustomFields.Add("Owner", relatedDev.CustomFields.First(c => c.Name == "Owner").Values);
+
+                            jiraIssue.SaveChanges();
+                        }
                     }
                 }
                 catch

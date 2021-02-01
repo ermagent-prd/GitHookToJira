@@ -6,6 +6,10 @@ using System;
 using AlfrescoToolsTest.Container;
 using AlfrescoTools.Engine;
 using Unity;
+using DotCMIS.Client.Impl;
+using DotCMIS;
+using System.Collections.Generic;
+using DotCMIS.Client;
 
 namespace AlfrescoToolsTest
 {
@@ -19,50 +23,32 @@ namespace AlfrescoToolsTest
 
             var engine = container.Resolve<FolderGetterEngine>();
 
-            var root = engine.Execute();
+            var rootList = engine.Execute();
 
-
-        }
-
-        [TestMethod]
-        public void TestMethod2()
-        {
-            using (var client = new HttpClient())
+            foreach (var contentItem in rootList)
             {
-                using (var formData = new MultipartFormDataContent())
-                {
-                    formData.Add(new StreamContent(File.Open(AlfrescoToolsTestContants.AttachmentPath + "prova.txt", FileMode.Open)), "filedata", "prova.txt");
-                    formData.Add(new StringContent("mysiteid"), "siteid");
-                    formData.Add(new StringContent("mycontainerid"), "containerid");
-                    formData.Add(new StringContent("/"), "uploaddirectory");
-                    formData.Add(new StringContent("test"), "description");
-                    formData.Add(new StringContent("cm:content"), "contenttype");
-                    formData.Add(new StringContent("true"), "overwrite");
-
-                    //http://10.100.2.85:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
-                    var response = client.PostAsync("http://10.100.2.85:8080/alfresco/service/api/upload?alf_ticket=TICKET_XXXXXXXXXXXXXXXXXXXXXXXXX", formData).Result;
-
-                    string result = null;
-                    if (response.Content != null)
-                    {
-                        result = response.Content.ReadAsStringAsync().Result;
-                    }
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        if (string.IsNullOrWhiteSpace(result))
-                            result = "Upload successful!";
-                    }
-                    else
-                    {
-                        if (string.IsNullOrWhiteSpace(result))
-                            result = "Upload failed for unknown reason";
-                    }
-
-                    Console.WriteLine($"Result is: {result}");
-                }
+                Console.WriteLine(contentItem.Name);
             }
 
+            Assert.IsNotNull(rootList);
+
         }
+
+
+        [TestMethod]
+        public void Execute_GetSpecificFolder()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<FolderGetterEngine>();
+
+            var folder = (Folder)engine.Execute("APi Test");
+            
+            Assert.IsNotNull(folder);
+
+        }
+
+
     }
 }
+

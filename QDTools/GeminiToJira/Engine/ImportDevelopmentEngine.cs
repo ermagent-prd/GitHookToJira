@@ -31,18 +31,18 @@ namespace GeminiToJira.Engine
 
         }
 
-        public void Execute(string projectCode)
+        public void Execute(string projectCode, List<string> components)
         {
             var geminiDevelopmentIssueList = filterGeminiIssueList(geminiItemsEngine);
 
             var developmentLogFile = "DevelopmentLog_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
-            foreach (var geminiIssue in geminiDevelopmentIssueList.OrderBy(f => f.Id).ToList()) // Where(i => i.Id == 59680)
+            foreach (var geminiIssue in geminiDevelopmentIssueList.OrderBy(f => f.Id).ToList())
             {
                 try
                 {
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.StoryTpe, projectCode);
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.StoryTpe, projectCode, components);
 
                     var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
                     SetAndSaveReporter(jiraIssue, geminiIssue);
@@ -53,16 +53,27 @@ namespace GeminiToJira.Engine
                     {
                         if (sub.Value.Type == "Task")
                         {
-                            var jiraSubTaskInfo = geminiToJiraMapper.Execute(sub.Value, JiraConstants.SubTaskType, projectCode);
+                            var jiraSubTaskInfo = geminiToJiraMapper.Execute(sub.Value, JiraConstants.SubTaskType, projectCode, components);
                             jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
-                            var subissue = jiraSaveEngine.Execute(jiraSubTaskInfo);
-                            SetAndSaveReporter(subissue, sub.Value);
+                            try
+                            {
+                                var subissue = jiraSaveEngine.Execute(jiraSubTaskInfo);
+                                SetAndSaveReporter(subissue, sub.Value);
+                            }
+                            catch (Exception ex)
+                            {
+                                File.AppendAllText(
+                                    JiraConstants.LogDirectory + developmentLogFile,
+                                    "[SubT] - " + sub.Value.IssueKey + " - " + ex.Message + Environment.NewLine);
+                            }
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    File.AppendAllText(JiraConstants.LogDirectory+ developmentLogFile, geminiIssue.IssueKey + Environment.NewLine);
+                    File.AppendAllText(
+                        JiraConstants.LogDirectory + developmentLogFile,
+                        "[Task] - " + geminiIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
                 }
             }
         }

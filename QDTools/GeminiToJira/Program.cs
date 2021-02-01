@@ -27,14 +27,16 @@ namespace GeminiToJira
 
             string projectCode = "ER";
 
+            var components = new List<String> { "ILIAS", "ILIAS-STA", "BSM", "Other" };
+
             var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
-            developmentEngine.Execute(projectCode);
+            developmentEngine.Execute(projectCode, components);
 
             var uatEngine = unityContainer.Resolve<ImportUatEngine>();
             uatEngine.Execute(projectCode);
 
-            //var bugEngine = unityContainer.Resolve<ImportBugEngine>();
-            //bugEngine.Execute(projectCode);
+            var bugEngine = unityContainer.Resolve<ImportBugEngine>();
+            bugEngine.Execute(projectCode);
         }
     }
 }

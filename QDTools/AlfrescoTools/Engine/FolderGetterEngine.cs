@@ -15,7 +15,8 @@ namespace AlfrescoTools.Engine
     {
         #region Private properties
 
-        private readonly ServiceManagerContainer requestFactory;
+        
+        private readonly ISession alfresco;
 
         #endregion
 
@@ -23,7 +24,7 @@ namespace AlfrescoTools.Engine
 
         public FolderGetterEngine(ServiceManagerContainer requestFactory)
         {
-            this.requestFactory = requestFactory;
+            this.alfresco = requestFactory.Session;
 
         }
 
@@ -31,16 +32,31 @@ namespace AlfrescoTools.Engine
 
         #region Public methods
 
-        public IFolder Execute()
+        public IEnumerable<ICmisObject> Execute()
         {
-            var alfresco = requestFactory.Session;
             
             // get all folders  
             IFolder root = alfresco.GetRootFolder();
+                       
 
-            
+            return root.GetChildren();
+        }
 
-            return root;
+        public ICmisObject Execute(string folderName)
+        {
+            var folderList = this.Execute();
+            ICmisObject found = null;
+
+            foreach (var folder in folderList)
+            {
+                if (folder.Name == folderName)
+                {
+                    found = folder;
+                    break;
+                }
+            }
+
+            return found;
         }
 
         #endregion

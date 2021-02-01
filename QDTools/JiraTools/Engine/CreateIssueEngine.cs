@@ -69,7 +69,7 @@ namespace JiraTools.Engine
                 fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
             
             var newIssue = new Issue(this.requestFactory.Service, fields);
-
+            
             newIssue.Summary = fieldsInfo.Summary;
             newIssue.Description = fieldsInfo.Description;
             newIssue.Type = fieldsInfo.Type;

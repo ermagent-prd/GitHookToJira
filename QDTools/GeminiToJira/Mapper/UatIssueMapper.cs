@@ -54,8 +54,6 @@ namespace GeminiToJira.Mapper
             };
 
             jiraIssue.AffectVersions = new List<string>();
-
-            
             jiraIssue.FixVersions = new List<string>();
 
             //Assignee
@@ -99,6 +97,7 @@ namespace GeminiToJira.Mapper
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
         {
+            //TODO è il creator???
             var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
             if (owner != null && owner.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Owner", accountEngine.Execute(owner.FormattedData).AccountId));
@@ -113,7 +112,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Category", geminiIssue.Components[0].Entity.Name));
 
             //UAT Severity
-            //TODO to map severity from gemini
+            //map severity from gemini
             jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Severity", ParseSeverity(geminiIssue)));
 
             //Fixed in build

@@ -57,7 +57,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\AlfrescoToolsContainerExtension.cs" />
+    <Compile Include="Engine\FolderCreateEngine.cs" />
     <Compile Include="Engine\FolderGetterEngine.cs" />
+    <Compile Include="Engine\UploadDocumentEngine.cs" />
     <Compile Include="Parameters\IAlfrescoToolsParameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\ServiceManagerContainer.cs" />

@@ -67,8 +67,8 @@ namespace JiraToolsTest
 
             //"70121:67b933a3-5693-47d2-82c0-3f997f279387" pierluigi
             //"70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2" paololuca
-            issueInfo.CustomFields.Add(new CustomFieldInfo("OwnerTmp", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
-            issueInfo.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+            //issueInfo.CustomFields.Add(new CustomFieldInfo("OwnerTmp", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+            //issueInfo.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
 
 
             issueInfo.CustomFields.Add(new CustomFieldInfo("IT Responsible", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));

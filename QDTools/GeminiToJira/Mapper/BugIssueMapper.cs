@@ -16,10 +16,10 @@ namespace GeminiToJira.Mapper
         //TODO da settare
         private Dictionary<string, string> BUG_TYPE_MAPPING = new Dictionary<string, string>()
         {
-            { "Presentation", "Usability" },
+            { "Presentation", "Functional" },
             { "Engine", "Functional" },
-            { "Sythesis", "Performance" },
-            { "Other", "Compatibility" },
+            { "Sythesis", "Functional" },
+            { "Other", "Functional" },
         };
 
 
@@ -133,7 +133,7 @@ namespace GeminiToJira.Mapper
             //"CauseType"
             var causeType = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "CauseType");
             if (causeType != null && causeType.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Cause Type", causeType.FormattedData));
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Cause Type", parseCommentEngine.Execute(causeType.FormattedData)));
 
             //Cause description
             var causeDesc = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "Cause");
@@ -153,7 +153,7 @@ namespace GeminiToJira.Mapper
             //"SuggestedActions"
             var suggestedActions = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "SuggestedActions");
             if (suggestedActions != null && suggestedActions.FormattedData.Length > 3)  //la string può contenere anche solo \n, \r, \nr, \rn
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug suggested action", suggestedActions.FormattedData));
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug suggested action", parseCommentEngine.Execute(suggestedActions.FormattedData)));
 
             //"Notes"
             var notes = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "Notes");

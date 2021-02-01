@@ -18,6 +18,7 @@ namespace GeminiToJira.GeminiFilter
                         IncludeClosed = true,
                         Projects = DevelopmentConstants.DEVELOPMENT_PROJECT_ID,
                         Types = DevelopmentConstants.DEVELOPMENT_TYPES,
+                        Issues = "|59673|",  //TODO da cancellare
                         //TODO ?? AffectedVersions = |TRunk|Ermas x.xx....|
                     };
                 case FilterType.UAT:
@@ -25,7 +26,7 @@ namespace GeminiToJira.GeminiFilter
                     {
                         IncludeClosed = true,
                         Projects = UatConstants.UAT_PROJECT_ID,
-                        Issues = "|65960|"  //TODO da eliminare, il filtro va fatto meglio
+                        Issues = "|63715|"  //TODO da eliminare, il filtro va fatto meglio
                         //Types = UatConstants.UAT_TYPES,
                     };
                 case FilterType.ERMBUG:
