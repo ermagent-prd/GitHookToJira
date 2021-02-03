@@ -31,12 +31,12 @@ namespace GeminiToJira
 
             var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
             developmentEngine.Execute(projectCode, components);
-
-            var uatEngine = unityContainer.Resolve<ImportUatEngine>();
-            uatEngine.Execute(projectCode);
-
-            var bugEngine = unityContainer.Resolve<ImportBugEngine>();
-            bugEngine.Execute(projectCode);
+            
+            //var uatEngine = unityContainer.Resolve<ImportUatEngine>();
+            //uatEngine.Execute(projectCode);
+            //
+            //var bugEngine = unityContainer.Resolve<ImportBugEngine>();
+            //bugEngine.Execute(projectCode);
         }
     }
 }

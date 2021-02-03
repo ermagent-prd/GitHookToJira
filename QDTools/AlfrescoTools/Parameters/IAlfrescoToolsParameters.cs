@@ -12,5 +12,8 @@ namespace AlfrescoTools.Parameters
         string UserName { get; }
 
         string Password { get; }
+
+        string AttachmentPath { get; }
+
     }
 }

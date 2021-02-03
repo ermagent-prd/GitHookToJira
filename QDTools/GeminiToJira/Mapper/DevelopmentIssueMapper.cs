@@ -22,7 +22,17 @@ namespace GeminiToJira.Mapper
         private readonly CommentMapper commentMapper;
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
-        private readonly LinkItemEngine linkItemEngine; //TODO
+
+        private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
+        {
+            { "Analysis",       "In Progress" },
+            { "Assigned",       "Assigned" },
+            { "Development",    "Assigned" },
+            { "Done",           "Done" },
+            { "In Backlog",     "Backlog" },
+            { "Testing",        "In Progress" },
+            { "In Progress",    "In Progress" },
+        };
 
         public DevelopmentIssueMapper(
             CommentMapper commentMapper, 
@@ -35,7 +45,6 @@ namespace GeminiToJira.Mapper
             this.commentMapper = commentMapper;
             this.accountEngine = accountEngine;
             this.parseCommentEngine = parseCommentEngine;
-            this.linkItemEngine = linkItemEngine;
         }
 
         public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode, List<string> components)
@@ -45,13 +54,13 @@ namespace GeminiToJira.Mapper
             {
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title,
-                Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(),
+                Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(), //TODO recueprare le immagini se presenti?
                 Type = type,
-                OriginalEstimate = geminiIssue.EstimatedHours + "h",
+                OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
                 RemainingEstimate = geminiIssue.RemainingTime,
                 
             };
-                       
+            
             jiraIssue.AffectVersions = new List<string>();
             jiraIssue.FixVersions = new List<string>();
 
@@ -60,6 +69,10 @@ namespace GeminiToJira.Mapper
 
             if (geminiIssue.DueDate.HasValue)
                 jiraIssue.DueDate = geminiIssue.DueDate.Value;
+
+            string status = "";
+            if (STATUS_MAPPING.TryGetValue(geminiIssue.Status, out status))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
 
             //AffectedBuild
             var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == AFFECTEDBUILD);
@@ -172,14 +185,30 @@ namespace GeminiToJira.Mapper
             }
 
             
-            //TODO BR Analysis Url
+            //BR Analysis Url
             var brAnalysisUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Requirements");
             if (brAnalysisUrl != null && brAnalysisUrl.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("BR Analysis Url", brAnalysisUrl.FormattedData));
+                jiraIssue.BrAnalysisUrl = brAnalysisUrl.FormattedData;
+
+            //"Analysis Links"
+            var analysisUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Analysis Links");
+            if (analysisUrl != null && analysisUrl.FormattedData != "" && !analysisUrl.FormattedData.Contains("\n") && !analysisUrl.FormattedData.Contains("\r"))
+                jiraIssue.AnalysisUrl = analysisUrl.FormattedData;
+
+            //"Test Document"
+            var testDocumentUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Test Document");
+            if (testDocumentUrl != null && testDocumentUrl.FormattedData != "" && !testDocumentUrl.FormattedData.Contains("\n") && !testDocumentUrl.FormattedData.Contains("\r"))
+                jiraIssue.TestDocumentUrl = analysisUrl.FormattedData;
+
+            //"Changes Document"
+            var changeDocumentUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Changes Document");
+            if (changeDocumentUrl != null && changeDocumentUrl.FormattedData != "" && !changeDocumentUrl.FormattedData.Contains("\n") && !changeDocumentUrl.FormattedData.Contains("\r"))
+                jiraIssue.ChangeDocumentUrl = analysisUrl.FormattedData;
 
             //Gemini : save the original issue's code from gemini
             jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", GeminiConstants.ErmPrefix + geminiIssue.Id.ToString()));
 
+            
         }
 
         #endregion

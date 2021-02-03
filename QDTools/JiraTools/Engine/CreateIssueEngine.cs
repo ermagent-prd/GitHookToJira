@@ -31,7 +31,8 @@ namespace JiraTools.Engine
 
         private readonly AddWorklogEngine worklogEngine;
         private readonly AddCommentEngine commentEngine;
-        private readonly AddAttachmentEngine attachmentEngineEngine;
+        private readonly AddAttachmentEngine attachmentEngine;
+        
 
         public CreateIssueEngine(
             ServiceManagerContainer requestFactory,
@@ -42,7 +43,7 @@ namespace JiraTools.Engine
             this.requestFactory = requestFactory;
             this.worklogEngine = worklogEngine;
             this.commentEngine = commentEngine;
-            this.attachmentEngineEngine = attachmentEngineEngine;
+            this.attachmentEngine = attachmentEngineEngine;
         }
 
         public Issue Execute(CreateIssueInfo issueFields)
@@ -63,41 +64,38 @@ namespace JiraTools.Engine
                 TimeTrackingData = new IssueTimeTrackingData(
                     fieldsInfo.OriginalEstimate,
                     fieldsInfo.RemainingEstimate)
+                    
             };
 
             if (fieldsInfo.Type.Id == SubTaskType)
                 fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
-            
+
             var newIssue = new Issue(this.requestFactory.Service, fields);
             
             newIssue.Summary = fieldsInfo.Summary;
             newIssue.Description = fieldsInfo.Description;
             newIssue.Type = fieldsInfo.Type;
-
-            if(fieldsInfo.Priority != null)
-                newIssue.Priority = fieldsInfo.Priority;
             
-            if(fieldsInfo.DueDate.HasValue)
+            if (fieldsInfo.Priority != null)
+                newIssue.Priority = fieldsInfo.Priority;
+
+            if (fieldsInfo.DueDate.HasValue)
                 newIssue.DueDate = fieldsInfo.DueDate.Value;
 
-                        
-            
             if (fieldsInfo.Resolution != null && fieldsInfo.Resolution != "")
             {
                 string mappedResolution;
                 if (RESOLUTION_MAPPING.TryGetValue(fieldsInfo.Resolution, out mappedResolution))
                 {
                     string jiraResolutionId;
-                    if(RESOLUTION_DICTIONARY.TryGetValue(mappedResolution, out jiraResolutionId))
+                    if (RESOLUTION_DICTIONARY.TryGetValue(mappedResolution, out jiraResolutionId))
                         newIssue.Resolution = new IssueResolution(jiraResolutionId, mappedResolution);
                 }
             }
 
-            foreach (var v in fieldsInfo.FixVersions)
-                newIssue.FixVersions.Add(v);
+            SetFixVersions(fieldsInfo, newIssue);
 
-            foreach (var v in fieldsInfo.AffectVersions)
-                newIssue.AffectsVersions.Add(v);
+            SetAffectVersions(fieldsInfo, newIssue);
 
             foreach (var c in fieldsInfo.CustomFields)
                 newIssue.CustomFields.Add(c.Name, c.Value);
@@ -108,14 +106,32 @@ namespace JiraTools.Engine
             newIssue.Assignee = fieldsInfo.Assignee;
 
             var issue = await newIssue.SaveChangesAsync();
-            
+
             worklogEngine.Execute(issue, fieldsInfo.Logged);
 
             commentEngine.Execute(issue, fieldsInfo.CommentList);
 
-            attachmentEngineEngine.Execute(issue, fieldsInfo.Attachments);
+            attachmentEngine.Execute(issue, fieldsInfo.Attachments);
 
             return issue;
+        }
+
+        private static void SetAffectVersions(CreateIssueInfo fieldsInfo, Issue newIssue)
+        {
+            if (fieldsInfo.AffectVersions == null)
+                return;
+
+            foreach (var v in fieldsInfo.AffectVersions)
+                newIssue.AffectsVersions.Add(v);
+        }
+
+        private static void SetFixVersions(CreateIssueInfo fieldsInfo, Issue newIssue)
+        {
+            if (fieldsInfo.FixVersions == null)
+                return;
+
+            foreach (var v in fieldsInfo.FixVersions)
+                newIssue.FixVersions.Add(v);
         }
 
 

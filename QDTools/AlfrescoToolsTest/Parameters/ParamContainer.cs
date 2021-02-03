@@ -14,5 +14,7 @@ namespace AlfrescoToolsTest.Parameters
         public string UserName => AlfrescoToolsTestContants.UserName;
 
         public string Password => AlfrescoToolsTestContants.Password;
+
+        public string AttachmentPath => AlfrescoToolsTestContants.AttachmentPath;
     }
 }

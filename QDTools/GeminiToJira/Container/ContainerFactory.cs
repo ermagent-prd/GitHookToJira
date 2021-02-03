@@ -1,4 +1,6 @@
-﻿using AlfrescoTools.Parameters;
+﻿using AlfrescoTools.Container;
+using AlfrescoTools.Engine;
+using AlfrescoTools.Parameters;
 using GeminiToJira.Engine;
 using GeminiToJira.Mapper;
 using GeminiToJira.Parameters;
@@ -18,7 +20,7 @@ namespace GeminiToJira.Container
             IUnityContainer container = new UnityContainer();
             container.RegisterType<IGeminiToolsParameters, GeminiParamContainer>();
             container.RegisterType<IJiraToolsParameters, JiraParamContainer>();
-            //TODO container.RegisterType<IAlfrescoToolsParameters, AlfrescoParamContainer>();
+            container.RegisterType<IAlfrescoToolsParameters, AlfrescoParamContainer>();
 
             container.RegisterType<CommentMapper>();
             container.RegisterType<JiraAccountIdEngine>();
@@ -26,10 +28,17 @@ namespace GeminiToJira.Container
             container.RegisterType<ImportDevelopmentEngine>();
             container.RegisterType<ImportUatEngine>();
             container.RegisterType<ImportBugEngine>();
-            
+
+            container.RegisterType<FolderGetterEngine>();
+            container.RegisterType<FolderCreateEngine>();
+            container.RegisterType<UploadDocumentEngine>();
+
             container.RegisterType<ParseCommentEngine>();
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<GeminiToolsContainerExtension>();
+            container.AddNewExtension<AlfrescoToolsContainerExtension>();
+
+
 
 
             return container;

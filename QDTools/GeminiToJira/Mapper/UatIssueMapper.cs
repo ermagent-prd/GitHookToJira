@@ -25,6 +25,17 @@ namespace GeminiToJira.Mapper
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
 
+        private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
+        {
+            { "Assigned",   "Assigned" },
+            { "In Progress",   "In Progress" },
+            { "Cancelled",   "Cancelled" },
+            { "Rejected",   "Rejected" },
+            { "Testing",   "in Progress" },
+            { "Fixed",  "Fixed" },
+        };
+
+
         public UatIssueMapper(
             CommentMapper commentMapper, 
             AttachmentGetter attachmentGetter, 
@@ -47,11 +58,15 @@ namespace GeminiToJira.Mapper
                 Summary = geminiIssue.Title,
                 Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(),    //TODO recueprare le immagini se presenti?
                 Type = type,
-                OriginalEstimate = geminiIssue.EstimatedHours + "h",
+                OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
                 RemainingEstimate = geminiIssue.RemainingTime,
                                 
                 Resolution = geminiIssue.Resolution
             };
+
+            string status = "";
+            if (STATUS_MAPPING.TryGetValue(geminiIssue.Status, out status))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
 
             jiraIssue.AffectVersions = new List<string>();
             jiraIssue.FixVersions = new List<string>();
@@ -71,9 +86,9 @@ namespace GeminiToJira.Mapper
             LoadCustomFields(jiraIssue, geminiIssue);
 
             //Components 
-            var functionality = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == FUNCTIONALITY);
-            if (functionality != null && functionality.FormattedData != "")
-                jiraIssue.Components.Add("BSM"); //TODO manca ERMAS jiraIssue.Components.Add(functionality.FormattedData);
+            //var functionality = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == FUNCTIONALITY);
+            //if (functionality != null && functionality.FormattedData != "")
+            //    jiraIssue.Components.Add("BSM"); //TODO manca ERMAS jiraIssue.Components.Add(functionality.FormattedData);
 
             //Related Dev
             SetRelatedDevelopment(jiraIssue, geminiIssue);
@@ -96,8 +111,7 @@ namespace GeminiToJira.Mapper
         }
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
-        {
-            //TODO è il creator???
+        {            
             var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
             if (owner != null && owner.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Owner", accountEngine.Execute(owner.FormattedData).AccountId));

@@ -62,6 +62,9 @@ namespace GeminiToJira.Engine
                         {
                             linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
 
+                            foreach (var c in relatedDev.Components)
+                                jiraIssue.Components.Add(c);
+
                             foreach (var v in relatedDev.FixVersions)
                                 jiraIssue.FixVersions.Add(v);
 

@@ -18,7 +18,10 @@ namespace GeminiToJira.GeminiFilter
                         IncludeClosed = true,
                         Projects = DevelopmentConstants.DEVELOPMENT_PROJECT_ID,
                         Types = DevelopmentConstants.DEVELOPMENT_TYPES,
-                        Issues = "|59673|",  //TODO da cancellare
+                        Issues = "|59673|",  //TODO da cancellare     - ILiAS 3 Single ope
+                        //Issues = "|60466|",  //TODO da cancellare       - H - XBRL FP "Sylos based" + Controlli
+                        //Issues = "|59844|",  //TODO ERM-59844           - C. Refactoring Synth M.
+                        //Issues = "|61087|",  //TODO ERM-59844           ERM-61087 I - RFF Mediobanca Bank-IT
                         //TODO ?? AffectedVersions = |TRunk|Ermas x.xx....|
                     };
                 case FilterType.UAT:
@@ -26,7 +29,8 @@ namespace GeminiToJira.GeminiFilter
                     {
                         IncludeClosed = true,
                         Projects = UatConstants.UAT_PROJECT_ID,
-                        Issues = "|63715|"  //TODO da eliminare, il filtro va fatto meglio
+                        //Issues = "|63715|"  //TODO da eliminare, il filtro va fatto meglio
+                        Issues = "|64227|"  //TODO da eliminare, il filtro va fatto meglio
                         //Types = UatConstants.UAT_TYPES,
                     };
                 case FilterType.ERMBUG:

@@ -86,6 +86,8 @@
     <Compile Include="Mapper\BugIssueMapper.cs" />
     <Compile Include="Mapper\UatIssueMapper.cs" />
     <Compile Include="Mapper\DevelopmentIssueMapper.cs" />
+    <Compile Include="Parameters\Alfresco\AlfrescoConstants.cs" />
+    <Compile Include="Parameters\Alfresco\AlfrescoParamContainer.cs" />
     <Compile Include="Parameters\Gemini\GeminiConstants.cs" />
     <Compile Include="Parameters\Gemini\GeminiParamContainer.cs" />
     <Compile Include="Parameters\Jira\JiraConstants.cs" />
@@ -111,8 +113,6 @@
       <Name>JiraTools</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Parameters\Alfresco\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

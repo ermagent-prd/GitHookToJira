@@ -45,7 +45,7 @@ namespace AlfrescoTools.Engine
             }
 
             //if not create it
-            if (newFolder != null)
+            if (newFolder == null)
             {
                 Dictionary<String, Object> newFolderProps = new Dictionary<String, Object>();
                 newFolderProps.Add(PropertyIds.ObjectTypeId, "cmis:folder");

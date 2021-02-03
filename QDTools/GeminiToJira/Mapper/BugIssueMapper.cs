@@ -13,13 +13,22 @@ namespace GeminiToJira.Mapper
 {
     public class BugIssueMapper
     {
-        //TODO da settare
+        
         private Dictionary<string, string> BUG_TYPE_MAPPING = new Dictionary<string, string>()
         {
             { "Presentation", "Functional" },
             { "Engine", "Functional" },
             { "Sythesis", "Functional" },
             { "Other", "Functional" },
+        };
+
+        private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
+        {
+            { "Assigned",   "Assigned" },
+            { "In Progress",   "In Progress" },
+            { "Cancelled",   "Cancelled" },
+            { "Testing",   "in Progress" },
+            { "Fixed",  "Fixed" },
         };
 
 
@@ -57,15 +66,17 @@ namespace GeminiToJira.Mapper
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title,
                 Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(),    //TODO recueprare le immagini se presenti?
-
-                //TODO status
                 Priority = geminiIssue.Priority,
                 Type = type,
-                OriginalEstimate = geminiIssue.EstimatedHours + "h",
+                OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
                 RemainingEstimate = geminiIssue.RemainingTime,
 
-                Resolution = geminiIssue.Resolution
+                //TODO Resolution = geminiIssue.Resolution
             };
+
+            string status = "";
+            if (STATUS_MAPPING.TryGetValue(geminiIssue.Status, out status))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
 
             SetAffectedVersion(geminiIssue, jiraIssue);
             SetFixVersion(geminiIssue, jiraIssue);
@@ -85,18 +96,29 @@ namespace GeminiToJira.Mapper
             LoadCustomFields(jiraIssue, geminiIssue);
             //
             //Components 
-            var projectModule = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == PROJECT_MODULE);
-            if (projectModule != null && projectModule.FormattedData != "")
-                jiraIssue.Components.Add(projectModule.FormattedData);
-
+            //TODO var projectModule = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == PROJECT_MODULE);
+            //TODO if (projectModule != null && projectModule.FormattedData != "")
+            //TODO     jiraIssue.Components.Add(projectModule.FormattedData);
+            //For components use
+            SetRelatedDevelopment(jiraIssue, geminiIssue);
 
             return jiraIssue;
         }
 
-        
+
 
 
         #region Private        
+        private void SetRelatedDevelopment(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        {
+            //Related Development Build
+            var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == PROJECT_MODULE);
+            if (relatedDev != null)
+            {
+                jiraIssue.RelatedDevelopment = relatedDev.FormattedData;
+                jiraIssue.RelatedDevelopmentId = GeminiConstants.ErmPrefix + relatedDev.Entity.Data;
+            }
+        }
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
         {
@@ -118,7 +140,7 @@ namespace GeminiToJira.Mapper
             //Fixing Date
             var fixingDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Fixing Date");
             if(fixingDate != null && fixingDate.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Fixing Date", DateTime.Parse(fixingDate.FormattedData).ToString("yyyy-M-d")));
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Fixing Date", fixingDate.Entity.DateData.Value.ToString("yyyy-M-d")));
 
             //Affected Build
             var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == AFFECTEDBUILD);

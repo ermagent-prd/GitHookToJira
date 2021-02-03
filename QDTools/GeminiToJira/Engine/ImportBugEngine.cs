@@ -46,25 +46,54 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in geminiBugIssueList.OrderBy(f => f.Id).ToList())
             {
-                try
+                //try
+                //{
+                var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
+
+                var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.BugType, projectCode);
+
+                var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
+                SetAndSaveReporter(jiraIssue, geminiIssue);
+
+                if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")
                 {
-                    var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
+                    Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo);
 
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.BugType, projectCode);
+                    if (relatedDev != null)
+                    {
+                        linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
 
-                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
-                    SetAndSaveReporter(jiraIssue, geminiIssue);
+                        foreach (var c in relatedDev.Components)
+                            jiraIssue.Components.Add(c);
+
+                        jiraIssue.SaveChanges();
+                    }
                 }
-                catch
-                {
-                    File.AppendAllText(JiraConstants.LogDirectory + bugLogFile, geminiIssue + Environment.NewLine);
-                }
 
-                
+                //}
+                //catch
+                //{
+                //    File.AppendAllText(JiraConstants.LogDirectory + bugLogFile, geminiIssue + Environment.NewLine);
+                //}
             }
         }
 
         #region Private 
+        private Issue GetRelatedDevelopment(JiraTools.Engine.ItemListGetter jiraItemsEngine, JiraTools.Model.CreateIssueInfo jiraIssueInfo)
+        {
+            Issue jiraDev = null;
+            var jiraDevList = jiraItemsEngine.Execute(jiraIssueInfo.RelatedDevelopment, QuerableType.BySummary);
+
+            foreach (var curr in jiraDevList)
+            {
+                var geminiId = curr.CustomFields.FirstOrDefault(j => j.Name == "GEMINI");
+                if (geminiId != null && geminiId.Values[0] == jiraIssueInfo.RelatedDevelopmentId)
+                    jiraDev = curr;
+            }
+
+            return jiraDev;
+        }
+
         private IEnumerable<IssueDto> filterGeminiIssueList(
             GeminiTools.Items.ItemListGetter geminiItemsEngine)
         {

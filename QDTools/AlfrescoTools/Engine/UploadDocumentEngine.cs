@@ -1,4 +1,5 @@
-﻿using AlfrescoTools.Service;
+﻿using AlfrescoTools.Parameters;
+using AlfrescoTools.Service;
 using DotCMIS;
 using DotCMIS.Client;
 using DotCMIS.Client.Impl;
@@ -15,16 +16,17 @@ namespace AlfrescoTools.Engine
     public class UploadDocumentEngine
     {
         #region Private properties
-        private readonly ISession alfresco;
         
+        private readonly IAlfrescoToolsParameters parameters;
+
 
         #endregion
 
         #region Constructor
 
-        public UploadDocumentEngine(ServiceManagerContainer requestFactory)
+        public UploadDocumentEngine(IAlfrescoToolsParameters parameters)
         {
-            this.alfresco = requestFactory.Session;
+            this.parameters = parameters;
             
         }
 
@@ -32,14 +34,19 @@ namespace AlfrescoTools.Engine
 
         #region Public methods
 
-        public void Execute(Folder parentFolder, string documentName)
+        public string Execute(IFolder parentFolder, string documentName)
         {
-            string SAVING_PATH = @"C:\GeminiPorting\AttachmentDownloaded\";
-
+            
             // Check if document already exist, if not create it
             Document newDocument = null;
 
-            //Document newDocument = (Document)parentFolder.GetChildren( GetObject(alfresco, parentFolder, documentName);
+            var children = parentFolder.GetChildren();
+            foreach (var child in children)
+            {
+                if (child.Name == documentName)
+                    newDocument = (Document)child;
+            }
+
 
             if (newDocument == null)
             {
@@ -51,14 +58,8 @@ namespace AlfrescoTools.Engine
 
                 // Setup document content
                 String mimetype = "text/plain; charset=UTF-8";
-                String documentText = "This is a test document!";
-                byte[] bytes = File.ReadAllBytes(SAVING_PATH + documentName);
 
-                IDictionary<string, object> properties = new Dictionary<string, object>();
-                properties.Add(PropertyIds.Name, documentName);
-
-                // define object type as document, as we wanted to create document  
-                properties.Add(PropertyIds.ObjectTypeId, "cmis:document");
+                byte[] bytes = File.ReadAllBytes(parameters.AttachmentPath + documentName);
 
                 // read a empty document with empty bytes  
                 // fileUpload1: is a .net file upload control  
@@ -71,10 +72,17 @@ namespace AlfrescoTools.Engine
                 };
 
                 // this statment would create document in default repository  
-                parentFolder.CreateDocument(properties, contentStream, null);
+                newDocument = (Document)parentFolder.CreateDocument(newDocumentProps, contentStream, null);
 
             }
+
+            return "http://10.100.2.85:8080/share/page/document-details?nodeRef=" + newDocument.VersionSeriesId;
         }
+        #endregion
+
+        #region Private
+
+
         #endregion
     }
 }

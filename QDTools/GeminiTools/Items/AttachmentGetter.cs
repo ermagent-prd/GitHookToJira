@@ -3,6 +3,7 @@ using GeminiTools.Parameters;
 using JiraTools.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -91,7 +92,5 @@ namespace GeminiTools.Items
             }
         }
 
-
-        
     }
 }

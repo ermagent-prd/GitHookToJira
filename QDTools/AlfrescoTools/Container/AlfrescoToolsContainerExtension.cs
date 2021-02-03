@@ -15,6 +15,8 @@ namespace AlfrescoTools.Container
 
             Container.RegisterType<FolderGetterEngine>();
             Container.RegisterType<FolderCreateEngine>();
+            Container.RegisterType<UploadDocumentEngine>();
+
             Container.RegisterType<ServiceManagerContainer>();
 
         }

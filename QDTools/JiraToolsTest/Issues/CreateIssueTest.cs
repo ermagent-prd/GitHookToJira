@@ -27,11 +27,11 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "ER",
-                Summary = "Api call Test PL singlepicker (Atlassian SDK)",
-                Description = "This is a (PL singlepicker) test " + DateTime.Now.ToString(),
+                Summary = "Api call Test PL timetracking (Atlassian SDK)",
+                Description = "This is a (PL timetracking) test " + DateTime.Now.ToString(),
                 Type = "Story",
-                OriginalEstimate = "1w",
-                RemainingEstimate = "1d",
+                OriginalEstimate = "480h",
+                RemainingEstimate = "480h",
                 DueDate = new DateTime(2021, 12, 31),
                 ParentIssueKey = null,
                 Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387",
@@ -40,6 +40,8 @@ namespace JiraToolsTest
 
             };
             
+            
+
             issueInfo.CommentList = new List<Comment>();
             
             var remoteComment = new RemoteComment();
@@ -78,11 +80,11 @@ namespace JiraToolsTest
             issueInfo.Components.Add("ILIAS");
 
             //Logged
-            issueInfo.Logged.Add(new WorkLogInfo(
-                "70121:67b933a3-5693-47d2-82c0-3f997f279387",
-                DateTime.Now,
-                "1d",
-                "Logging worklog test: author pierluigi"));
+            //issueInfo.Logged.Add(new WorkLogInfo(
+            //    "70121:67b933a3-5693-47d2-82c0-3f997f279387",
+            //    DateTime.Now,
+            //    "1d",
+            //    "Logging worklog test: author pierluigi"));
 
 
             var issue = engine.Execute(issueInfo);

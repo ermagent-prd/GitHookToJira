@@ -9,6 +9,7 @@ namespace JiraTools.Model
         public CreateIssueInfo()
         {
             this.FixVersions = new List<string>();
+            this.AffectVersions = new List<string>();
             this.CustomFields = new List<CustomFieldInfo>();
             this.Components = new List<string>();
             this.Logged = new List<WorkLogInfo>();
@@ -59,5 +60,10 @@ namespace JiraTools.Model
         public string RelatedDevelopment { get; set; }
 
         public string RelatedDevelopmentId { get; set; }
+
+        public string BrAnalysisUrl { get; set; }
+        public string AnalysisUrl { get; set; }
+        public string TestDocumentUrl { get; set; }
+        public string ChangeDocumentUrl { get; set; }
     }
 }

@@ -110,7 +110,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6381", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6518", QuerableType.ByCode);
 
             var list = new List<Issue>();
 
