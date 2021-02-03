@@ -65,5 +65,6 @@ namespace JiraTools.Model
         public string AnalysisUrl { get; set; }
         public string TestDocumentUrl { get; set; }
         public string ChangeDocumentUrl { get; set; }
+        public string Status { get; set; }
     }
 }

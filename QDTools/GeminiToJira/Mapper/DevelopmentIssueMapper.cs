@@ -187,7 +187,7 @@ namespace GeminiToJira.Mapper
             
             //BR Analysis Url
             var brAnalysisUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Requirements");
-            if (brAnalysisUrl != null && brAnalysisUrl.FormattedData != "")
+            if (brAnalysisUrl != null && brAnalysisUrl.FormattedData != "" && !brAnalysisUrl.FormattedData.Contains("\n") && !brAnalysisUrl.FormattedData.Contains("\r"))
                 jiraIssue.BrAnalysisUrl = brAnalysisUrl.FormattedData;
 
             //"Analysis Links"
@@ -198,12 +198,12 @@ namespace GeminiToJira.Mapper
             //"Test Document"
             var testDocumentUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Test Document");
             if (testDocumentUrl != null && testDocumentUrl.FormattedData != "" && !testDocumentUrl.FormattedData.Contains("\n") && !testDocumentUrl.FormattedData.Contains("\r"))
-                jiraIssue.TestDocumentUrl = analysisUrl.FormattedData;
+                jiraIssue.TestDocumentUrl = testDocumentUrl.FormattedData;
 
             //"Changes Document"
-            var changeDocumentUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Changes Document");
+            var changeDocumentUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "EDEVChangesDoc");
             if (changeDocumentUrl != null && changeDocumentUrl.FormattedData != "" && !changeDocumentUrl.FormattedData.Contains("\n") && !changeDocumentUrl.FormattedData.Contains("\r"))
-                jiraIssue.ChangeDocumentUrl = analysisUrl.FormattedData;
+                jiraIssue.ChangeDocumentUrl = changeDocumentUrl.FormattedData;
 
             //Gemini : save the original issue's code from gemini
             jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", GeminiConstants.ErmPrefix + geminiIssue.Id.ToString()));

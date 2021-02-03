@@ -55,20 +55,20 @@ namespace GeminiToJira.Engine
                 var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
                 SetAndSaveReporter(jiraIssue, geminiIssue);
 
-                if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")
-                {
-                    Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo);
+                //if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")
+                //{
+                //    Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo);
 
-                    if (relatedDev != null)
-                    {
-                        linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
+                //    if (relatedDev != null)
+                //    {
+                //        linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
 
-                        foreach (var c in relatedDev.Components)
-                            jiraIssue.Components.Add(c);
+                //        foreach (var c in relatedDev.Components)
+                //            jiraIssue.Components.Add(c);
 
-                        jiraIssue.SaveChanges();
-                    }
-                }
+                //        jiraIssue.SaveChanges();
+                //    }
+                //}
 
                 //}
                 //catch

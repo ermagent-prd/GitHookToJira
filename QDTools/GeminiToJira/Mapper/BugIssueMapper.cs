@@ -94,11 +94,17 @@ namespace GeminiToJira.Mapper
             
             //Load custom fields
             LoadCustomFields(jiraIssue, geminiIssue);
-            //
+            
+
             //Components 
-            //TODO var projectModule = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == PROJECT_MODULE);
-            //TODO if (projectModule != null && projectModule.FormattedData != "")
-            //TODO     jiraIssue.Components.Add(projectModule.FormattedData);
+            var projectModule = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == PROJECT_MODULE);
+            if (projectModule != null && projectModule.FormattedData != "")
+            {
+                List<string> pModuleList = projectModule.FormattedData.Split(',').ToList();
+                foreach(var module in pModuleList)
+                    jiraIssue.Components.Add(module);
+            }
+
             //For components use
             SetRelatedDevelopment(jiraIssue, geminiIssue);
 
@@ -180,7 +186,7 @@ namespace GeminiToJira.Mapper
             //"Notes"
             var notes = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "Notes");
             if (notes != null && notes.FormattedData.Length > 3)  //la string può contenere anche solo \n, \r, \nr, \rn
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Notes", notes.FormattedData));
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Notes", parseCommentEngine.Execute(notes.FormattedData)));
         }
 
         private void SetAffectedVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue)
