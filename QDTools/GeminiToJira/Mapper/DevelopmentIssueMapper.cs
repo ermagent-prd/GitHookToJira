@@ -25,14 +25,20 @@ namespace GeminiToJira.Mapper
 
         private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
         {
-            { "Analysis",       "In Progress" },
-            { "Assigned",       "Assigned" },
-            { "Development",    "Assigned" },
-            { "Done",           "Done" },
-            { "In Backlog",     "Backlog" },
-            { "Testing",        "In Progress" },
-            { "In Progress",    "In Progress" },
+            { "backlog", "Backlog" },
+            { "in Backlog", "Backlog" },
+            { "assigned", "Select for development" },
+            { "analysis", "In Progress" },
+            { "development", "In progress" },
+            { "waiting for test", "In progress" },
+            { "testing", "In progress" },
+            { "cancelled", "Done" },
+            { "done", "Done" },
+            { "in progress", "In progress" },
         };
+
+
+        private readonly string STATUS_MAPPING_DEFAULT = "Backlog";
 
         public DevelopmentIssueMapper(
             CommentMapper commentMapper, 
@@ -71,8 +77,10 @@ namespace GeminiToJira.Mapper
                 jiraIssue.DueDate = geminiIssue.DueDate.Value;
 
             string status = "";
-            if (STATUS_MAPPING.TryGetValue(geminiIssue.Status, out status))
+            if (STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out status))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
+            else
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", STATUS_MAPPING_DEFAULT));
 
             //AffectedBuild
             var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == AFFECTEDBUILD);

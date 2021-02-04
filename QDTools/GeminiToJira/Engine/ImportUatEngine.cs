@@ -38,9 +38,9 @@ namespace GeminiToJira.Engine
 
         }
 
-        public void Execute(string projectCode)
+        public void Execute(string projectCode, DateTime fromDate)
         {
-            var geminiUatIssueList = filterGeminiIssueList(geminiItemsEngine);
+            var geminiUatIssueList = filterGeminiIssueList(geminiItemsEngine, fromDate);
             var uatLogFile = "UatLog_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
             foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.Id).ToList())
@@ -85,10 +85,11 @@ namespace GeminiToJira.Engine
 
         #region Private 
         private IEnumerable<IssueDto> filterGeminiIssueList(
-            GeminiTools.Items.ItemListGetter geminiItemsEngine)
+            GeminiTools.Items.ItemListGetter geminiItemsEngine,
+            DateTime fromDate)
         {
             var geminiIssueList = geminiItemsEngine.Execute(Filter.GetFilter(FilterType.UAT));
-            Filter.FilterIssuesList(FilterType.UAT, geminiIssueList);
+            Filter.FilterUatIssuesList(geminiIssueList, fromDate);
             return geminiIssueList;
         }
 

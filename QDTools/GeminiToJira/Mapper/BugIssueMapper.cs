@@ -22,14 +22,14 @@ namespace GeminiToJira.Mapper
             { "Other", "Functional" },
         };
 
-        private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
-        {
-            { "Assigned",   "Assigned" },
-            { "In Progress",   "In Progress" },
-            { "Cancelled",   "Cancelled" },
-            { "Testing",   "in Progress" },
-            { "Fixed",  "Fixed" },
-        };
+        //private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
+        //{
+        //    { "Assigned",   "Assigned" },
+        //    { "In Progress",   "In Progress" },
+        //    { "Cancelled",   "Cancelled" },
+        //    { "Testing",   "in Progress" },
+        //    { "Fixed",  "Fixed" },
+        //};
 
 
         private const string AFFECTEDBUILD = "FoundInBuild";
@@ -74,9 +74,11 @@ namespace GeminiToJira.Mapper
                 //TODO Resolution = geminiIssue.Resolution
             };
 
+
+            //it's the same from the one from Gemini
             string status = "";
-            if (STATUS_MAPPING.TryGetValue(geminiIssue.Status, out status))
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
+            if (geminiIssue.Status != null && geminiIssue.Status != "")
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", geminiIssue.Status));
 
             SetAffectedVersion(geminiIssue, jiraIssue);
             SetFixVersion(geminiIssue, jiraIssue);
@@ -95,16 +97,6 @@ namespace GeminiToJira.Mapper
             //Load custom fields
             LoadCustomFields(jiraIssue, geminiIssue);
             
-
-            //Components 
-            var projectModule = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == PROJECT_MODULE);
-            if (projectModule != null && projectModule.FormattedData != "")
-            {
-                List<string> pModuleList = projectModule.FormattedData.Split(',').ToList();
-                foreach(var module in pModuleList)
-                    jiraIssue.Components.Add(module);
-            }
-
             //For components use
             SetRelatedDevelopment(jiraIssue, geminiIssue);
 

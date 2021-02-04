@@ -27,12 +27,24 @@ namespace GeminiToJira.Mapper
 
         private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
         {
-            { "Assigned",   "Assigned" },
-            { "In Progress",   "In Progress" },
-            { "Cancelled",   "Cancelled" },
-            { "Rejected",   "Rejected" },
-            { "Testing",   "in Progress" },
-            { "Fixed",  "Fixed" },
+            { "assigned",   "Select for development" },
+            { "in progress",   "In Progress" },
+            { "testing",   "In Progress" },
+            { "cancelled",   "Done" },
+            { "rejected",   "Done" },
+            { "fixed",  "Fixed" },
+            { "Closed",  "Fixed" },
+            { "in Backlog",  "In Backlog" },
+        };
+
+        private readonly string STATUS_MAPPING_DEFAULT = "Backlog";
+
+        private readonly Dictionary<string, string> PRIORITY_MAPPING = new Dictionary<string, string>()
+        {
+            { "Trivial",   "Low" },
+            { "Minor",   "Medium" },
+            { "Major",   "High" },
+            { "Blocking",   "Highest" },
         };
 
 
@@ -65,11 +77,18 @@ namespace GeminiToJira.Mapper
             };
 
             string status = "";
-            if (STATUS_MAPPING.TryGetValue(geminiIssue.Status, out status))
+            if (STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out status))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
+            else
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", STATUS_MAPPING_DEFAULT));
+
 
             jiraIssue.AffectVersions = new List<string>();
             jiraIssue.FixVersions = new List<string>();
+
+            string priority = "";
+            if (PRIORITY_MAPPING.TryGetValue(geminiIssue.Priority, out priority))
+                jiraIssue.Priority = priority;
 
             //Assignee
             if (geminiIssue.Resources.Count > 0)

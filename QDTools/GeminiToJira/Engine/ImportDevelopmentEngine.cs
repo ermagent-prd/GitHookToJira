@@ -106,7 +106,7 @@ namespace GeminiToJira.Engine
             GeminiTools.Items.ItemListGetter geminiItemsEngine)
         {
             var geminiIssueList = geminiItemsEngine.Execute(Filter.GetFilter(FilterType.Development));
-            Filter.FilterIssuesList(FilterType.Development, geminiIssueList);
+            Filter.FilterDevIssuesList(geminiIssueList);
             return geminiIssueList;
         }
 

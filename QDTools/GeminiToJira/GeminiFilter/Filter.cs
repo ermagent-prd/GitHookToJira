@@ -1,5 +1,6 @@
 ﻿using Countersoft.Gemini.Commons.Dto;
 using Countersoft.Gemini.Commons.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,7 +22,7 @@ namespace GeminiToJira.GeminiFilter
                         //Issues = "|59673|",  //TODO da cancellare     - ILiAS 3 Single ope
                         //Issues = "|60466|",  //TODO da cancellare       - H - XBRL FP "Sylos based" + Controlli
                         //Issues = "|59844|",  //TODO ERM-59844           - C. Refactoring Synth M.
-                        Issues = "|61087|",  //TODO ERM-59844           ERM-61087 I - RFF Mediobanca Bank-IT
+                        //Issues = "|61087|",  //TODO ERM-59844           ERM-61087 I - RFF Mediobanca Bank-IT
                         //TODO ?? AffectedVersions = |TRunk|Ermas x.xx....|
                     };
                 case FilterType.UAT:
@@ -48,23 +49,7 @@ namespace GeminiToJira.GeminiFilter
             
         }
 
-        public static IEnumerable<IssueDto> FilterIssuesList(FilterType fType, IEnumerable<IssueDto> list)
-        {
-            switch (fType)
-            {
-                case FilterType.Development:
-                    return filterDevelopmentIssuesList(list);
-                case FilterType.UAT:
-                case FilterType.ERMBUG:
-                    return list;
-                default:
-                    return list;
-            }
-        }
-
-
-        #region Private
-        private static List<IssueDto> filterDevelopmentIssuesList(IEnumerable<IssueDto> list)
+        public static IEnumerable<IssueDto> FilterDevIssuesList(IEnumerable<IssueDto> list)
         {
             List<IssueDto> filteredList = new List<IssueDto>();
 
@@ -81,6 +66,23 @@ namespace GeminiToJira.GeminiFilter
 
             return filteredList;
         }
+
+        public static IEnumerable<IssueDto> FilterUatIssuesList(IEnumerable<IssueDto> list, DateTime fromDate)
+        {
+            List<IssueDto> filteredList = new List<IssueDto>();
+
+            foreach (var l in list.OrderBy(f => f.Id))
+            {
+                if (l.Created > fromDate)
+                    filteredList.Add(l);
+            }
+
+            return filteredList;
+        }
+
+
+        #region Private
+        
 
         #endregion
     }

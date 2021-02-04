@@ -97,9 +97,7 @@ namespace GeminiToJira.Engine
         private IEnumerable<IssueDto> filterGeminiIssueList(
             GeminiTools.Items.ItemListGetter geminiItemsEngine)
         {
-            var geminiIssueList = geminiItemsEngine.Execute(Filter.GetFilter(FilterType.ERMBUG));
-            Filter.FilterIssuesList(FilterType.ERMBUG, geminiIssueList);
-            return geminiIssueList;
+            return geminiItemsEngine.Execute(Filter.GetFilter(FilterType.ERMBUG));
         }
 
         private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue)

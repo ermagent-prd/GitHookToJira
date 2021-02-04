@@ -25,15 +25,17 @@ namespace GeminiToJira
         {
             var unityContainer = ContainerFactory.Execute();
 
-            string projectCode = "ER";
+            //string projectCode = "ER";
+            string projectCode = "EIB";
 
             var components = new List<String> { "ILIAS", "ILIAS-STA", "BSM", "Other" };
 
             var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
             developmentEngine.Execute(projectCode, components);
-            
+
+            //var fromDate = new DateTime(2020, 08, 27);  //TODO
             //var uatEngine = unityContainer.Resolve<ImportUatEngine>();
-            //uatEngine.Execute(projectCode);
+            //uatEngine.Execute(projectCode, fromDate);
             //
             //var bugEngine = unityContainer.Resolve<ImportBugEngine>();
             //bugEngine.Execute(projectCode);
