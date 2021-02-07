@@ -44,17 +44,20 @@ namespace GeminiToJira.Mapper
         private readonly CommentMapper commentMapper;
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
+        private readonly TimeLogEngine timeLogEngine;
 
         public BugIssueMapper(
             CommentMapper commentMapper, 
             AttachmentGetter attachmentGetter, 
             JiraAccountIdEngine accountEngine, 
-            ParseCommentEngine parseCommentEngine)
+            ParseCommentEngine parseCommentEngine,
+            TimeLogEngine timeLogEngine)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
             this.accountEngine = accountEngine;
             this.parseCommentEngine = parseCommentEngine;
+            this.timeLogEngine = timeLogEngine;
         }
 
 
@@ -99,6 +102,9 @@ namespace GeminiToJira.Mapper
             
             //For components use
             SetRelatedDevelopment(jiraIssue, geminiIssue);
+
+            //For worklog
+            jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
 
             return jiraIssue;
         }

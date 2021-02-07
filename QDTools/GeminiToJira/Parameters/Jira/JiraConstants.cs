@@ -22,7 +22,7 @@
         //10014:UAT,10004:Bug,10000:Epic,10001:Story,10002:Task,10003:Sub-task]
 
         public const string Epic = "10000";
-        public const string StoryTpe = "10001";
+        public const string StoryType = "10001";
         public const string Task = "10002";
         public const string SubTaskType = "10003";
         public const string UatType = "10014";

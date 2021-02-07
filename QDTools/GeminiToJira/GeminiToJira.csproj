@@ -33,8 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atlassian.Jira">
-      <HintPath>..\packages\Atlassian.SDK.12.3.0\lib\net452\Atlassian.Jira.dll</HintPath>
+    <Reference Include="Atlassian.Jira, Version=12.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Atlassian.SDK.12.4.0\lib\net452\Atlassian.Jira.dll</HintPath>
     </Reference>
     <Reference Include="Countersoft.Foundation.Commons">
       <HintPath>..\GeminiTools\libs\Countersoft.Foundation.Commons.dll</HintPath>
@@ -77,6 +78,7 @@
     <Compile Include="Engine\ImportDevelopmentEngine.cs" />
     <Compile Include="Engine\JiraAccountIdEngine.cs" />
     <Compile Include="Engine\ParseCommentEngine.cs" />
+    <Compile Include="Engine\TimeLogEngine.cs" />
     <Compile Include="GeminiFilter\UatConstants.cs" />
     <Compile Include="GeminiFilter\ErmBugConstants.cs" />
     <Compile Include="GeminiFilter\DevelopmentConstants.cs" />

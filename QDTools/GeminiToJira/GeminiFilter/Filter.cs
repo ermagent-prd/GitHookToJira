@@ -22,7 +22,7 @@ namespace GeminiToJira.GeminiFilter
                         //Issues = "|59673|",  //TODO da cancellare     - ILiAS 3 Single ope
                         //Issues = "|60466|",  //TODO da cancellare       - H - XBRL FP "Sylos based" + Controlli
                         //Issues = "|59844|",  //TODO ERM-59844           - C. Refactoring Synth M.
-                        //Issues = "|61087|",  //TODO ERM-59844           ERM-61087 I - RFF Mediobanca Bank-IT
+                        Issues = "|61087|",  //TODO ERM-59844           ERM-61087 I - RFF Mediobanca Bank-IT
                         //TODO ?? AffectedVersions = |TRunk|Ermas x.xx....|
                     };
                 case FilterType.UAT:
@@ -58,7 +58,7 @@ namespace GeminiToJira.GeminiFilter
                 var release = l.CustomFields.FirstOrDefault(x => x.Name == DevelopmentConstants.DEVELOPMENT_RELEASE_KEY);
                 var devLine = l.CustomFields.FirstOrDefault(x => x.Name == DevelopmentConstants.DEVELOPMENT_LINE_KEY);
 
-                if (release != null && devLine != null &&
+                if (l.Type != "Group" && release != null && devLine != null &&
                     DevelopmentConstants.DEVELOPMENT_RELEASES.Contains(release.FormattedData) &&
                     DevelopmentConstants.DEVELOPMENT_LINES.Contains(devLine.FormattedData))
                     filteredList.Add(l);

@@ -110,7 +110,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6518", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6518", QuerableType.ByCode, "ER");
 
             var list = new List<Issue>();
 
@@ -131,7 +131,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6050", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6050", QuerableType.ByCode, "ER");
 
             var list = new List<Issue>();
 
@@ -155,7 +155,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ILiAS-BSM_2 volumi", QuerableType.BySummary);
+            var issues = engine.Execute("ILiAS-BSM_2 volumi", QuerableType.BySummary, "ER");
 
             var list = new List<Issue>();
 
@@ -175,7 +175,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6460", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6460", QuerableType.ByCode, "ER");
 
             var list = new List<Issue>();
 
@@ -231,7 +231,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6361", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6361", QuerableType.ByCode, "ER");
 
             var list = new List<Issue>();
 
@@ -255,7 +255,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6464", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6464", QuerableType.ByCode, "ER");
 
             var list = new List<Issue>();
 
@@ -279,7 +279,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6506", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6506", QuerableType.ByCode, "ER");
 
             var list = new List<Issue>();
 
@@ -298,7 +298,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6476", QuerableType.ByCode);
+            var issues = engine.Execute("ER-6476", QuerableType.ByCode, "ER");
 
             var list = new List<Issue>();
 
@@ -338,7 +338,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6464", QuerableType.ByCode);
+            var issues = engine.Execute("EIB-91", QuerableType.ByCode, "EIB");
 
             var list = new List<Issue>();
 

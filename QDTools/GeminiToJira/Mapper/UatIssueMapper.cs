@@ -24,7 +24,7 @@ namespace GeminiToJira.Mapper
         private readonly CommentMapper commentMapper;
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
-
+        private readonly TimeLogEngine timeLogEngine;
         private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
         {
             { "assigned",   "Select for development" },
@@ -52,12 +52,14 @@ namespace GeminiToJira.Mapper
             CommentMapper commentMapper, 
             AttachmentGetter attachmentGetter, 
             JiraAccountIdEngine accountEngine, 
-            ParseCommentEngine parseCommentEngine)
+            ParseCommentEngine parseCommentEngine,
+            TimeLogEngine timeLogEngine)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
             this.accountEngine = accountEngine;
             this.parseCommentEngine = parseCommentEngine;
+            this.timeLogEngine = timeLogEngine;
         }
 
 
@@ -111,6 +113,9 @@ namespace GeminiToJira.Mapper
 
             //Related Dev
             SetRelatedDevelopment(jiraIssue, geminiIssue);
+
+            //For worklog
+            jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
 
             return jiraIssue;
         }

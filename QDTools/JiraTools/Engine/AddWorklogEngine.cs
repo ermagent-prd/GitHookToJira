@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Atlassian.Jira;
+using Atlassian.Jira.Remote;
 using JiraTools.Model;
 
 namespace JiraTools.Engine
@@ -32,9 +33,10 @@ namespace JiraTools.Engine
 
         public void Execute(Issue issue, string author, string timeSpent, DateTime startDate, string comment)
         {
-            var worklog = new Worklog(timeSpent, startDate, comment);
-
-            worklog.Author = author;
+            var worklog = new Worklog(timeSpent, startDate, comment)
+            {
+                Author = author
+            };
 
             Execute(issue, worklog, WorklogStrategy.AutoAdjustRemainingEstimate);
         }

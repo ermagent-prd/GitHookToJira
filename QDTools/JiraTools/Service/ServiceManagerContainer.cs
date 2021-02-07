@@ -14,7 +14,7 @@ namespace JiraTools.Service
             var settings = new JiraRestClientSettings();
             settings.EnableUserPrivacyMode = true;
             settings.CustomFieldSerializers["com.pyxis.greenhopper.jira:gh-sprint"] = new GreenhopperSprintJsonCustomFieldValueSerialiser();
-
+            
             this.svc = new Lazy<Jira>(() => Jira.CreateRestClient(parContainer.ServerUrl, parContainer.User, parContainer.Token, settings));
         }
 

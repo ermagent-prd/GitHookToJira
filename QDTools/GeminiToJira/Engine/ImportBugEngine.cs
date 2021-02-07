@@ -5,10 +5,9 @@ using GeminiToJira.Parameters;
 using JiraTools.Engine;
 using System.Collections.Generic;
 using System.Linq;
-using Atlassian.Jira;
 using JiraTools.Parameters;
 using System;
-using System.IO;
+using Atlassian.Jira;
 
 namespace GeminiToJira.Engine
 {
@@ -79,10 +78,10 @@ namespace GeminiToJira.Engine
         }
 
         #region Private 
-        private Issue GetRelatedDevelopment(JiraTools.Engine.ItemListGetter jiraItemsEngine, JiraTools.Model.CreateIssueInfo jiraIssueInfo)
+        private Issue GetRelatedDevelopment(JiraTools.Engine.ItemListGetter jiraItemsEngine, JiraTools.Model.CreateIssueInfo jiraIssueInfo, string projectCode)
         {
             Issue jiraDev = null;
-            var jiraDevList = jiraItemsEngine.Execute(jiraIssueInfo.RelatedDevelopment, QuerableType.BySummary);
+            var jiraDevList = jiraItemsEngine.Execute(jiraIssueInfo.RelatedDevelopment, QuerableType.BySummary, projectCode);
 
             foreach (var curr in jiraDevList)
             {
@@ -109,20 +108,7 @@ namespace GeminiToJira.Engine
             }
         }
 
-        //private Issue GetRelatedDevelopment(JiraTools.Engine.ItemListGetter jiraItemsEngine, JiraTools.Model.CreateIssueInfo jiraIssueInfo)
-        //{
-        //    Issue jiraDev = null;
-        //    var jiraDevList = jiraItemsEngine.Execute(jiraIssueInfo.RelatedDevelopment, QuerableType.BySummary);
-        //
-        //    foreach (var curr in jiraDevList)
-        //    {
-        //        var geminiId = curr.CustomFields.FirstOrDefault(j => j.Name == "GEMINI");
-        //        if (geminiId != null && geminiId.Values[0] == jiraIssueInfo.RelatedDevelopmentId)
-        //            jiraDev = curr;
-        //    }
-        //
-        //    return jiraDev;
-        //}
+        
         #endregion
     }
 

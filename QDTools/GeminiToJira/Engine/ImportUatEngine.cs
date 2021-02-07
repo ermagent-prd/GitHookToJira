@@ -45,8 +45,8 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.Id).ToList())
             {
-                try
-                {
+                //try
+                //{
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
 
                     var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.UatType, projectCode);
@@ -56,7 +56,7 @@ namespace GeminiToJira.Engine
 
                     if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")
                     {
-                        Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo);
+                        Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo, projectCode);
 
                         if (relatedDev != null)
                         {
@@ -75,11 +75,11 @@ namespace GeminiToJira.Engine
                             jiraIssue.SaveChanges();
                         }
                     }
-                }
-                catch
-                {
-                    File.AppendAllText(JiraConstants.LogDirectory + uatLogFile, geminiIssue.IssueKey + Environment.NewLine);
-                }
+                //}
+                //catch
+                //{
+                //    File.AppendAllText(JiraConstants.LogDirectory + uatLogFile, geminiIssue.IssueKey + Environment.NewLine);
+                //}
             }
         }
 
@@ -102,10 +102,10 @@ namespace GeminiToJira.Engine
             }
         }
 
-        private Issue GetRelatedDevelopment(JiraTools.Engine.ItemListGetter jiraItemsEngine, JiraTools.Model.CreateIssueInfo jiraIssueInfo)
+        private Issue GetRelatedDevelopment(JiraTools.Engine.ItemListGetter jiraItemsEngine, JiraTools.Model.CreateIssueInfo jiraIssueInfo, string projectCode)
         {
             Issue jiraDev = null;
-            var jiraDevList = jiraItemsEngine.Execute(jiraIssueInfo.RelatedDevelopment, QuerableType.BySummary);
+            var jiraDevList = jiraItemsEngine.Execute(jiraIssueInfo.RelatedDevelopment, QuerableType.BySummary, projectCode);
 
             foreach (var curr in jiraDevList)
             {

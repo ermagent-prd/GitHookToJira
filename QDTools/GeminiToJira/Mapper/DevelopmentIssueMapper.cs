@@ -22,14 +22,14 @@ namespace GeminiToJira.Mapper
         private readonly CommentMapper commentMapper;
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
-
+        private readonly TimeLogEngine timeLogEngine;
         private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
         {
-            { "backlog", "Backlog" },
-            { "in Backlog", "Backlog" },
-            { "assigned", "Select for development" },
-            { "analysis", "In Progress" },
-            { "development", "In progress" },
+            { "backlog",        "Backlog" },
+            { "in Backlog",     "Backlog" },
+            { "assigned",       "Select for development" },
+            { "analysis",       "In Progress" },
+            { "development",    "In progress" },
             { "waiting for test", "In progress" },
             { "testing", "In progress" },
             { "cancelled", "Done" },
@@ -45,12 +45,14 @@ namespace GeminiToJira.Mapper
             AttachmentGetter attachmentGetter,
             JiraAccountIdEngine accountEngine,
             ParseCommentEngine parseCommentEngine,
-            LinkItemEngine linkItemEngine)
+            LinkItemEngine linkItemEngine,
+            TimeLogEngine timeLogEngine)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
             this.accountEngine = accountEngine;
             this.parseCommentEngine = parseCommentEngine;
+            this.timeLogEngine = timeLogEngine;
         }
 
         public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode, List<string> components)
@@ -107,6 +109,9 @@ namespace GeminiToJira.Mapper
             LoadCustomFields(jiraIssue, geminiIssue, type);
 
             SetComponents(geminiIssue, jiraIssue, components);
+
+            //For worklog
+            jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
 
             return jiraIssue;
         }

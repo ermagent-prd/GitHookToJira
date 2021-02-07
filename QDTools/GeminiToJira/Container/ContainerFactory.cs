@@ -28,6 +28,7 @@ namespace GeminiToJira.Container
             container.RegisterType<ImportDevelopmentEngine>();
             container.RegisterType<ImportUatEngine>();
             container.RegisterType<ImportBugEngine>();
+            container.RegisterType<TimeLogEngine>();
 
             container.RegisterType<FolderGetterEngine>();
             container.RegisterType<FolderCreateEngine>();

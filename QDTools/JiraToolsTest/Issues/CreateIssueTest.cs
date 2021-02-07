@@ -26,12 +26,12 @@ namespace JiraToolsTest
 
             var issueInfo = new CreateIssueInfo
             {
-                ProjectKey = "ER",
+                ProjectKey = "EIB",
                 Summary = "Api call Test PL timetracking (Atlassian SDK)",
                 Description = "This is a (PL timetracking) test " + DateTime.Now.ToString(),
                 Type = "Story",
                 OriginalEstimate = "480h",
-                RemainingEstimate = "480h",
+                RemainingEstimate = "400h",
                 DueDate = new DateTime(2021, 12, 31),
                 ParentIssueKey = null,
                 Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387",
@@ -45,27 +45,26 @@ namespace JiraToolsTest
             issueInfo.CommentList = new List<Comment>();
             
             var remoteComment = new RemoteComment();
-            remoteComment.author = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
+            remoteComment.author = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             remoteComment.body = "Body Comment";
-            remoteComment.updateAuthor = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
+            remoteComment.updateAuthor = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             
             var comment = new Comment(remoteComment);
-            comment.Author = "70121:67b933a3-5693-47d2-82c0-3f997f279387";
-            comment.Body = "[~accountId:70121:67b933a3-5693-47d2-82c0-3f997f279387] wrote Body Comment";
+            comment.Author = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            comment.Body = "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2] wrote Body Comment";
             issueInfo.CommentList.Add(comment);
 
             issueInfo.FixVersions.Add("ERMAS 5.25.0");
-            issueInfo.ParentIssueKey = "ER-5885";
 
             //custom fields
             issueInfo.CustomFields.Add(new CustomFieldInfo("JDE", "JDE Sample code"));
 
             //Epic link
-            issueInfo.CustomFields.Add(new CustomFieldInfo("Epic Link", "ER-2859"));
+            //issueInfo.CustomFields.Add(new CustomFieldInfo("Epic Link", "ER-2859"));
 
             //assignee and owner custom
-            issueInfo.CustomFields.Add(new CustomFieldInfo("Owner", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
-            issueInfo.CustomFields.Add(new CustomFieldInfo("AssigneeTest", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+            //issueInfo.CustomFields.Add(new CustomFieldInfo("Owner", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+            //issueInfo.CustomFields.Add(new CustomFieldInfo("AssigneeTest", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
 
             //"70121:67b933a3-5693-47d2-82c0-3f997f279387" pierluigi
             //"70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2" paololuca
@@ -73,21 +72,21 @@ namespace JiraToolsTest
             //issueInfo.CustomFields.Add(new CustomFieldInfo("ResourcesTmp", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
 
 
-            issueInfo.CustomFields.Add(new CustomFieldInfo("IT Responsible", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
-            issueInfo.CustomFields.Add(new CustomFieldInfo("Test Responsible", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+            //issueInfo.CustomFields.Add(new CustomFieldInfo("IT Responsible", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
+            //issueInfo.CustomFields.Add(new CustomFieldInfo("Test Responsible", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
 
             //Components
             issueInfo.Components.Add("ILIAS");
 
             //Logged
-            //issueInfo.Logged.Add(new WorkLogInfo(
-            //    "70121:67b933a3-5693-47d2-82c0-3f997f279387",
-            //    DateTime.Now,
-            //    "1d",
-            //    "Logging worklog test: author pierluigi"));
-
+            issueInfo.Logged.Add(new WorkLogInfo(
+                "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2",
+                DateTime.Now,
+                "1d",
+                "Logging worklog test: author paololuca"));
 
             var issue = engine.Execute(issueInfo);
+
 
             //issue.Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             //

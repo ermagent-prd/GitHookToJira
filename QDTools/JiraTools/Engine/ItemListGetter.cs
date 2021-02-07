@@ -49,7 +49,7 @@ namespace JiraTools.Engine
 
         }
 
-        public IEnumerable<Issue> Execute(string filter, QuerableType type)
+        public IEnumerable<Issue> Execute(string filter, QuerableType type, string projectCode)
         {
             var jira = requestFactory.Service;
 
@@ -58,12 +58,12 @@ namespace JiraTools.Engine
             if (type == QuerableType.ByCode)
                 // use LINQ syntax to retrieve issues
                 return from i in jira.Issues.Queryable
-                       where i.Key == filter
+                       where i.Key == filter && i.Project == projectCode
                        orderby i.Created
                        select i;
             else
                 return from i in jira.Issues.Queryable
-                       where i.Summary == filter
+                       where i.Summary == filter && i.Project == projectCode
                        orderby i.Created
                        select i;
 

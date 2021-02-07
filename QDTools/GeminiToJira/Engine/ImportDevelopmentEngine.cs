@@ -58,10 +58,10 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in geminiDevelopmentIssueList.OrderBy(f => f.Id).ToList())
             {
-                //try
-                //{
+                try
+                {
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.StoryTpe, projectCode, components);
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.StoryType, projectCode, components);
 
                     var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
                     SetAndSaveReporter(jiraIssue, geminiIssue);
@@ -73,29 +73,30 @@ namespace GeminiToJira.Engine
                     {
                         if (sub.Value.Type == "Task")
                         {
-                            var jiraSubTaskInfo = geminiToJiraMapper.Execute(sub.Value, JiraConstants.SubTaskType, projectCode, components);
+                            var currentSubIssue = geminiItemsEngine.Execute(sub.Value.Id);
+                            var jiraSubTaskInfo = geminiToJiraMapper.Execute(currentSubIssue, JiraConstants.SubTaskType, projectCode, components);
                             jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
                             try
                             {
                                 var subIssue = jiraSaveEngine.Execute(jiraSubTaskInfo);
-                                SetAndSaveReporter(subIssue, sub.Value);
+                                SetAndSaveReporter(subIssue, currentSubIssue);
                                 SetAndSaveAlfrescoUrl(jiraSubTaskInfo, subIssue);
                             }
                             catch (Exception ex)
                             {
                                 File.AppendAllText(
                                     JiraConstants.LogDirectory + developmentLogFile,
-                                    "[SubT] - " + sub.Value.IssueKey + " - " + ex.Message + Environment.NewLine);
+                                    "[SubT] - " + currentSubIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
                             }
                         }
                     }
-                //}
-                //catch (Exception ex)
-                //{
-                //    File.AppendAllText(
-                //        JiraConstants.LogDirectory + developmentLogFile,
-                //        "[Task] - " + geminiIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
-                //}
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllText(
+                        JiraConstants.LogDirectory + developmentLogFile,
+                        "[Task] - " + geminiIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
+                }
             }
         }
 
@@ -106,8 +107,8 @@ namespace GeminiToJira.Engine
             GeminiTools.Items.ItemListGetter geminiItemsEngine)
         {
             var geminiIssueList = geminiItemsEngine.Execute(Filter.GetFilter(FilterType.Development));
-            Filter.FilterDevIssuesList(geminiIssueList);
-            return geminiIssueList;
+            var filteredList = Filter.FilterDevIssuesList(geminiIssueList);
+            return filteredList;
         }
 
         private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue)
@@ -124,7 +125,7 @@ namespace GeminiToJira.Engine
             if (!HasToCreateFolder(jiraIssueInfo))
                 return;
 
-            var newFolder = jiraIssue.Key.Value;
+            var newFolder = jiraIssue.Key.Value + " " + jiraIssue.Summary;
             var folderAlfresco = folderEngine.Execute(AlfrescoConstants.AlfrescoFolder, newFolder);
             
             if (jiraIssueInfo.AnalysisUrl != null && jiraIssueInfo.AnalysisUrl != "")
