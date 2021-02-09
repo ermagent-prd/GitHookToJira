@@ -16,7 +16,7 @@ namespace GeminiTools.Engine
         public LinkItem Execute(string htmlToParse)
         {
             var regex = new Regex("<a [^>]*href=(?:'(?<href>.*?)')|(?:\"(?<href>.*?)\")", RegexOptions.IgnoreCase);
-            var urls = regex.Matches(htmlToParse).OfType<Match>().Select(m => m.Groups["href"].Value).SingleOrDefault();
+            var url = regex.Matches(htmlToParse).OfType<Match>().Select(m => m.Groups["href"].Value).SingleOrDefault();
 
             MatchCollection match = Regex.Matches(htmlToParse, @"(<a.*?>.*?</a>)",
                 RegexOptions.Singleline);
@@ -28,7 +28,7 @@ namespace GeminiTools.Engine
 
             return new LinkItem
             {
-                Href = urls,
+                Href = url,
                 FileName = fileName
             };
 

@@ -70,7 +70,7 @@ namespace GeminiToJira.Mapper
             {
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title,
-                Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(),    //TODO recueprare le immagini se presenti?
+                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc") + " " + DateTime.Now.ToString(),
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
                 RemainingEstimate = geminiIssue.RemainingTime,
@@ -105,11 +105,6 @@ namespace GeminiToJira.Mapper
 
             //Load custom fields
             LoadCustomFields(jiraIssue, geminiIssue);
-
-            //Components 
-            //var functionality = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == FUNCTIONALITY);
-            //if (functionality != null && functionality.FormattedData != "")
-            //    jiraIssue.Components.Add("BSM"); //TODO manca ERMAS jiraIssue.Components.Add(functionality.FormattedData);
 
             //Related Dev
             SetRelatedDevelopment(jiraIssue, geminiIssue);

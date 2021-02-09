@@ -68,13 +68,11 @@ namespace GeminiToJira.Mapper
             {
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title,
-                Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(),    //TODO recueprare le immagini se presenti?
+                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc") + " " + DateTime.Now.ToString(),
                 Priority = geminiIssue.Priority,
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
                 RemainingEstimate = geminiIssue.RemainingTime,
-
-                //TODO Resolution = geminiIssue.Resolution
             };
 
 

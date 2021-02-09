@@ -17,7 +17,7 @@ namespace JiraTools.Engine
             {"Cannot Reproduce","10003" }
         };
 
-        //TODO da decidere
+        //TODO to map
         private Dictionary<string, string> RESOLUTION_MAPPING = new Dictionary<string, string>()
         {
             { "Completed",   "Done" },
@@ -63,7 +63,7 @@ namespace JiraTools.Engine
             {
                 TimeTrackingData = new IssueTimeTrackingData(
                     fieldsInfo.OriginalEstimate,
-                    fieldsInfo.RemainingEstimate)
+                    fieldsInfo.RemainingEstimate),
                     
             };
 

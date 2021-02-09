@@ -19,29 +19,26 @@ namespace GeminiToJira.GeminiFilter
                         IncludeClosed = true,
                         Projects = DevelopmentConstants.DEVELOPMENT_PROJECT_ID,
                         Types = DevelopmentConstants.DEVELOPMENT_TYPES,
-                        //Issues = "|59673|",  //TODO da cancellare     - ILiAS 3 Single ope
-                        //Issues = "|60466|",  //TODO da cancellare       - H - XBRL FP "Sylos based" + Controlli
-                        //Issues = "|59844|",  //TODO ERM-59844           - C. Refactoring Synth M.
-                        Issues = "|61087|",  //TODO ERM-59844           ERM-61087 I - RFF Mediobanca Bank-IT
-                        //TODO ?? AffectedVersions = |TRunk|Ermas x.xx....|
+                        //Issues = "|59673|",   
+                        //Issues = "|60466|",   
+                        //Issues = "|59844|",   
+                        //Issues = "|61087|",   
                     };
                 case FilterType.UAT:
                     return new IssuesFilter
                     {
                         IncludeClosed = true,
                         Projects = UatConstants.UAT_PROJECT_ID,
-                        //Issues = "|63715|"  //TODO da eliminare, il filtro va fatto meglio
-                        Issues = "|62157|"  //TODO da eliminare, il filtro va fatto meglio
-                        //Types = UatConstants.UAT_TYPES,
+                        //Issues = "|63715|"  
+                        //Issues = "|62157|"  
                     };
                 case FilterType.ERMBUG:
                     return new IssuesFilter
                     {
                         IncludeClosed = true,
                         Projects = ErmBugConstants.ERMBUG_PROJECT_ID,
-                        //Issues = "|65194|"  //TODO da eliminare, il filtro va fatto meglio
-                        Issues = "|63783|"  //TODO da eliminare, il filtro 63783 Margin
-                        //Types = UatConstants.UAT_TYPES,
+                        //Issues = "|63783|" 
+                        
                     };
                 default:
                     return new IssuesFilter();
@@ -58,7 +55,8 @@ namespace GeminiToJira.GeminiFilter
                 var release = l.CustomFields.FirstOrDefault(x => x.Name == DevelopmentConstants.DEVELOPMENT_RELEASE_KEY);
                 var devLine = l.CustomFields.FirstOrDefault(x => x.Name == DevelopmentConstants.DEVELOPMENT_LINE_KEY);
 
-                if (l.Type != "Group" && release != null && devLine != null &&
+                //Solo i development: i task sono quelli associati ai development trovati
+                if (l.Type == "Development" && release != null && devLine != null &&
                     DevelopmentConstants.DEVELOPMENT_RELEASES.Contains(release.FormattedData) &&
                     DevelopmentConstants.DEVELOPMENT_LINES.Contains(devLine.FormattedData))
                     filteredList.Add(l);

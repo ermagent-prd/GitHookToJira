@@ -338,7 +338,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("EIB-91", QuerableType.ByCode, "EIB");
+            var issues = engine.Execute("EIB-185", QuerableType.ByCode, "EIB");
 
             var list = new List<Issue>();
 
@@ -349,14 +349,16 @@ namespace JiraToolsTest
 
 
             //this only works for admin user logged
-            var wrk = list[0].GetWorklogsAsync();
+            //var wrk = list[0].GetWorklogsAsync();
+            //
+            //var workLog = new Worklog("1d", DateTime.Now, "comment worklog di paolo luca");
+            //
+            //workLog.Author = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            //
+            //
+            //list[0].AddWorklogAsync(workLog);
 
-            var workLog = new Worklog("1d", DateTime.Now, "comment worklog di paolo luca");
-
-            workLog.Author = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             
-            
-            list[0].AddWorklogAsync(workLog);
             list[0].SaveChanges();
 
             Assert.IsTrue(list.Any());

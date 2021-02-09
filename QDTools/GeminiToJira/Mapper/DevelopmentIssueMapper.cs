@@ -62,13 +62,17 @@ namespace GeminiToJira.Mapper
             {
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title,
-                Description = parseCommentEngine.Execute(geminiIssue.Description) + " " + DateTime.Now.ToString(), //TODO recueprare le immagini se presenti?
+                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc") + " " + DateTime.Now.ToString(), 
                 Type = type,
-                OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
-                RemainingEstimate = geminiIssue.RemainingTime,
-                
             };
-            
+
+            jiraIssue.OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m";
+
+            if (type != JiraConstants.StoryType)
+                jiraIssue.RemainingEstimate = geminiIssue.RemainingTime;
+            else
+                jiraIssue.RemainingEstimate = "0m";
+
             jiraIssue.AffectVersions = new List<string>();
             jiraIssue.FixVersions = new List<string>();
 
@@ -110,8 +114,9 @@ namespace GeminiToJira.Mapper
 
             SetComponents(geminiIssue, jiraIssue, components);
 
-            //For worklog
-            jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
+            //worklog: only for sybtask issues
+            if (type == JiraConstants.StoryType)
+                jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
 
             return jiraIssue;
         }

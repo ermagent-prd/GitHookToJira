@@ -31,21 +31,26 @@ namespace GeminiToJira.Mapper
         {
             jiraIssue.CommentList = new List<Comment>();
 
-            foreach (var comment in geminiIssue.Comments)
+            for (int i= 0; i < geminiIssue.Comments.Count; i++)
             {
-                jiraIssue.CommentList.Add(CreateComment(comment.Entity, comment.Attachments));
-                //Load Comment attachments
+                var comment = geminiIssue.Comments[i];
+
+                var commentPrefix = "Comment_" + i;
+                jiraIssue.CommentList.Add(CreateComment(comment.Entity, comment.Attachments, commentPrefix));
+                parseCommentEngine.Execute(jiraIssue, comment.Entity.Comment, commentPrefix);
+
+                //Load Comment's attached files
                 attachmentGetter.Execute(jiraIssue, comment.Attachments);
             }
         }
 
-        private Comment CreateComment(IssueComment geminiComment, List<IssueAttachmentDto> attachments)
+        private Comment CreateComment(IssueComment geminiComment, List<IssueAttachmentDto> attachments, string commentPrefix)
         {
-            
+            //linka al commento il file allegato nella issue originale
             string commentAttachment = GetAttachmentBody(attachments);
 
             var author = accountEngine.Execute(geminiComment.Fullname);
-            var body = "[~accountId:" + author.AccountId + "]\n" + commentAttachment + parseCommentEngine.Execute(geminiComment.Comment);
+            var body = "[~accountId:" + author.AccountId + "]\n" + commentAttachment + parseCommentEngine.Execute(geminiComment.Comment, commentPrefix);
 
             var remoteComment = new RemoteComment();
             remoteComment.author = author.AccountId;
