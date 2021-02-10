@@ -23,6 +23,8 @@ namespace GeminiToJira
 
         static void Main(string[] args)
         {
+            Console.WriteLine("Started...");
+
             var unityContainer = ContainerFactory.Execute();
 
             //string projectCode = "ER";
@@ -33,12 +35,21 @@ namespace GeminiToJira
             var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
             developmentEngine.Execute(projectCode, components);
 
+            Console.WriteLine("Development imported");
+
             var fromDate = new DateTime(2020, 08, 27);  //TODO
             var uatEngine = unityContainer.Resolve<ImportUatEngine>();
             uatEngine.Execute(projectCode, fromDate);
-            
+
+            Console.WriteLine("UAT imported");
+
             var bugEngine = unityContainer.Resolve<ImportBugEngine>();
             bugEngine.Execute(projectCode);
+
+            Console.WriteLine("BUG imported");
+
+            Console.WriteLine("Press a key to close");
+            Console.ReadLine();
         }
     }
 }

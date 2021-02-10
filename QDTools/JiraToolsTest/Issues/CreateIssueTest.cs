@@ -27,16 +27,16 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "EIB",
-                Summary = "Api call Test PL timetracking (Atlassian SDK)",
+                Summary = "Api call Test PL worklog user (Atlassian SDK)",
                 Description = "This is a (PL timetracking) test " + DateTime.Now.ToString(),
                 Type = "Story",
                 OriginalEstimate = "480h",
                 RemainingEstimate = "400h",
                 DueDate = new DateTime(2021, 12, 31),
                 ParentIssueKey = null,
-                Reporter = "70121:67b933a3-5693-47d2-82c0-3f997f279387",
-                Assignee = "70121:67b933a3-5693-47d2-82c0-3f997f279387",
-                AssigneeUser = "70121:67b933a3-5693-47d2-82c0-3f997f279387"
+                Reporter = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2",
+                Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2",
+                AssigneeUser = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2"
 
             };
             

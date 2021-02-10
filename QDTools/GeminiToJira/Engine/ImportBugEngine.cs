@@ -8,6 +8,7 @@ using System.Linq;
 using JiraTools.Parameters;
 using System;
 using Atlassian.Jira;
+using System.IO;
 
 namespace GeminiToJira.Engine
 {
@@ -45,14 +46,19 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in geminiBugIssueList.OrderBy(f => f.Id).ToList())
             {
-                //try
-                //{
-                var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
+                try
+                {
+                    var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
 
-                var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.BugType, projectCode);
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.BugType, projectCode);
 
-                var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
-                SetAndSaveReporter(jiraIssue, geminiIssue);
+                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
+                    SetAndSaveReporter(jiraIssue, geminiIssue);
+                }
+                catch
+                {
+                    File.AppendAllText(JiraConstants.LogDirectory + bugLogFile, geminiIssue.IssueKey + Environment.NewLine);
+                }
 
             }
         }

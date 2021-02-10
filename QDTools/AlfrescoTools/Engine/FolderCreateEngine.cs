@@ -30,31 +30,53 @@ namespace AlfrescoTools.Engine
 
         #region Public methods
 
-        public IFolder Execute(string parentFolderName, string newFolderName)
+        public IFolder Execute(string rootFolder, string newFolderName, string storyFolder)
         {
             //retrieve the parent folder under the root
-            var parentFolder = (IFolder)folderGetterEngine.Execute(parentFolderName);
+            var root = (IFolder)folderGetterEngine.Execute(rootFolder);
 
             // Check if folder already exist
-            IFolder newFolder = null;
+            IFolder folder = null;
+
+            var parentFolder = GetChildren(root, storyFolder);
             var children = parentFolder.GetChildren();
+
             foreach(var child in children)
             {
                 if (child.Name == newFolderName)
-                    newFolder = (IFolder)child;
+                    folder = (IFolder)child;
             }
 
             //if not create it
-            if (newFolder == null)
+            if (folder == null)
             {
                 Dictionary<String, Object> newFolderProps = new Dictionary<String, Object>();
                 newFolderProps.Add(PropertyIds.ObjectTypeId, "cmis:folder");
                 newFolderProps.Add(PropertyIds.Name, newFolderName);
-                newFolder = parentFolder.CreateFolder(newFolderProps);
+                folder = parentFolder.CreateFolder(newFolderProps);
             }
             
 
-            return newFolder;
+            return folder;
+        }
+
+        private IFolder GetChildren(IFolder root, string storyFolder)
+        {
+            IItemEnumerable<ICmisObject> children = null;
+            IFolder parentForlder = null;
+
+            //Find sub directory if exist
+            if (storyFolder != null && storyFolder != "")
+            {
+                foreach(var child in root.GetChildren())
+                {
+                    if (child.Name == storyFolder)
+                        parentForlder = (IFolder)child;
+                }
+                return parentForlder;
+            }
+            else
+                return root;
         }
 
         #endregion

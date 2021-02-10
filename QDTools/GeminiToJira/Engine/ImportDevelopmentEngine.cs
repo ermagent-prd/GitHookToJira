@@ -63,12 +63,14 @@ namespace GeminiToJira.Engine
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
                     var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.StoryType, projectCode, components);
 
+                    //Story
                     var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
                     SetAndSaveReporter(jiraIssue, geminiIssue);
-                    SetAndSaveAlfrescoUrl(jiraIssueInfo, jiraIssue);
+                    var storyFolder = SetAndSaveAlfrescoUrl(jiraIssueInfo, jiraIssue, "");
 
                     var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != JiraConstants.GroupType && i.Value.Id != currentIssue.Id);
 
+                    //SubTask
                     foreach (var sub in hierarchy)
                     {
                         if (sub.Value.Type == "Task")
@@ -80,7 +82,7 @@ namespace GeminiToJira.Engine
                             {
                                 var subIssue = jiraSaveEngine.Execute(jiraSubTaskInfo);
                                 SetAndSaveReporter(subIssue, currentSubIssue);
-                                SetAndSaveAlfrescoUrl(jiraSubTaskInfo, subIssue);
+                                SetAndSaveAlfrescoUrl(jiraSubTaskInfo, subIssue, storyFolder);
                             }
                             catch (Exception ex)
                             {
@@ -120,13 +122,13 @@ namespace GeminiToJira.Engine
             }
         }
 
-        private void SetAndSaveAlfrescoUrl(CreateIssueInfo jiraIssueInfo, Issue jiraIssue)
+        private string SetAndSaveAlfrescoUrl(CreateIssueInfo jiraIssueInfo, Issue jiraIssue, string storyFolder)
         {
             if (!HasToCreateFolder(jiraIssueInfo))
-                return;
+                return "";
 
             var newFolder = jiraIssue.Key.Value + " " + jiraIssue.Summary;
-            var folderAlfresco = folderEngine.Execute(AlfrescoConstants.AlfrescoFolder, newFolder);
+            var folderAlfresco = folderEngine.Execute(AlfrescoConstants.AlfrescoFolder, newFolder, storyFolder);
             
             if (jiraIssueInfo.AnalysisUrl != null && jiraIssueInfo.AnalysisUrl != "")
                 jiraIssue.CustomFields.Add("Analysis Document Url", SaveAndUploadToAlfresco(folderAlfresco, jiraIssueInfo.AnalysisUrl));
@@ -141,6 +143,7 @@ namespace GeminiToJira.Engine
                 jiraIssue.CustomFields.Add("Test Document Url", SaveAndUploadToAlfresco(folderAlfresco, jiraIssueInfo.TestDocumentUrl));
 
             jiraIssue.SaveChanges();
+            return newFolder;
         }
 
         private bool HasToCreateFolder(CreateIssueInfo jiraIssueInfo)

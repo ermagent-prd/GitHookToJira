@@ -23,7 +23,7 @@ namespace AlfrescoToolsTest
 
             var engine = container.Resolve<FolderCreateEngine>();
 
-            var newFolder = engine.Execute("APi Test", "CreateTest");
+            var newFolder = engine.Execute("APi Test", "CreateTest", "");
 
             var engineDocument = container.Resolve<UploadDocumentEngine>();
 

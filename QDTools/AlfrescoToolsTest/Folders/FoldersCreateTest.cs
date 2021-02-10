@@ -1,15 +1,7 @@
-﻿using AlfrescoToolsTest.Parameters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Net.Http;
-using System.IO;
-using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AlfrescoToolsTest.Container;
 using AlfrescoTools.Engine;
 using Unity;
-using DotCMIS.Client.Impl;
-using DotCMIS;
-using System.Collections.Generic;
-using DotCMIS.Client;
 
 namespace AlfrescoToolsTest
 {
@@ -23,8 +15,21 @@ namespace AlfrescoToolsTest
 
             var engine = container.Resolve<FolderCreateEngine>();
 
-            var newFolder = engine.Execute("APi Test", "CreateTest");
+            var newFolder = engine.Execute("APi Test", "CreateTest", "");
             
+            Assert.IsNotNull(newFolder);
+
+        }
+
+        [TestMethod]
+        public void Execute_CreateSubFolder()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<FolderCreateEngine>();
+
+            var newFolder = engine.Execute("APi Test", "Subfolder", "CreateTest");
+
             Assert.IsNotNull(newFolder);
 
         }

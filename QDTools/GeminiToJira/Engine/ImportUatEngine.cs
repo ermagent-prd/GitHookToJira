@@ -45,8 +45,8 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.Id).ToList())
             {
-                //try
-                //{
+                try
+                {
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
 
                     var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.UatType, projectCode);
@@ -75,11 +75,11 @@ namespace GeminiToJira.Engine
                             jiraIssue.SaveChanges();
                         }
                     }
-                //}
-                //catch
-                //{
-                //    File.AppendAllText(JiraConstants.LogDirectory + uatLogFile, geminiIssue.IssueKey + Environment.NewLine);
-                //}
+                }
+                catch
+                {
+                    File.AppendAllText(JiraConstants.LogDirectory + uatLogFile, geminiIssue.IssueKey + Environment.NewLine);
+                }
             }
         }
 

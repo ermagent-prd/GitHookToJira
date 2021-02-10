@@ -75,7 +75,7 @@ namespace GeminiToJira.Mapper
 
             jiraIssue.AffectVersions = new List<string>();
             jiraIssue.FixVersions = new List<string>();
-
+            
             if (type == JiraConstants.SubTaskType)
                 jiraIssue.Priority = geminiIssue.Priority;
 

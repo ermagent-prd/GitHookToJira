@@ -22,7 +22,7 @@ namespace GeminiToJira.GeminiFilter
                         //Issues = "|59673|",   
                         //Issues = "|60466|",   
                         //Issues = "|59844|",   
-                        //Issues = "|61087|",   
+                        Issues = "|61087|",   
                     };
                 case FilterType.UAT:
                     return new IssuesFilter
