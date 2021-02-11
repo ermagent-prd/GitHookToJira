@@ -67,7 +67,7 @@ namespace GeminiToJira.Mapper
             var jiraIssue = new CreateIssueInfo
             {
                 ProjectKey = projectCode,
-                Summary = geminiIssue.Title,
+                Summary = geminiIssue.Title.TrimEnd(),
                 Description = parseCommentEngine.Execute(geminiIssue.Description, "desc") + " " + DateTime.Now.ToString(),
                 Priority = geminiIssue.Priority,
                 Type = type,

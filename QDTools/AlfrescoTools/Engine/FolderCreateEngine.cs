@@ -32,18 +32,20 @@ namespace AlfrescoTools.Engine
 
         public IFolder Execute(string rootFolder, string newFolderName, string storyFolder)
         {
+            
+
             //retrieve the parent folder under the root
             var root = (IFolder)folderGetterEngine.Execute(rootFolder);
 
             // Check if folder already exist
             IFolder folder = null;
 
-            var parentFolder = GetChildren(root, storyFolder);
+            var parentFolder = GetChildren(root, FolderCheck(storyFolder));
             var children = parentFolder.GetChildren();
 
             foreach(var child in children)
             {
-                if (child.Name == newFolderName)
+                if (child.Name == FolderCheck(newFolderName))
                     folder = (IFolder)child;
             }
 
@@ -52,12 +54,25 @@ namespace AlfrescoTools.Engine
             {
                 Dictionary<String, Object> newFolderProps = new Dictionary<String, Object>();
                 newFolderProps.Add(PropertyIds.ObjectTypeId, "cmis:folder");
-                newFolderProps.Add(PropertyIds.Name, newFolderName);
+                newFolderProps.Add(PropertyIds.Name, FolderCheck(newFolderName));
                 folder = parentFolder.CreateFolder(newFolderProps);
             }
             
 
             return folder;
+        }
+
+        private string FolderCheck(string folder)
+        {
+            string result = folder.Replace(':', '-').Replace('/', '_').TrimEnd();
+
+            result = result.Replace('\\', ' ').TrimEnd();
+            result = result.Replace('"', ' ').TrimEnd();
+
+            if (result.EndsWith("."))
+                result = result.Substring(0, result.Length - 1);
+
+            return result;
         }
 
         private IFolder GetChildren(IFolder root, string storyFolder)

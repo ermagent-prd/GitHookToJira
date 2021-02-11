@@ -61,7 +61,7 @@ namespace GeminiToJira.Mapper
             var jiraIssue = new CreateIssueInfo
             {
                 ProjectKey = projectCode,
-                Summary = geminiIssue.Title,
+                Summary = geminiIssue.Title.TrimEnd(),
                 Description = parseCommentEngine.Execute(geminiIssue.Description, "desc") + " " + DateTime.Now.ToString(), 
                 Type = type,
             };
@@ -155,15 +155,7 @@ namespace GeminiToJira.Mapper
             if (jdeCode != null)
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("JDE", jdeCode.FormattedData));
 
-            //Security Activities
-            var securityActivities = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Securirty Activities");
-            if (securityActivities != null && securityActivities.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Security Activities", securityActivities.FormattedData));
-
-            //GDPR activities
-            var gdprActivities = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "GDPR Activities");
-            if (gdprActivities != null && gdprActivities.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("GDPR Activities", gdprActivities.FormattedData));
+            
 
             var refAnalysis = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefAnalysis");
             if (refAnalysis != null)
@@ -171,6 +163,16 @@ namespace GeminiToJira.Mapper
 
             if (devType != JiraConstants.SubTaskType)
             {
+                //Security Activities
+                var securityActivities = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Securirty Activities");
+                if (securityActivities != null && securityActivities.FormattedData != "")
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Security Activities", securityActivities.FormattedData));
+
+                //GDPR activities
+                var gdprActivities = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "GDPR Activities");
+                if (gdprActivities != null && gdprActivities.FormattedData != "")
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("GDPR Activities", gdprActivities.FormattedData));
+
                 var itResponsible = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefIT");
                 if (itResponsible != null)
                     jiraIssue.CustomFields.Add(new CustomFieldInfo("IT Responsible", accountEngine.Execute(itResponsible.FormattedData).AccountId));
@@ -182,12 +184,12 @@ namespace GeminiToJira.Mapper
                 //Analysis start date
                 var analysisStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "AnalysisStartDate");
                 if (analysisStartDate != null && analysisStartDate.FormattedData != "")
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Start Date", analysisStartDate.FormattedData));
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Start Date", InternalConvertDate(analysisStartDate.FormattedData).ToString("yyyy-M-d")));
 
                 //Test start date
                 var testStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Test Start Date");
                 if (testStartDate != null && testStartDate.FormattedData != "")
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Start Date", testStartDate.FormattedData));
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Start Date", InternalConvertDate(testStartDate.FormattedData).ToString("yyyy-M-d")));
             }
             else
             {
@@ -230,5 +232,25 @@ namespace GeminiToJira.Mapper
         }
 
         #endregion
+
+        private DateTime InternalConvertDate(String dateValue)
+        {
+            double dt;
+            DateTime dtDate;
+
+            if (DateTime.TryParse(dateValue, out dtDate))
+            {
+                return dtDate.Date;
+            }
+            else
+            {
+                String[] formats = new String[4] { "dd/MM/yyyy", "MM/dd/yyyy", "dd/MM/yy", "MM/dd/yy" };
+
+                if (DateTime.TryParseExact(dateValue, formats, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal, out dtDate))
+                    return dtDate.Date;                
+            }
+
+            return DateTime.Now;
+        }
     }
 }

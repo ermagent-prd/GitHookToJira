@@ -32,14 +32,14 @@ namespace GeminiToJira
 
             var components = new List<String> { "ILIAS", "ILIAS-STA", "BSM", "Other" };
 
-            var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
-            developmentEngine.Execute(projectCode, components);
+            //var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
+            //developmentEngine.Execute(projectCode, components);
 
             Console.WriteLine("Development imported");
 
-            var fromDate = new DateTime(2020, 08, 27);  //TODO
+            //var fromDate = new DateTime(2020, 08, 27);  //TODO
             var uatEngine = unityContainer.Resolve<ImportUatEngine>();
-            uatEngine.Execute(projectCode, fromDate);
+            uatEngine.Execute(projectCode);
 
             Console.WriteLine("UAT imported");
 

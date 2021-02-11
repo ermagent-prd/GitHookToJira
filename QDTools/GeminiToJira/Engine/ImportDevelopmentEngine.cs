@@ -161,16 +161,25 @@ namespace GeminiToJira.Engine
         private string SaveAndUploadToAlfresco(IFolder folderAlfresco, string attachmentUrl)
         {
             string url = "";
-            var link = linkItemEngine.Execute(attachmentUrl);
 
-            attachmentGetter.Save(link);
+            if (attachmentUrl.Contains("drive.google.com"))
+                return attachmentUrl.Replace("<p>", "").Replace("</p>", "");
+            else
+            {
+                var link = linkItemEngine.Execute(attachmentUrl);
 
-            url = uploadAlfrescoEngine.Execute(folderAlfresco, link.FileName);
+                if(link == null)
+                    return "";    //for text who is not a link from gemini
 
-            if (File.Exists(AlfrescoConstants.AttachmentPath + link.FileName))
-                File.Delete(AlfrescoConstants.AttachmentPath + link.FileName);
+                attachmentGetter.Save(link);
 
-            return url;
+                url = uploadAlfrescoEngine.Execute(folderAlfresco, link.FileName);
+
+                if (File.Exists(AlfrescoConstants.AttachmentPath + link.FileName))
+                    File.Delete(AlfrescoConstants.AttachmentPath + link.FileName);
+
+                return url;
+            }
         }
         #endregion
     }

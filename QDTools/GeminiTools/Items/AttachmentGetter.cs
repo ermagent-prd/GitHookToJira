@@ -73,6 +73,9 @@ namespace GeminiTools.Items
 
         public bool Save(LinkItem linkItem)
         {
+            if (linkItem == null)
+                return false;
+
             try
             {
                 var webClient = new WebClient();
