@@ -66,7 +66,7 @@ namespace GeminiToJira.Engine
                     //Story
                     var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
                     SetAndSaveReporter(jiraIssue, geminiIssue);
-                    var storyFolder = SetAndSaveAlfrescoUrl(jiraIssueInfo, jiraIssue, "");
+                    var storyFolder = SetAndSaveAlfrescoUrls(jiraIssueInfo, jiraIssue, "");
 
                     var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != JiraConstants.GroupType && i.Value.Id != currentIssue.Id);
 
@@ -82,7 +82,7 @@ namespace GeminiToJira.Engine
                             {
                                 var subIssue = jiraSaveEngine.Execute(jiraSubTaskInfo);
                                 SetAndSaveReporter(subIssue, currentSubIssue);
-                                SetAndSaveAlfrescoUrl(jiraSubTaskInfo, subIssue, storyFolder);
+                                SetAndSaveAlfrescoUrls(jiraSubTaskInfo, subIssue, storyFolder);
                             }
                             catch (Exception ex)
                             {
@@ -122,64 +122,83 @@ namespace GeminiToJira.Engine
             }
         }
 
-        private string SetAndSaveAlfrescoUrl(CreateIssueInfo jiraIssueInfo, Issue jiraIssue, string storyFolder)
+        private string SetAndSaveAlfrescoUrls(CreateIssueInfo jiraIssueInfo, Issue jiraIssue, string storyFolder)
         {
-            if (!HasToCreateFolder(jiraIssueInfo))
+            LinkItem analysisLink = null;
+            LinkItem brAnalysisLink = null;
+            LinkItem changeDocumentLink = null;
+            LinkItem testDocumentLink = null;
+
+            GetLinks(jiraIssueInfo, ref analysisLink, ref brAnalysisLink, ref changeDocumentLink, ref testDocumentLink);
+
+            if (analysisLink == null && brAnalysisLink == null && changeDocumentLink == null && testDocumentLink == null)
                 return "";
 
             var newFolder = jiraIssue.Key.Value + " " + jiraIssue.Summary;
             var folderAlfresco = folderEngine.Execute(AlfrescoConstants.AlfrescoFolder, newFolder, storyFolder);
-            
-            if (jiraIssueInfo.AnalysisUrl != null && jiraIssueInfo.AnalysisUrl != "")
-                jiraIssue.CustomFields.Add("Analysis Document Url", SaveAndUploadToAlfresco(folderAlfresco, jiraIssueInfo.AnalysisUrl));
 
-            if (jiraIssueInfo.BrAnalysisUrl != null && jiraIssueInfo.BrAnalysisUrl != "")
-                jiraIssue.CustomFields.Add("BR Analysis Url", SaveAndUploadToAlfresco(folderAlfresco, jiraIssueInfo.BrAnalysisUrl));
-
-            if (jiraIssueInfo.ChangeDocumentUrl != null && jiraIssueInfo.ChangeDocumentUrl != "")
-                jiraIssue.CustomFields.Add("Change Document Url", SaveAndUploadToAlfresco(folderAlfresco, jiraIssueInfo.ChangeDocumentUrl));
-
-            if (jiraIssueInfo.TestDocumentUrl != null && jiraIssueInfo.TestDocumentUrl != "")
-                jiraIssue.CustomFields.Add("Test Document Url", SaveAndUploadToAlfresco(folderAlfresco, jiraIssueInfo.TestDocumentUrl));
+            jiraIssue.CustomFields.Add("Analysis Document Url", SaveAndUploadToAlfresco(folderAlfresco, analysisLink));
+            jiraIssue.CustomFields.Add("BR Analysis Url", SaveAndUploadToAlfresco(folderAlfresco, brAnalysisLink));
+            jiraIssue.CustomFields.Add("Change Document Url", SaveAndUploadToAlfresco(folderAlfresco, changeDocumentLink));
+            jiraIssue.CustomFields.Add("Test Document Url", SaveAndUploadToAlfresco(folderAlfresco, testDocumentLink));
 
             jiraIssue.SaveChanges();
+
             return newFolder;
         }
 
-        private bool HasToCreateFolder(CreateIssueInfo jiraIssueInfo)
+        private void GetLinks(CreateIssueInfo jiraIssueInfo, 
+            ref LinkItem analysisLink, 
+            ref LinkItem brAnalysisLink, 
+            ref LinkItem changeDocumentLink, 
+            ref LinkItem testDocumentLink)
         {
-            if ((jiraIssueInfo.AnalysisUrl != null && jiraIssueInfo.AnalysisUrl != "") ||
-                (jiraIssueInfo.BrAnalysisUrl != null && jiraIssueInfo.BrAnalysisUrl != "") ||
-                (jiraIssueInfo.ChangeDocumentUrl != null && jiraIssueInfo.ChangeDocumentUrl != "") ||
-                (jiraIssueInfo.TestDocumentUrl != null && jiraIssueInfo.TestDocumentUrl != ""))
-                return true;
-            else
-                return false;
+            if (jiraIssueInfo.AnalysisUrl != null && jiraIssueInfo.AnalysisUrl != "")
+                analysisLink = GetAttachmentLinkItem(jiraIssueInfo.AnalysisUrl);
 
+            if (jiraIssueInfo.BrAnalysisUrl != null && jiraIssueInfo.BrAnalysisUrl != "")
+                brAnalysisLink = GetAttachmentLinkItem(jiraIssueInfo.BrAnalysisUrl);
+
+            if (jiraIssueInfo.ChangeDocumentUrl != null && jiraIssueInfo.ChangeDocumentUrl != "")
+                changeDocumentLink = GetAttachmentLinkItem(jiraIssueInfo.ChangeDocumentUrl);
+
+            if (jiraIssueInfo.TestDocumentUrl != null && jiraIssueInfo.TestDocumentUrl != "")
+                testDocumentLink = GetAttachmentLinkItem(jiraIssueInfo.TestDocumentUrl);
         }
 
-        private string SaveAndUploadToAlfresco(IFolder folderAlfresco, string attachmentUrl)
+        private LinkItem GetAttachmentLinkItem(string attachmentUrl)
+        {
+            if (attachmentUrl.Contains("drive.google.com"))
+                return new LinkItem
+                {
+                    Href = attachmentUrl.Replace("<p>", "").Replace("</p>", ""),
+                    FileName = ""
+                };
+            else
+            {
+                return linkItemEngine.Execute(attachmentUrl);
+            }
+        }
+
+        private string SaveAndUploadToAlfresco(IFolder folderAlfresco, LinkItem attachmentLink)
         {
             string url = "";
 
-            if (attachmentUrl.Contains("drive.google.com"))
-                return attachmentUrl.Replace("<p>", "").Replace("</p>", "");
-            else
-            {
-                var link = linkItemEngine.Execute(attachmentUrl);
-
-                if(link == null)
-                    return "";    //for text who is not a link from gemini
-
-                attachmentGetter.Save(link);
-
-                url = uploadAlfrescoEngine.Execute(folderAlfresco, link.FileName);
-
-                if (File.Exists(AlfrescoConstants.AttachmentPath + link.FileName))
-                    File.Delete(AlfrescoConstants.AttachmentPath + link.FileName);
-
+            if (attachmentLink == null)
                 return url;
-            }
+
+            if (attachmentLink.FileName == "")
+                return attachmentLink.Href;
+
+            attachmentGetter.Save(attachmentLink);
+
+            url = uploadAlfrescoEngine.Execute(folderAlfresco, attachmentLink.FileName);
+
+            if (File.Exists(AlfrescoConstants.AttachmentPath + attachmentLink.FileName))
+                File.Delete(AlfrescoConstants.AttachmentPath + attachmentLink.FileName);
+
+            return url;
+
         }
         #endregion
     }

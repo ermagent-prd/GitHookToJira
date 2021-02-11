@@ -75,7 +75,6 @@ namespace GeminiTools.Items
         {
             if (linkItem == null)
                 return false;
-
             try
             {
                 var webClient = new WebClient();

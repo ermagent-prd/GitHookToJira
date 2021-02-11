@@ -37,16 +37,15 @@ namespace GeminiToJira
 
             Console.WriteLine("Development imported");
 
-            //var fromDate = new DateTime(2020, 08, 27);  //TODO
             var uatEngine = unityContainer.Resolve<ImportUatEngine>();
             uatEngine.Execute(projectCode);
-
+            
             Console.WriteLine("UAT imported");
-
-            var bugEngine = unityContainer.Resolve<ImportBugEngine>();
-            bugEngine.Execute(projectCode);
-
-            Console.WriteLine("BUG imported");
+            //
+            //var bugEngine = unityContainer.Resolve<ImportBugEngine>();
+            //bugEngine.Execute(projectCode);
+            //
+            //Console.WriteLine("BUG imported");
 
             Console.WriteLine("Press a key to close");
             Console.ReadLine();

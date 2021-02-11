@@ -15,7 +15,7 @@ namespace GeminiTools.Engine
 
         public LinkItem Execute(string htmlToParse)
         {
-            if (!htmlToParse.Contains("<href>"))
+            if (!htmlToParse.Contains("href"))
                 return null;
 
             var regex = new Regex("<a [^>]*href=(?:'(?<href>.*?)')|(?:\"(?<href>.*?)\")", RegexOptions.IgnoreCase);
