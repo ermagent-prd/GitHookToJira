@@ -14,6 +14,7 @@ using JiraTools.Parameters;
 using GeminiToJira.Parameters;
 using System;
 using GeminiToJira.Engine;
+using System.Diagnostics;
 
 namespace GeminiToJira
 {
@@ -23,29 +24,44 @@ namespace GeminiToJira
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Started...");
-
             var unityContainer = ContainerFactory.Execute();
 
+            Stopwatch timer = new Stopwatch();
+            Console.WriteLine("["+ DateTime.Now + "] Started...");
+            
+
+            #region Development
+
             //string projectCode = "ER";
-            string projectCode = "EIB";
-
+            string jiraProjectCode = "EIB";
             var components = new List<String> { "ILIAS", "ILIAS-STA", "BSM", "Other" };
+            var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
+            timer.Start();
+            developmentEngine.Execute(jiraProjectCode, components);
+            timer.Stop();
+            Console.WriteLine("[" + DateTime.Now + "] Development imported in " + timer.Elapsed);
 
-            //var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
-            //developmentEngine.Execute(projectCode, components);
+            #endregion
 
-            Console.WriteLine("Development imported");
+            #region UAT
 
             var uatEngine = unityContainer.Resolve<ImportUatEngine>();
-            uatEngine.Execute(projectCode);
+            timer.Restart();
+            uatEngine.Execute(jiraProjectCode);
+            timer.Stop();
+            Console.WriteLine("[" + DateTime.Now + "] UAT imported in " + timer.Elapsed);
+
+            #endregion
+
+            #region BUG
+
+            var bugEngine = unityContainer.Resolve<ImportBugEngine>();
+            timer.Restart();
+            bugEngine.Execute(jiraProjectCode);
+            timer.Stop();
+            Console.WriteLine("[" + DateTime.Now + "] BUG imported in " + timer.Elapsed); 
             
-            Console.WriteLine("UAT imported");
-            //
-            //var bugEngine = unityContainer.Resolve<ImportBugEngine>();
-            //bugEngine.Execute(projectCode);
-            //
-            //Console.WriteLine("BUG imported");
+            #endregion
 
             Console.WriteLine("Press a key to close");
             Console.ReadLine();

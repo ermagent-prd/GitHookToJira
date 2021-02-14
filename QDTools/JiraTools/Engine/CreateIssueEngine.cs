@@ -122,7 +122,12 @@ namespace JiraTools.Engine
                 return;
 
             foreach (var v in fieldsInfo.AffectVersions)
-                newIssue.AffectsVersions.Add(v);
+                try
+                {
+                    newIssue.AffectsVersions.Add(v);
+                }
+                catch
+                { }
         }
 
         private static void SetFixVersions(CreateIssueInfo fieldsInfo, Issue newIssue)
@@ -131,7 +136,12 @@ namespace JiraTools.Engine
                 return;
 
             foreach (var v in fieldsInfo.FixVersions)
-                newIssue.FixVersions.Add(v);
+                try
+                {
+                    newIssue.FixVersions.Add(v);
+                }
+                catch
+                { }
         }
 
 

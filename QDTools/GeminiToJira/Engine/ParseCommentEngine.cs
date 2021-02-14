@@ -22,13 +22,11 @@ namespace GeminiToJira.Engine
 
             return WebUtility.HtmlDecode(text);
 
-        }
+        }        
 
-
-
-        public string Execute(string comment, string commentPrefix)
+        public string Execute(string comment, string commentPrefix, List<string> descAttachments)
         {
-            comment = SaveAndReferAttachmentImages(comment, commentPrefix);
+            comment = SaveAndReferAttachmentImages(comment, commentPrefix, descAttachments);
 
             
             var text = Regex.Replace(CleanFromImageTag(comment), HTML_TAG_PATTERN, string.Empty);
@@ -69,7 +67,7 @@ namespace GeminiToJira.Engine
         }
 
        
-        private static string SaveAndReferAttachmentImages(string comment, string commentPrefix)
+        private static string SaveAndReferAttachmentImages(string comment, string commentPrefix, List<string> descAttachments)
         {
             HtmlNodeCollection nodes = GetNodes(comment);
             if (nodes != null)
@@ -78,11 +76,21 @@ namespace GeminiToJira.Engine
                 {
                     var img = nodes[i];
                     HtmlAttribute att = img.Attributes["src"];
+                    try
+                    {
+                        byte[] imageBytes = Convert.FromBase64String(att.Value.Substring(att.Value.IndexOf(',') + 1));
+                        var fileName = commentPrefix + "_CommentAttachedImage" + i + ".png";
+                        File.WriteAllBytes(GeminiConstants.SAVING_PATH + fileName, imageBytes);
+                        comment = comment.Replace(att.Value, "[^" + fileName + "]\n\n");
 
-                    byte[] imageBytes = Convert.FromBase64String(att.Value.Substring(att.Value.IndexOf(',') + 1));
-                    var fileName = commentPrefix + "_CommentAttachedImage" + i + ".png";
-                    File.WriteAllBytes(GeminiConstants.SAVING_PATH + fileName, imageBytes);
-                    comment = comment.Replace(att.Value, "[^" + fileName + "]\n\n");
+                        //for image's description only
+                        if (descAttachments != null)
+                            descAttachments.Add(fileName);
+                    }
+                    catch
+                    {
+                        //for image linked to shared folder
+                    }
                 }
             }
             return comment;

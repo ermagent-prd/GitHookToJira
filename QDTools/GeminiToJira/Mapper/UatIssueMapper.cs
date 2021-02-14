@@ -47,6 +47,33 @@ namespace GeminiToJira.Mapper
             { "Blocking",   "Highest" },
         };
 
+        private readonly Dictionary<string, string> CATEGORY_MAPPING = new Dictionary<string, string>()
+        {
+            { "Calcoli",   "Calcoli" },
+            { "Interfaccia",   "Interfaccia" },
+            { "Usabilità",   "Usabilità" },
+            { "Efficenza",   "Efficenza" },
+            { "Suggerimento",   "Suggerimento" },
+            { "Localizzazione",   "Localizzazione" },
+            { "Messaggio di errore",   "Messaggio di errore" },
+            { "Messaggio d' errore",   "Messaggio di errore" },
+            { "Messaggio d'errore",    "Messaggio di errore" },
+            { "DAL",   "DAL" },
+        };
+
+        private readonly Dictionary<string, string> TYPE_MAPPING = new Dictionary<string, string>()
+        {
+            { "Defect",   "Defect" },
+            { "Investigation",   "Investigation" },
+            { "Enhancement",   "Enhancement" },
+            { "Enanchement",   "Enhancement" },
+            { "Regression",   "Regression" },
+            { "Setup",   "Setup" },
+            { "Change request",   "Change request" },
+            { "New Feature",   "New Feature" },
+            { "Missing Functionality",   "Missing Functionality" },
+        };
+
 
         public UatIssueMapper(
             CommentMapper commentMapper, 
@@ -65,17 +92,18 @@ namespace GeminiToJira.Mapper
 
         public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode)
         {
-            
+            var descAttachments = new List<string>();
+
             var jiraIssue = new CreateIssueInfo
             {
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title.TrimEnd(),
-                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc") + " " + DateTime.Now.ToString(),
+                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments) + " " + DateTime.Now.ToString(),
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
                 RemainingEstimate = geminiIssue.RemainingTime,
                                 
-                Resolution = geminiIssue.Resolution
+                //Resolution = geminiIssue.Resolution
             };
 
             string status = "";
@@ -97,7 +125,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.Assignee = accountEngine.Execute(geminiIssue.Resources.First().Entity.Fullname).AccountId;
 
             //Load all issue's attachment
-            jiraIssue.Attachments = new List<string>();
+            jiraIssue.Attachments = descAttachments;
             attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments);
 
             //Load and map all gemini comments
@@ -138,11 +166,19 @@ namespace GeminiToJira.Mapper
             //UAT Type
             var issueType = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == ISSUE_TYPE);
             if (issueType != null)
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Type", issueType.Entity.Data));
+            {
+                string type;
+                if (TYPE_MAPPING.TryGetValue(issueType.FormattedData, out type))
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Type", type));
+            }
 
             //UAT Category
             if (geminiIssue.Components != null && geminiIssue.Components.Count > 0)
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Category", geminiIssue.Components[0].Entity.Name));
+            {
+                string category;
+                if (CATEGORY_MAPPING.TryGetValue(geminiIssue.Components[0].Entity.Name, out category))
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Category", category));
+            }
 
             //UAT Severity
             //map severity from gemini

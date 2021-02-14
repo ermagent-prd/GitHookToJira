@@ -131,16 +131,34 @@ namespace GeminiToJira.Engine
 
             GetLinks(jiraIssueInfo, ref analysisLink, ref brAnalysisLink, ref changeDocumentLink, ref testDocumentLink);
 
-            if (analysisLink == null && brAnalysisLink == null && changeDocumentLink == null && testDocumentLink == null)
+            //if all links are anull no url to save
+            if (analysisLink == null && 
+                brAnalysisLink == null && 
+                changeDocumentLink == null && 
+                testDocumentLink == null)
                 return "";
 
             var newFolder = jiraIssue.Key.Value + " " + jiraIssue.Summary;
-            var folderAlfresco = folderEngine.Execute(AlfrescoConstants.AlfrescoFolder, newFolder, storyFolder);
+            IFolder folderAlfresco = null;
 
-            jiraIssue.CustomFields.Add("Analysis Document Url", SaveAndUploadToAlfresco(folderAlfresco, analysisLink));
-            jiraIssue.CustomFields.Add("BR Analysis Url", SaveAndUploadToAlfresco(folderAlfresco, brAnalysisLink));
-            jiraIssue.CustomFields.Add("Change Document Url", SaveAndUploadToAlfresco(folderAlfresco, changeDocumentLink));
-            jiraIssue.CustomFields.Add("Test Document Url", SaveAndUploadToAlfresco(folderAlfresco, testDocumentLink));
+            //new folder is needed only if there is , at least, one File to save (url don't need folders)
+            if((analysisLink != null && analysisLink.FileName != "") ||
+                (brAnalysisLink != null && brAnalysisLink.FileName != "") ||
+                (changeDocumentLink != null && changeDocumentLink.FileName != "") ||
+                (testDocumentLink != null && testDocumentLink.FileName != ""))
+                folderAlfresco = folderEngine.Execute(AlfrescoConstants.AlfrescoFolder, newFolder, storyFolder);
+
+            if (analysisLink != null)
+                jiraIssue.CustomFields.Add("Analysis Document Url", SaveAndUploadToAlfresco(folderAlfresco, analysisLink));
+
+            if (brAnalysisLink != null)
+                jiraIssue.CustomFields.Add("BR Analysis Url", SaveAndUploadToAlfresco(folderAlfresco, brAnalysisLink));
+
+            if (changeDocumentLink != null)
+                jiraIssue.CustomFields.Add("Change Document Url", SaveAndUploadToAlfresco(folderAlfresco, changeDocumentLink));
+
+            if (testDocumentLink != null)
+                jiraIssue.CustomFields.Add("Test Document Url", SaveAndUploadToAlfresco(folderAlfresco, testDocumentLink));
 
             jiraIssue.SaveChanges();
 

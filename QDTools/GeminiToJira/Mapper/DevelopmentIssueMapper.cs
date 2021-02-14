@@ -57,12 +57,13 @@ namespace GeminiToJira.Mapper
 
         public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode, List<string> components)
         {
+            var descAttachments = new List<string>();
 
             var jiraIssue = new CreateIssueInfo
             {
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title.TrimEnd(),
-                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc") + " " + DateTime.Now.ToString(), 
+                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments) + " " + DateTime.Now.ToString(), 
                 Type = type,
             };
 
@@ -103,7 +104,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.Assignee = accountEngine.Execute(geminiIssue.Resources.First().Entity.Fullname).AccountId;
 
             //Load all issue's attachment
-            jiraIssue.Attachments = new List<string>();
+            jiraIssue.Attachments = descAttachments;
             attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments);
 
             //Load and map all gemini comments
@@ -115,7 +116,7 @@ namespace GeminiToJira.Mapper
             SetComponents(geminiIssue, jiraIssue, components);
 
             //worklog: only for sybtask issues
-            if (type == JiraConstants.StoryType)
+            if (type == JiraConstants.SubTaskType)
                 jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
 
             return jiraIssue;
@@ -142,9 +143,12 @@ namespace GeminiToJira.Mapper
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string devType)
         {
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("Completition", geminiIssue.PercentComplete.ToString()));
+
             var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
             if(owner != null && owner.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Owner", accountEngine.Execute(owner.FormattedData).AccountId));
+                
 
             //Start Date
             if (geminiIssue.StartDate.HasValue)

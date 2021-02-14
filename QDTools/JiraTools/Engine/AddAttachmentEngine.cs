@@ -24,11 +24,18 @@ namespace JiraTools.Engine
 
             foreach (var file in files)
             {
-                byteArray = File.ReadAllBytes(this.parameters.AttachmentPath + file);
+                try
+                {
+                    byteArray = File.ReadAllBytes(this.parameters.AttachmentPath + file);
 
-                uAttachmentInfo = new UploadAttachmentInfo(file, byteArray);
+                    uAttachmentInfo = new UploadAttachmentInfo(file, byteArray);
 
-                issue.AddAttachment(uAttachmentInfo);
+                    issue.AddAttachment(uAttachmentInfo);
+                }
+                catch
+                {
+                    //for file not found
+                }
             }
 
             issue.SaveChanges();

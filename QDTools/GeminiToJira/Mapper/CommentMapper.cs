@@ -50,7 +50,7 @@ namespace GeminiToJira.Mapper
             string commentAttachment = GetAttachmentBody(attachments);
 
             var author = accountEngine.Execute(geminiComment.Fullname);
-            var body = "[~accountId:" + author.AccountId + "]\n" + commentAttachment + parseCommentEngine.Execute(geminiComment.Comment, commentPrefix);
+            var body = "[~accountId:" + author.AccountId + "]\n" + commentAttachment + parseCommentEngine.Execute(geminiComment.Comment, commentPrefix, null);
 
             var remoteComment = new RemoteComment();
             remoteComment.author = author.AccountId;

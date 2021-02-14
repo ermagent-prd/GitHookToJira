@@ -27,9 +27,9 @@ namespace GeminiToJira.GeminiFilter
                 case FilterType.UAT:
                     return new IssuesFilter
                     {
-                        IncludeClosed = true,
+                        IncludeClosed = false,
                         Projects = UatConstants.UAT_PROJECT_ID,
-                        CreatedAfter = "27/08/2020"
+                        CreatedAfter = UatConstants.UAT_CREATED_FROM,                      
                         //Issues = "|63715|"  
                         //Issues = "|62157|"  
                     };

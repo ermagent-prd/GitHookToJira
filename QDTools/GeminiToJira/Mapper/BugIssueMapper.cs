@@ -63,12 +63,13 @@ namespace GeminiToJira.Mapper
 
         public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode)
         {
+            var descAttachments = new List<string>();
 
             var jiraIssue = new CreateIssueInfo
             {
                 ProjectKey = projectCode,
-                Summary = geminiIssue.Title.TrimEnd(),
-                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc") + " " + DateTime.Now.ToString(),
+                Summary = geminiIssue.Title.TrimEnd() == "" ? geminiIssue.IssueKey : geminiIssue.Title.TrimEnd(),
+                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments) + " " + DateTime.Now.ToString(),
                 Priority = geminiIssue.Priority,
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
@@ -89,7 +90,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.Assignee = accountEngine.Execute(geminiIssue.Resources.First().Entity.Fullname).AccountId;
 
             //Load all issue's attachment
-            jiraIssue.Attachments = new List<string>();
+            jiraIssue.Attachments = descAttachments;
             attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments);
             
             //Load and map all gemini comments
@@ -219,7 +220,7 @@ namespace GeminiToJira.Mapper
         private static string ParseSeverity(IssueDto geminiIssue)
         {
             if (geminiIssue.Severity.Contains('-'))
-                return geminiIssue.Severity.Substring(geminiIssue.Severity.IndexOf("-") + 2);
+                return geminiIssue.Severity.Substring(geminiIssue.Severity.IndexOf("-") + 1).TrimStart();
             else
                 return geminiIssue.Severity;
         }
