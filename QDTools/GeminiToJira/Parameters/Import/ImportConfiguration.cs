@@ -1,0 +1,33 @@
+﻿using AlfrescoTools.Parameters;
+using GeminiTools.Parameters;
+using JiraTools.Parameters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GeminiToJira.Parameters.Import
+{
+    public class ImportConfiguration
+    {
+        public string JiraProjectCode { get; set; }
+        //for developmentImportEngine
+        public List<String> ComponentsforDevelopment { get; set; }
+
+        public FilterConfiguration Filter { get; set; }
+
+        public AlfrescoConfiguration Alfresco { get; set; }
+        public GeminiConfiguration Gemini { get; set; }
+        public JiraConfiguration Jira { get; set; }
+
+        //local path
+        public string LogDirectory { get; set; }
+        public string AttachmenDownloadedtPath { get; set; }
+
+
+        public IGeminiToolsParameters GeminiParameters { get; set; }
+        public IJiraToolsParameters JiraParameters { get; set; }
+        public IAlfrescoToolsParameters AlfrescoParameter { get; set; }
+}
+}

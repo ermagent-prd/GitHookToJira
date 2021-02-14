@@ -49,8 +49,7 @@
     <Reference Include="HtmlAgilityPack, Version=1.11.30.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.30\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
@@ -95,6 +94,11 @@
     <Compile Include="Parameters\Alfresco\AlfrescoParamContainer.cs" />
     <Compile Include="Parameters\Gemini\GeminiConstants.cs" />
     <Compile Include="Parameters\Gemini\GeminiParamContainer.cs" />
+    <Compile Include="Parameters\Import\AlfrescoConfiguration.cs" />
+    <Compile Include="Parameters\Import\GeminiConfiguration.cs" />
+    <Compile Include="Parameters\Import\ImportConfiguration.cs" />
+    <Compile Include="Parameters\Import\FilterConfiguration.cs" />
+    <Compile Include="Parameters\Import\JiraConfiguration.cs" />
     <Compile Include="Parameters\Jira\JiraConstants.cs" />
     <Compile Include="Parameters\Jira\JiraParamContainer.cs" />
     <Compile Include="Program.cs" />

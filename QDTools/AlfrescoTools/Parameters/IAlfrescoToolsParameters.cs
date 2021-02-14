@@ -7,8 +7,6 @@ namespace AlfrescoTools.Parameters
 
         string ALFRESCO_PATH { get; }
 
-        string SAVING_PATH { get; }
-
         string UserName { get; }
 
         string Password { get; }

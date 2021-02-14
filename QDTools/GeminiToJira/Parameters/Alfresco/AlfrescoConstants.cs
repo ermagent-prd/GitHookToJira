@@ -11,8 +11,6 @@
 
         public const string Alfresco_PATH = @"C:\GeminiPorting\AttachmentDownloaded\";
 
-        public const string SAVING_PATH = "https://erm-swfactory.prometeia.com/Gemini/project/";
-
         public const string UserName = "apiuser";
         public const string Password = "cmis";
         public const string AlfrescoFolder = "APi Test";

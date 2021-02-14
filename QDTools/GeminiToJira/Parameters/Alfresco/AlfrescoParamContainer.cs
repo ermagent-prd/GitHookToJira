@@ -10,8 +10,6 @@ namespace GeminiToJira.Parameters
 
         public string ALFRESCO_PATH => AlfrescoConstants.Alfresco_PATH;
 
-        public string SAVING_PATH => AlfrescoConstants.SAVING_PATH;
-
         public string UserName => AlfrescoConstants.UserName;
 
         public string Password => AlfrescoConstants.Password;
