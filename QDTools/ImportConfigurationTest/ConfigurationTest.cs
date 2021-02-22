@@ -13,7 +13,7 @@ namespace ImportConfigurationTest
         [TestMethod]
         public void SerializeConfigurationTest()
         {
-            var configuration = new ImportConfiguration()
+            var configuration = new GeminiToJiraParameters()
             {
                 JiraProjectCode = "EIB",
 
@@ -99,7 +99,7 @@ namespace ImportConfigurationTest
         [TestMethod]
         public void DeSerializeConfigurationTest()
         {
-            ImportConfiguration configuration = JsonConvert.DeserializeObject<ImportConfiguration>(File.ReadAllText(@"C:\GeminiPorting\configuration.json"));
+            GeminiToJiraParameters configuration = JsonConvert.DeserializeObject<GeminiToJiraParameters>(File.ReadAllText(@"C:\GeminiPorting\configuration.json"));
 
 
             Assert.IsNotNull(configuration);

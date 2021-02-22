@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GeminiToJira.Parameters.Import
 {
-    public class ImportConfiguration
+    public class GeminiToJiraParameters
     {
         public string JiraProjectCode { get; set; }
         //for developmentImportEngine

@@ -76,19 +76,23 @@ namespace GeminiToJira.Engine
                         if (sub.Value.Type == "Task")
                         {
                             var currentSubIssue = geminiItemsEngine.Execute(sub.Value.Id);
-                            var jiraSubTaskInfo = geminiToJiraMapper.Execute(currentSubIssue, JiraConstants.SubTaskType, projectCode, components);
-                            jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
-                            try
+
+                            if (CheckIfValidSubTask(currentSubIssue))
                             {
-                                var subIssue = jiraSaveEngine.Execute(jiraSubTaskInfo);
-                                SetAndSaveReporter(subIssue, currentSubIssue);
-                                SetAndSaveAlfrescoUrls(jiraSubTaskInfo, subIssue, storyFolder);
-                            }
-                            catch (Exception ex)
-                            {
-                                File.AppendAllText(
-                                    JiraConstants.LogDirectory + developmentLogFile,
-                                    "[SubT] - " + currentSubIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
+                                var jiraSubTaskInfo = geminiToJiraMapper.Execute(currentSubIssue, JiraConstants.SubTaskType, projectCode, components);
+                                jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
+                                try
+                                {
+                                    var subIssue = jiraSaveEngine.Execute(jiraSubTaskInfo);
+                                    SetAndSaveReporter(subIssue, currentSubIssue);
+                                    SetAndSaveAlfrescoUrls(jiraSubTaskInfo, subIssue, storyFolder);
+                                }
+                                catch (Exception ex)
+                                {
+                                    File.AppendAllText(
+                                        JiraConstants.LogDirectory + developmentLogFile,
+                                        "[SubT] - " + currentSubIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
+                                }
                             }
                         }
                     }
@@ -105,6 +109,26 @@ namespace GeminiToJira.Engine
         
 
         #region Private 
+        /// <summary>
+        /// The subtask must have the same release and development lines of his father (story)
+        /// </summary>
+        /// <param name="subTask"></param>
+        /// <returns></returns>
+        private bool CheckIfValidSubTask(IssueDto subTask)
+        {
+            var release = subTask.CustomFields.FirstOrDefault(x => x.Name == DevelopmentConstants.DEVELOPMENT_RELEASE_KEY);
+            var devLine = subTask.CustomFields.FirstOrDefault(x => x.Name == DevelopmentConstants.DEVELOPMENT_LINE_KEY);
+
+            //Solo i development: i task sono quelli associati ai development trovati
+            if (release != null && devLine != null &&
+                DevelopmentConstants.DEVELOPMENT_RELEASES.Contains(release.FormattedData) &&
+                DevelopmentConstants.DEVELOPMENT_LINES.Contains(devLine.FormattedData))
+                return true;
+            else
+                return false;
+
+        }
+
         private IEnumerable<IssueDto> filterGeminiIssueList(
             GeminiTools.Items.ItemListGetter geminiItemsEngine)
         {

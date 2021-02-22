@@ -32,7 +32,7 @@ namespace GeminiToJira
 
             #region Development
 
-            //string projectCode = "ER";
+            //string jiraProjectCode = "ER";
             string jiraProjectCode = "EIB";
             var components = new List<String> { "ILIAS", "ILIAS-STA", "BSM", "Other" };
             var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();

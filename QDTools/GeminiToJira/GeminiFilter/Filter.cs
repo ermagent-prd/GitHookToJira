@@ -19,7 +19,7 @@ namespace GeminiToJira.GeminiFilter
                         IncludeClosed = true,
                         Projects = DevelopmentConstants.DEVELOPMENT_PROJECT_ID,
                         Types = DevelopmentConstants.DEVELOPMENT_TYPES,
-                        //Issues = "|59673|",   
+                        //Issues = "|62965|",   
                         //Issues = "|60466|",   
                         //Issues = "|59844|",   
                         //Issues = "|61087|",   
