@@ -33,7 +33,7 @@ namespace GeminiToJira
             #region Development
 
             //string jiraProjectCode = "ER";
-            string jiraProjectCode = "EIB";
+            string jiraProjectCode = "EOIB";
             var components = new List<String> { "ILIAS", "ILIAS-STA", "BSM", "Other" };
             var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
             timer.Start();
@@ -57,7 +57,7 @@ namespace GeminiToJira
 
             var bugEngine = unityContainer.Resolve<ImportBugEngine>();
             timer.Restart();
-            bugEngine.Execute(jiraProjectCode);
+            //bugEngine.Execute(jiraProjectCode);
             timer.Stop();
             Console.WriteLine("[" + DateTime.Now + "] BUG imported in " + timer.Elapsed); 
             

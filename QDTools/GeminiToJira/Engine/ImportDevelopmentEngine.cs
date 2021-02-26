@@ -52,21 +52,24 @@ namespace GeminiToJira.Engine
 
         public void Execute(string projectCode, List<string> components)
         {
+            var jiraSavedDictionary = new Dictionary<int, Issue>();
+            var storyFolderDictionary = new Dictionary<string, string>();
+
             var geminiDevelopmentIssueList = filterGeminiIssueList(geminiItemsEngine);
 
             var developmentLogFile = "DevelopmentLog_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
-            foreach (var geminiIssue in geminiDevelopmentIssueList.OrderBy(f => f.Id).ToList())
+            foreach (var geminiIssue in geminiDevelopmentIssueList.Where(l => l.Type == "Development").OrderBy(f => f.Id).ToList())
             {
                 try
                 {
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
                     var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.StoryType, projectCode, components);
 
-                    //Story
-                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
-                    SetAndSaveReporter(jiraIssue, geminiIssue);
+                    //Create Story
+                    Issue jiraIssue = SaveAndSetStory(jiraSavedDictionary, geminiIssue, jiraIssueInfo);
                     var storyFolder = SetAndSaveAlfrescoUrls(jiraIssueInfo, jiraIssue, "");
+                    storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
 
                     var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != JiraConstants.GroupType && i.Value.Id != currentIssue.Id);
 
@@ -77,23 +80,7 @@ namespace GeminiToJira.Engine
                         {
                             var currentSubIssue = geminiItemsEngine.Execute(sub.Value.Id);
 
-                            if (CheckIfValidSubTask(currentSubIssue))
-                            {
-                                var jiraSubTaskInfo = geminiToJiraMapper.Execute(currentSubIssue, JiraConstants.SubTaskType, projectCode, components);
-                                jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
-                                try
-                                {
-                                    var subIssue = jiraSaveEngine.Execute(jiraSubTaskInfo);
-                                    SetAndSaveReporter(subIssue, currentSubIssue);
-                                    SetAndSaveAlfrescoUrls(jiraSubTaskInfo, subIssue, storyFolder);
-                                }
-                                catch (Exception ex)
-                                {
-                                    File.AppendAllText(
-                                        JiraConstants.LogDirectory + developmentLogFile,
-                                        "[SubT] - " + currentSubIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
-                                }
-                            }
+                            SaveAndSetSubTask(projectCode, components, jiraSavedDictionary, developmentLogFile, jiraIssue, storyFolder, currentSubIssue);
                         }
                     }
                 }
@@ -104,9 +91,90 @@ namespace GeminiToJira.Engine
                         "[Task] - " + geminiIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
                 }
             }
+
+            //manage orphans if exist (an orphan is a gemini task that was not listed in the hierarhy of a Story, that was previous inserted
+            foreach (var geminiIssue in geminiDevelopmentIssueList.Where(l => l.Type == "Task").OrderBy(f => f.Id).ToList())
+            {
+                if (!jiraSavedDictionary.TryGetValue(geminiIssue.Id, out Issue jiraIssueSaved))
+                {
+                    var currentSubIssue = geminiItemsEngine.Execute(geminiIssue.Id);
+                    try
+                    {
+                        //if have no father
+                        if (currentSubIssue.HierarchyKey == "")
+                        {
+                            //Create Story
+                            var jiraIssueInfo = geminiToJiraMapper.Execute(currentSubIssue, JiraConstants.StoryType, projectCode, components);
+                            Issue jiraIssue = SaveAndSetStory(jiraSavedDictionary, geminiIssue, jiraIssueInfo);
+                            var storyFolder = SetAndSaveAlfrescoUrls(jiraIssueInfo, jiraIssue, "");
+                            storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
+                            
+                            //and become a subtask of myself
+                            SaveAndSetSubTask(projectCode, components, jiraSavedDictionary, developmentLogFile, jiraIssue, storyFolder, currentSubIssue);
+
+                        }
+                        else
+                        {
+                            //my father was inserted and i was not in his hierarchy list
+                            var fatherKey = currentSubIssue.HierarchyKey.Split('|').ElementAt(1);
+
+                            if (jiraSavedDictionary.TryGetValue(Convert.ToInt32(fatherKey), out Issue jiraFatherIssue))
+                            {
+                                storyFolderDictionary.TryGetValue(jiraFatherIssue.JiraIdentifier, out string storyFolder);
+
+                                SaveAndSetSubTask(projectCode, components, jiraSavedDictionary, developmentLogFile, jiraFatherIssue, storyFolder, currentSubIssue);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        File.AppendAllText(
+                            JiraConstants.LogDirectory + developmentLogFile,
+                            "[SubT] - " + currentSubIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
+                    }
+                }
+            }
         }
 
-        
+        private Issue SaveAndSetStory(Dictionary<int, Issue> jiraSavedDictionary, IssueDto geminiIssue, CreateIssueInfo jiraIssueInfo)
+        {
+            var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
+            //and set as saved
+            if(!jiraSavedDictionary.TryGetValue(geminiIssue.Id, out Issue existing))
+                jiraSavedDictionary.Add(geminiIssue.Id, jiraIssue);
+
+            SetAndSaveReporter(jiraIssue, geminiIssue);
+            return jiraIssue;
+        }
+
+        private void SaveAndSetSubTask(string projectCode, List<string> components, Dictionary<int, Issue> jiraSavedDictionary, string developmentLogFile, Issue jiraIssue, string storyFolder, IssueDto currentSubIssue)
+        {
+            if (CheckIfValidSubTask(currentSubIssue))
+            {
+                var jiraSubTaskInfo = geminiToJiraMapper.Execute(currentSubIssue, JiraConstants.SubTaskType, projectCode, components);
+
+                jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
+                try
+                {
+                    //create subtask
+                    var subIssue = jiraSaveEngine.Execute(jiraSubTaskInfo);
+                    //and set as saved
+                    if (!jiraSavedDictionary.TryGetValue(currentSubIssue.Id, out Issue existing))
+                        jiraSavedDictionary.Add(currentSubIssue.Id, subIssue);
+
+                    SetAndSaveReporter(subIssue, currentSubIssue);
+                    SetAndSaveAlfrescoUrls(jiraSubTaskInfo, subIssue, storyFolder);
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllText(
+                        JiraConstants.LogDirectory + developmentLogFile,
+                        "[SubT] - " + currentSubIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
+                }
+            }
+        }
+
+
 
         #region Private 
         /// <summary>

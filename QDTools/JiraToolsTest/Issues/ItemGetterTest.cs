@@ -338,7 +338,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("EIB-219", QuerableType.ByCode, "EIB");
+            var issues = engine.Execute("EIB-12759", QuerableType.ByCode, "EIB");
 
             var list = new List<Issue>();
 

@@ -26,8 +26,8 @@ namespace JiraToolsTest
 
             var issueInfo = new CreateIssueInfo
             {
-                ProjectKey = "EIB",
-                Summary = "Api call Test PL worklog user (Atlassian SDK)",
+                ProjectKey = "ER",
+                Summary = "Api call Test PL comment user (Atlassian SDK)",
                 Description = "This is a (PL timetracking) test " + DateTime.Now.ToString(),
                 Type = "Story",
                 OriginalEstimate = "480h",
@@ -39,32 +39,33 @@ namespace JiraToolsTest
                 AssigneeUser = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2"
 
             };
-            
-            
+
+            var userEngine = container.Resolve<UserListGetter>();
+
+            var users = userEngine.Execute();
+            Dictionary<string, JiraUser> userDictionary = new Dictionary<string, JiraUser>();
+            foreach (var user in users)
+                userDictionary.Add(user.DisplayName, user);
 
             issueInfo.CommentList = new List<Comment>();
             
             var remoteComment = new RemoteComment();
-            remoteComment.author = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
+            remoteComment.author = "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2]";
             remoteComment.body = "Body Comment";
-            remoteComment.updateAuthor = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
-            
+            remoteComment.updateAuthor = "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2]";
+            remoteComment.updateAuthorUser = userDictionary["Paolo Luca"];
+            remoteComment.updated = DateTime.Now;
+
+
             var comment = new Comment(remoteComment);
-            comment.Author = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
-            comment.Body = "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2] wrote Body Comment";
+            comment.Author = "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2] ";
+            comment.Body = "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2] wrote the Comment";
             issueInfo.CommentList.Add(comment);
 
             issueInfo.FixVersions.Add("ERMAS 5.25.0");
 
             //custom fields
             issueInfo.CustomFields.Add(new CustomFieldInfo("JDE", "JDE Sample code"));
-
-            //Epic link
-            //issueInfo.CustomFields.Add(new CustomFieldInfo("Epic Link", "ER-2859"));
-
-            //assignee and owner custom
-            //issueInfo.CustomFields.Add(new CustomFieldInfo("Owner", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
-            //issueInfo.CustomFields.Add(new CustomFieldInfo("AssigneeTest", "70121:67b933a3-5693-47d2-82c0-3f997f279387"));
 
             //"70121:67b933a3-5693-47d2-82c0-3f997f279387" pierluigi
             //"70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2" paololuca
@@ -80,7 +81,7 @@ namespace JiraToolsTest
 
             //Logged
             issueInfo.Logged.Add(new WorkLogInfo(
-                "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2",
+                "[~accountId:70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2] ",
                 DateTime.Now,
                 "1d",
                 "Logging worklog test: author paololuca"));

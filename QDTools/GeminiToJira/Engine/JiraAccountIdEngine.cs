@@ -33,7 +33,6 @@ namespace GeminiToJira.Engine
         {
             Dictionary<string, JiraUser> result = new Dictionary<string, JiraUser>();
                         
-            //result.Add("paolo Luca", )
             foreach (var group in userGroups)
             {
                 var userList = userListGetter.Execute();      //returns all active users

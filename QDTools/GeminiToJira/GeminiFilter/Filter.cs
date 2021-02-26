@@ -19,7 +19,7 @@ namespace GeminiToJira.GeminiFilter
                         IncludeClosed = true,
                         Projects = DevelopmentConstants.DEVELOPMENT_PROJECT_ID,
                         Types = DevelopmentConstants.DEVELOPMENT_TYPES,
-                        //Issues = "|62965|",   
+                        //Issues = "|63446|65023|67269|",   
                         //Issues = "|60466|",   
                         //Issues = "|59844|",   
                         //Issues = "|61087|",   
@@ -30,6 +30,7 @@ namespace GeminiToJira.GeminiFilter
                         IncludeClosed = false,
                         Projects = UatConstants.UAT_PROJECT_ID,
                         CreatedAfter = UatConstants.UAT_CREATED_FROM,                      
+                        //Issues = "|67095|"
                         //Issues = "|63715|"  
                         //Issues = "|62157|"  
                     };
@@ -57,7 +58,7 @@ namespace GeminiToJira.GeminiFilter
                 var devLine = l.CustomFields.FirstOrDefault(x => x.Name == DevelopmentConstants.DEVELOPMENT_LINE_KEY);
 
                 //Solo i development: i task sono quelli associati ai development trovati
-                if (l.Type == "Development" && release != null && devLine != null &&
+                if (release != null && devLine != null &&
                     DevelopmentConstants.DEVELOPMENT_RELEASES.Contains(release.FormattedData) &&
                     DevelopmentConstants.DEVELOPMENT_LINES.Contains(devLine.FormattedData))
                     filteredList.Add(l);

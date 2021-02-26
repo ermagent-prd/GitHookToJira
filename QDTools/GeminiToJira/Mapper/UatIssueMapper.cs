@@ -58,7 +58,7 @@ namespace GeminiToJira.Mapper
             { "Messaggio di errore",   "Messaggio di errore" },
             { "Messaggio d' errore",   "Messaggio di errore" },
             { "Messaggio d'errore",    "Messaggio di errore" },
-            { "DAL",   "DAL" },
+            { "DAL",   "Data Access Layer" },
         };
 
         private readonly Dictionary<string, string> TYPE_MAPPING = new Dictionary<string, string>()
