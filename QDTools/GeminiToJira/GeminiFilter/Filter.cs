@@ -20,19 +20,18 @@ namespace GeminiToJira.GeminiFilter
                         Projects = DevelopmentConstants.DEVELOPMENT_PROJECT_ID,
                         Types = DevelopmentConstants.DEVELOPMENT_TYPES,
                         //Issues = "|63446|65023|67269|",   
-                        //Issues = "|60466|",   
+                        //Issues = "|59545|",   
                         //Issues = "|59844|",   
                         //Issues = "|61087|",   
                     };
                 case FilterType.UAT:
                     return new IssuesFilter
                     {
-                        IncludeClosed = false,
                         Projects = UatConstants.UAT_PROJECT_ID,
-                        CreatedAfter = UatConstants.UAT_CREATED_FROM,                      
-                        //Issues = "|67095|"
+                        //Issues = "|67704|"
                         //Issues = "|63715|"  
                         //Issues = "|62157|"  
+                        //Issues = "|61636|"
                     };
                 case FilterType.ERMBUG:
                     return new IssuesFilter

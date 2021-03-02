@@ -66,9 +66,6 @@ namespace JiraTools.Engine
                        where i.Summary == filter && i.Project == projectCode
                        orderby i.Created
                        select i;
-
-
-
         }
 
         #endregion

@@ -273,6 +273,25 @@ namespace JiraToolsTest
         }
 
         [TestMethod]
+        public void Linq_Execute_GetUatIssueBySummary()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("H - XBRL FP \"Sylos based\" + Controlli", QuerableType.BySummary, "EOIB");
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            Assert.IsTrue(list.Any());
+        }
+
+        [TestMethod]
         public void Linq_Execute_GetBugIssue()
         {
             var container = ContainerForTest.DefaultInstance.Value;

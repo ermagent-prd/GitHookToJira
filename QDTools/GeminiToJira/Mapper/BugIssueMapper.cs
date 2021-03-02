@@ -14,7 +14,7 @@ namespace GeminiToJira.Mapper
     public class BugIssueMapper
     {
         
-        private Dictionary<string, string> BUG_TYPE_MAPPING = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> BUG_TYPE_MAPPING = new Dictionary<string, string>()
         {
             { "Presentation", "Functional" },
             { "Engine", "Functional" },
@@ -22,14 +22,47 @@ namespace GeminiToJira.Mapper
             { "Other", "Functional" },
         };
 
-        //private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
-        //{
-        //    { "Assigned",   "Assigned" },
-        //    { "In Progress",   "In Progress" },
-        //    { "Cancelled",   "Cancelled" },
-        //    { "Testing",   "in Progress" },
-        //    { "Fixed",  "Fixed" },
-        //};
+        private readonly Dictionary<string, string> BUG_CAUSE_TYPE_MAPPING = new Dictionary<string, string>()
+        {
+            {"development mistake","Development mistake" },
+            {"analysis mistake","Analysis mistake" },
+            {"sql mistake","Development mistake" },
+            {"presentation mistake","Presentation mistake" },
+            {"enhancement","Enhancement" },
+            {"missing development","Missing development" },
+            {"regression","Regression" },
+            {"refactoring","Refactoring" },
+            {"licensing","Licensing" },
+            {"complexity","Code complexity" },
+            {"db upgrade","Datasource upgrade" },
+            {"devops","Regression" },
+            {"duplicate code","Development mistake" },
+            {"performance","Performance" }
+        };
+
+        private readonly string BUG_CAUSE_TYPE_DEFAULT = "Other";
+
+        private readonly Dictionary<string, string> BUG_SUGGESTED_ACTION_TYPE_MAPPING = new Dictionary<string, string>()
+        {
+            {"more attention", "Integration test" },
+            {"more test", "Integration test" },
+            {"unit test", "Test automation" },
+            {"tca", "Integration test" },
+            {"refactoring", "Refactoring" },
+            {"presentation test", "Integration test" },
+            {"missing documentation", "Documentation" },
+            {"uat", "Integration test" },
+            {"database test", "Integration test" },
+            {"enancement management", "Processes improvement" },
+            {"performance test", "Performance test" },
+            {"eagle Integration", "Integration test" },
+            {"licence test", "Licence test" },
+            {"use entity framework", "Refactoring" },
+            {"sql test", "Integration test" }
+        };
+
+        private readonly string BUG_SUGGESTED_ACTION_TYPE_DEFAULT = "Other";
+
 
 
         private const string AFFECTEDBUILD = "FoundInBuild";
@@ -67,7 +100,7 @@ namespace GeminiToJira.Mapper
 
             var jiraIssue = new CreateIssueInfo
             {
-                ProjectKey = projectCode,
+                ProjectKey = projectCode,//for bug without title
                 Summary = geminiIssue.Title.TrimEnd() == "" ? geminiIssue.IssueKey : geminiIssue.Title.TrimEnd(),
                 Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments) + " " + DateTime.Now.ToString(),
                 Priority = geminiIssue.Priority,
@@ -158,7 +191,12 @@ namespace GeminiToJira.Mapper
             //"CauseType"
             var causeType = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "CauseType");
             if (causeType != null && causeType.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Cause Type", parseCommentEngine.Execute(causeType.FormattedData)));
+            {
+                if(BUG_CAUSE_TYPE_MAPPING.TryGetValue(parseCommentEngine.Execute(causeType.FormattedData).ToLower(), out string cause))
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Cause Type", cause));
+                else
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Cause Type", BUG_CAUSE_TYPE_DEFAULT));
+            }
 
             //Cause description
             var causeDesc = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "Cause");
@@ -173,7 +211,12 @@ namespace GeminiToJira.Mapper
             //"SuggestedActionsType"
             var suggestedActionsType = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "SuggestedActionsType");
             if (suggestedActionsType != null && suggestedActionsType.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug suggested action type", parseCommentEngine.Execute(suggestedActionsType.FormattedData)));
+            {
+                if(BUG_SUGGESTED_ACTION_TYPE_MAPPING.TryGetValue(parseCommentEngine.Execute(suggestedActionsType.FormattedData).ToLower(), out string suggestedAction))
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug suggested action type", suggestedAction));
+                else
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug suggested action type", BUG_SUGGESTED_ACTION_TYPE_DEFAULT));
+            }
 
             //"SuggestedActions"
             var suggestedActions = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "SuggestedActions");
@@ -184,6 +227,9 @@ namespace GeminiToJira.Mapper
             var notes = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "Notes");
             if (notes != null && notes.FormattedData.Length > 3)  //la string può contenere anche solo \n, \r, \nr, \rn
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Notes", parseCommentEngine.Execute(notes.FormattedData)));
+
+            //Gemini : save the original issue's code from gemini
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", GeminiConstants.ErmBugPrefix + geminiIssue.Id.ToString()));
         }
 
         private void SetAffectedVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue)

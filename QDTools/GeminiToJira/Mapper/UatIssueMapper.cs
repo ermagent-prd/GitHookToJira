@@ -33,7 +33,7 @@ namespace GeminiToJira.Mapper
             { "cancelled",   "Done" },
             { "rejected",   "Done" },
             { "fixed",  "Fixed" },
-            { "Closed",  "Fixed" },
+            { "closed",  "Fixed" },
             { "in Backlog",  "In Backlog" },
         };
 
@@ -41,37 +41,37 @@ namespace GeminiToJira.Mapper
 
         private readonly Dictionary<string, string> PRIORITY_MAPPING = new Dictionary<string, string>()
         {
-            { "Trivial",   "Low" },
-            { "Minor",   "Medium" },
-            { "Major",   "High" },
-            { "Blocking",   "Highest" },
+            { "trivial",   "Low" },
+            { "minor",   "Medium" },
+            { "major",   "High" },
+            { "blocking",   "Highest" },
         };
 
         private readonly Dictionary<string, string> CATEGORY_MAPPING = new Dictionary<string, string>()
         {
-            { "Calcoli",   "Calcoli" },
-            { "Interfaccia",   "Interfaccia" },
-            { "Usabilità",   "Usabilità" },
-            { "Efficenza",   "Efficenza" },
-            { "Suggerimento",   "Suggerimento" },
-            { "Localizzazione",   "Localizzazione" },
-            { "Messaggio di errore",   "Messaggio di errore" },
-            { "Messaggio d' errore",   "Messaggio di errore" },
-            { "Messaggio d'errore",    "Messaggio di errore" },
-            { "DAL",   "Data Access Layer" },
+            {"calcoli", "Functional"},
+            {"interfaccia", "Usability"},
+            {"usabilità", "Usability"},
+            {"efficenza", "Performance"},
+            {"suggerimento", "Usability"},
+            {"localizzazione", "Usability"},
+            {"messaggio di errore", "Functional"},
+            {"dal", "Functional"}
         };
+        private readonly string CATEGORY_MAPPING_DEFAULT = "Functional";
+
 
         private readonly Dictionary<string, string> TYPE_MAPPING = new Dictionary<string, string>()
         {
-            { "Defect",   "Defect" },
-            { "Investigation",   "Investigation" },
-            { "Enhancement",   "Enhancement" },
-            { "Enanchement",   "Enhancement" },
-            { "Regression",   "Regression" },
-            { "Setup",   "Setup" },
-            { "Change request",   "Change request" },
-            { "New Feature",   "New Feature" },
-            { "Missing Functionality",   "Missing Functionality" },
+            { "defect",   "Defect" },
+            { "investigation",   "Investigation" },
+            { "enhancement",   "Enhancement" },
+            { "enanchement",   "Enhancement" },
+            { "regression",   "Regression" },
+            { "setup",   "Setup" },
+            { "change request",   "Change request" },
+            { "new feature",   "New Feature" },
+            { "missing functionality",   "Missing Functionality" },
         };
 
 
@@ -117,7 +117,7 @@ namespace GeminiToJira.Mapper
             jiraIssue.FixVersions = new List<string>();
 
             string priority = "";
-            if (PRIORITY_MAPPING.TryGetValue(geminiIssue.Priority, out priority))
+            if (PRIORITY_MAPPING.TryGetValue(geminiIssue.Priority.ToLower(), out priority))
                 jiraIssue.Priority = priority;
 
             //Assignee
@@ -168,7 +168,7 @@ namespace GeminiToJira.Mapper
             if (issueType != null)
             {
                 string type;
-                if (TYPE_MAPPING.TryGetValue(issueType.FormattedData, out type))
+                if (TYPE_MAPPING.TryGetValue(issueType.FormattedData.ToLower(), out type))
                     jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Type", type));
             }
 
@@ -176,8 +176,10 @@ namespace GeminiToJira.Mapper
             if (geminiIssue.Components != null && geminiIssue.Components.Count > 0)
             {
                 string category;
-                if (CATEGORY_MAPPING.TryGetValue(geminiIssue.Components[0].Entity.Name, out category))
+                if (CATEGORY_MAPPING.TryGetValue(geminiIssue.Components[0].Entity.Name.ToLower(), out category))
                     jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Category", category));
+                else
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Category", CATEGORY_MAPPING_DEFAULT));
             }
 
             //UAT Severity
@@ -198,6 +200,9 @@ namespace GeminiToJira.Mapper
             var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_RELEASE_KEY);
             if (release != null && release.FormattedData != "")
                 jiraIssue.FixVersions.Add(release.FormattedData);
+
+            //Gemini : save the original issue's code from gemini
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", GeminiConstants.UatPrefix + geminiIssue.Id.ToString()));
 
         }
 

@@ -89,6 +89,10 @@ namespace GeminiToJira.Engine
                     }
                     catch
                     {
+                        if(att.Value.Contains("data:image"))
+                            comment = comment.Replace(att.Value, "\n");
+
+                        //else nothing
                         //for image linked to shared folder
                     }
                 }

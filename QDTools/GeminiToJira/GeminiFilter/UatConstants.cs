@@ -6,6 +6,6 @@ namespace GeminiToJira.GeminiFilter
     {
         public static readonly string UAT_PROJECT_ID = "|37|";  //uat project
 
-        public static readonly string UAT_CREATED_FROM = "8/27/2020";
+        public static readonly string UAT_CREATED_FROM = "27/08/2020";
     }
 }
