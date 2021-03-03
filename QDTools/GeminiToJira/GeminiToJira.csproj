@@ -110,7 +110,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Parameters\Import\CfgFiles\ERM.json" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\EIB.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AlfrescoTools\AlfrescoTools.csproj">
