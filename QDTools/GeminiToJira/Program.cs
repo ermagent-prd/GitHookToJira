@@ -10,8 +10,7 @@ using System.Reflection;
 namespace GeminiToJira
 {
     class Program
-    {   
-        
+    {           
         static void Main(string[] args)
         {
             var cfgKey = ImportType.EIB;
