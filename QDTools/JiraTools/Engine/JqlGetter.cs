@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Atlassian.Jira;
 using JiraTools.Parameters;
@@ -35,14 +36,29 @@ namespace JiraTools.Engine
         {
             var options = new IssueSearchOptions(jsql);
 
+            options.StartAt = 0;
+
             options.MaxIssuesPerRequest = this.parameters.MaxIssuesPerRequest; //Max 100 ??
 
-            var task = GetIssues(options);
-            
-            task.Wait();
+            var result = new List<Issue>();
 
-            return task.Result;
+            while (true)
+            { 
+                var task = GetIssues(options);
+
+                task.Wait();
+
+                if (!task.Result.Any())
+                    break;
+
+                options.StartAt += options.MaxIssuesPerRequest.Value;
+
+                result.AddRange(task.Result);
+            }
+
+            return result;
         }
+
 
 
         #endregion
