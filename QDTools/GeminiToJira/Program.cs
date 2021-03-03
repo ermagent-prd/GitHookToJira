@@ -1,21 +1,9 @@
-﻿using Countersoft.Gemini.Commons.Dto;
-using GeminiToJira.GeminiFilter;
-using GeminiToJira.Mapper;
-using GeminiTools.Items;
-using GeminiTools.Container;
-using JiraTools.Engine;
-using JiraTools.Container;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Unity;
 using GeminiToJira.Container;
-using Atlassian.Jira;
-using JiraTools.Parameters;
-using GeminiToJira.Parameters;
 using System;
 using GeminiToJira.Engine;
 using System.Diagnostics;
-using System.IO;
 using GeminiToJira.Parameters.Import;
 using System.Reflection;
 
