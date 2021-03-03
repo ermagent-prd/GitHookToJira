@@ -140,15 +140,12 @@ namespace GeminiToJira.Engine
             }
             catch
             {
-                //if related dev contains " we need to search in "like" mode for the substring
-                if (jiraIssueInfo.RelatedDevelopment.Contains("\""))
-                {
-                    jiraDevList = jiraItemsEngine.Execute(
-                        RemoveSpecialChar(jiraIssueInfo),
-                        QuerableType.BySummary,
-                        projectCode);
-                    jiraDev = SearchRelatedDevelopment(jiraIssueInfo, jiraDev, jiraDevList);
-                }
+                //probably the title contains special charactes, that we need to remove (i.e. +, -, "...)
+                jiraDevList = jiraItemsEngine.Execute(
+                    RemoveSpecialChar(jiraIssueInfo),
+                    QuerableType.BySummary,
+                    projectCode);
+                jiraDev = SearchRelatedDevelopment(jiraIssueInfo, jiraDev, jiraDevList);
             }
 
             return jiraDev;
