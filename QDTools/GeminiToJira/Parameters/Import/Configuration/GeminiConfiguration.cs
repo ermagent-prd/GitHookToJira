@@ -12,5 +12,6 @@ namespace GeminiToJira.Parameters.Import
         public string ErmBugProjectCode { get; set; }
         public string ErmPrefix { get; set; }
         public string ProjectUrl { get; set; }
+        public string GroupTypeCode { get; set; }
     }
 }

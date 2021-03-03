@@ -27,6 +27,6 @@
         public const string SubTaskType = "10003";
         public const string UatType = "10014";
         public const string BugType = "10004";
-        public const string GroupType = "Group";
+        
     }
 }

@@ -15,20 +15,25 @@ using GeminiToJira.Parameters;
 using System;
 using GeminiToJira.Engine;
 using System.Diagnostics;
+using System.IO;
+using GeminiToJira.Parameters.Import;
+using System.Reflection;
 
 namespace GeminiToJira
 {
     class Program
     {   
-        private static JiraAccountIdEngine accountEngine;
-
+        
         static void Main(string[] args)
         {
+            var cfgKey = ImportType.EIB;
+            var cfgManager = new ConfigurationManager();
+            var fileCfg = cfgManager.Execute(cfgKey, Assembly.GetExecutingAssembly());
+
             var unityContainer = ContainerFactory.Execute();
 
             Stopwatch timer = new Stopwatch();
             Console.WriteLine("["+ DateTime.Now + "] Started...");
-            
 
             #region Development
 
@@ -38,7 +43,7 @@ namespace GeminiToJira
             var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
             timer.Start();
             Console.WriteLine("[" + DateTime.Now + "] Start Development");
-            //developmentEngine.Execute(jiraProjectCode, components);
+            developmentEngine.Execute(jiraProjectCode, components);
             timer.Stop();
             Console.WriteLine("[" + DateTime.Now + "] Development imported in " + timer.Elapsed);
 

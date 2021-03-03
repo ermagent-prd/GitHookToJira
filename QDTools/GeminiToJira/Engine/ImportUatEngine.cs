@@ -41,10 +41,10 @@ namespace GeminiToJira.Engine
         public void Execute(string projectCode)
         {
             var uatLogFile = "UatLog_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
-            var uatImportedFile = "UatImported_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
             //for debug only
-            File.AppendAllText(JiraConstants.LogDirectory + uatImportedFile, "IssueKey" + ";" + "Title" + ";" + "CreatedTime" +";" + "Status" + Environment.NewLine);
+            //var uatImportedFile = "UatImported_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+            //File.AppendAllText(JiraConstants.LogDirectory + uatImportedFile, "IssueKey" + ";" + "Title" + ";" + "CreatedTime" +";" + "Status" + Environment.NewLine);
 
 
             var filter = Filter.GetFilter(FilterType.UAT);
@@ -64,12 +64,12 @@ namespace GeminiToJira.Engine
                 foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.CreatedTime).ThenBy(f => f.Id).ToList())
                 {
                     //for debug only
-                    File.AppendAllText(JiraConstants.LogDirectory + uatImportedFile, 
-                        geminiIssue.IssueKey + ";" + 
-                        geminiIssue.Title + ";" + 
-                        geminiIssue.CreatedTime + ";" + 
-                        geminiIssue.Status + 
-                        Environment.NewLine);
+                    //File.AppendAllText(JiraConstants.LogDirectory + uatImportedFile, 
+                    //    geminiIssue.IssueKey + ";" + 
+                    //    geminiIssue.Title + ";" + 
+                    //    geminiIssue.CreatedTime + ";" + 
+                    //    geminiIssue.Status + 
+                    //    Environment.NewLine);
 
                     try
                     {

@@ -24,7 +24,7 @@ namespace ImportConfigurationTest
 
                 Filter = new FilterConfiguration()
                 {
-                    DEVELOPMENT_PROJECT_ID = "36",
+                    DEVELOPMENT_PROJECT_ID = "|36|",
                     UAT_PROJECT_ID = "|37|",
                     UAT_CREATED_FROM = "8/27/2020",
                     ERMBUG_PROJECT_ID = "38",
@@ -68,7 +68,8 @@ namespace ImportConfigurationTest
                     Url = "https://erm-swfactory.prometeia.com/Gemini",
                     ErmBugProjectCode = "ERMBUG",
                     ErmPrefix = "ERM-",
-                    ProjectUrl = "https://erm-swfactory.prometeia.com/Gemini/project/"
+                    ProjectUrl = "https://erm-swfactory.prometeia.com/Gemini/project/",
+                    GroupTypeCode = "Group"
 
                 },
                 Jira = new JiraConfiguration()
@@ -87,7 +88,6 @@ namespace ImportConfigurationTest
                     SubTaskTypeCode = "10003",
                     UatTypeCode = "10014",
                     BugTypeCode = "10004",
-                    GroupTypeCode = "Group",
                 }
             };
 

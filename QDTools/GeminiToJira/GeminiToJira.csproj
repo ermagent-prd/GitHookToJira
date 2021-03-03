@@ -94,11 +94,14 @@
     <Compile Include="Parameters\Alfresco\AlfrescoParamContainer.cs" />
     <Compile Include="Parameters\Gemini\GeminiConstants.cs" />
     <Compile Include="Parameters\Gemini\GeminiParamContainer.cs" />
-    <Compile Include="Parameters\Import\AlfrescoConfiguration.cs" />
-    <Compile Include="Parameters\Import\GeminiConfiguration.cs" />
-    <Compile Include="Parameters\Import\ImportConfiguration.cs" />
-    <Compile Include="Parameters\Import\FilterConfiguration.cs" />
-    <Compile Include="Parameters\Import\JiraConfiguration.cs" />
+    <Compile Include="Parameters\Import\ConfigurationManager.cs" />
+    <Compile Include="Parameters\Import\Configuration\AlfrescoConfiguration.cs" />
+    <Compile Include="Parameters\Import\Configuration\GeminiConfiguration.cs" />
+    <Compile Include="Parameters\Import\Configuration\ImportConfiguration.cs" />
+    <Compile Include="Parameters\Import\Configuration\FilterConfiguration.cs" />
+    <Compile Include="Parameters\Import\Configuration\JiraConfiguration.cs" />
+    <Compile Include="Parameters\Import\EmbeddedCfgLoader.cs" />
+    <Compile Include="Parameters\Import\ImportType.cs" />
     <Compile Include="Parameters\Jira\JiraConstants.cs" />
     <Compile Include="Parameters\Jira\JiraParamContainer.cs" />
     <Compile Include="Program.cs" />
@@ -107,6 +110,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\ERM.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AlfrescoTools\AlfrescoTools.csproj">

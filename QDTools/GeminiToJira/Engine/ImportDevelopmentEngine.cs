@@ -55,6 +55,9 @@ namespace GeminiToJira.Engine
             var jiraSavedDictionary = new Dictionary<int, Issue>();
             var storyFolderDictionary = new Dictionary<string, string>();
 
+            var storyType = JiraConstants.StoryType;
+            var subTaskType = JiraConstants.SubTaskType;
+
             var geminiDevelopmentIssueList = filterGeminiIssueList(geminiItemsEngine);
 
             var developmentLogFile = "DevelopmentLog_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
@@ -64,14 +67,14 @@ namespace GeminiToJira.Engine
                 try
                 {
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.StoryType, projectCode, components);
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, storyType, projectCode, components);
 
                     //Create Story
                     Issue jiraIssue = SaveAndSetStory(jiraSavedDictionary, geminiIssue, jiraIssueInfo);
                     var storyFolder = SetAndSaveAlfrescoUrls(jiraIssueInfo, jiraIssue, "");
                     storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
 
-                    var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != JiraConstants.GroupType && i.Value.Id != currentIssue.Id);
+                    var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != GeminiConstants.GroupType && i.Value.Id != currentIssue.Id);
 
                     //SubTask
                     foreach (var sub in hierarchy)
@@ -80,7 +83,7 @@ namespace GeminiToJira.Engine
                         {
                             var currentSubIssue = geminiItemsEngine.Execute(sub.Value.Id);
 
-                            SaveAndSetSubTask(projectCode, components, jiraSavedDictionary, developmentLogFile, jiraIssue, storyFolder, currentSubIssue);
+                            SaveAndSetSubTask(projectCode, subTaskType, components, jiraSavedDictionary, developmentLogFile, jiraIssue, storyFolder, currentSubIssue);
                         }
                     }
                 }
@@ -104,13 +107,13 @@ namespace GeminiToJira.Engine
                         if (currentSubIssue.HierarchyKey == "")
                         {
                             //Create Story
-                            var jiraIssueInfo = geminiToJiraMapper.Execute(currentSubIssue, JiraConstants.StoryType, projectCode, components);
+                            var jiraIssueInfo = geminiToJiraMapper.Execute(currentSubIssue, storyType, projectCode, components);
                             Issue jiraIssue = SaveAndSetStory(jiraSavedDictionary, geminiIssue, jiraIssueInfo);
                             var storyFolder = SetAndSaveAlfrescoUrls(jiraIssueInfo, jiraIssue, "");
                             storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
                             
                             //and become a subtask of myself
-                            SaveAndSetSubTask(projectCode, components, jiraSavedDictionary, developmentLogFile, jiraIssue, storyFolder, currentSubIssue);
+                            SaveAndSetSubTask(projectCode, subTaskType, components, jiraSavedDictionary, developmentLogFile, jiraIssue, storyFolder, currentSubIssue);
 
                         }
                         else
@@ -122,7 +125,7 @@ namespace GeminiToJira.Engine
                             {
                                 storyFolderDictionary.TryGetValue(jiraFatherIssue.JiraIdentifier, out string storyFolder);
 
-                                SaveAndSetSubTask(projectCode, components, jiraSavedDictionary, developmentLogFile, jiraFatherIssue, storyFolder, currentSubIssue);
+                                SaveAndSetSubTask(projectCode, subTaskType, components, jiraSavedDictionary, developmentLogFile, jiraFatherIssue, storyFolder, currentSubIssue);
                             }
                         }
                     }
@@ -147,11 +150,19 @@ namespace GeminiToJira.Engine
             return jiraIssue;
         }
 
-        private void SaveAndSetSubTask(string projectCode, List<string> components, Dictionary<int, Issue> jiraSavedDictionary, string developmentLogFile, Issue jiraIssue, string storyFolder, IssueDto currentSubIssue)
+        private void SaveAndSetSubTask(
+            string projectCode, 
+            string subTaskType,
+            List<string> components, 
+            Dictionary<int, Issue> jiraSavedDictionary, 
+            string developmentLogFile, 
+            Issue jiraIssue, 
+            string storyFolder, 
+            IssueDto currentSubIssue)
         {
             if (CheckIfValidSubTask(currentSubIssue))
             {
-                var jiraSubTaskInfo = geminiToJiraMapper.Execute(currentSubIssue, JiraConstants.SubTaskType, projectCode, components);
+                var jiraSubTaskInfo = geminiToJiraMapper.Execute(currentSubIssue, subTaskType, projectCode, components);
 
                 jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
                 try
