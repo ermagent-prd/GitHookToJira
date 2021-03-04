@@ -16,7 +16,7 @@ namespace GeminiToJira.GeminiFilter
                 case FilterType.Development:
                     return new IssuesFilter
                     {
-                        IncludeClosed = true,
+                        IncludeClosed = DevelopmentConstants.DEVELOPMENT_INCLUDED_CLOSED,
                         Projects = DevelopmentConstants.DEVELOPMENT_PROJECT_ID,
                         Types = DevelopmentConstants.DEVELOPMENT_TYPES,
                         //Issues = "|63446|65023|67269|",   
@@ -36,7 +36,7 @@ namespace GeminiToJira.GeminiFilter
                 case FilterType.ERMBUG:
                     return new IssuesFilter
                     {
-                        IncludeClosed = true,
+                        IncludeClosed = ErmBugConstants.ERMBUG_INCLUDED_CLOSED,
                         Projects = ErmBugConstants.ERMBUG_PROJECT_ID,
                         //Issues = "|63783|" 
                         
@@ -46,39 +46,6 @@ namespace GeminiToJira.GeminiFilter
             }
             
         }
-
-        public static IEnumerable<IssueDto> FilterDevIssuesList(IEnumerable<IssueDto> list)
-        {
-            List<IssueDto> filteredList = new List<IssueDto>();
-
-            foreach (var l in list.OrderBy(f => f.Id))
-            {
-                var release = l.CustomFields.FirstOrDefault(x => x.Name == DevelopmentConstants.DEVELOPMENT_RELEASE_KEY);
-                var devLine = l.CustomFields.FirstOrDefault(x => x.Name == DevelopmentConstants.DEVELOPMENT_LINE_KEY);
-
-                //Solo i development: i task sono quelli associati ai development trovati
-                if (release != null && devLine != null &&
-                    DevelopmentConstants.DEVELOPMENT_RELEASES.Contains(release.FormattedData) &&
-                    DevelopmentConstants.DEVELOPMENT_LINES.Contains(devLine.FormattedData))
-                    filteredList.Add(l);
-            }
-
-            return filteredList;
-        }
-
-        public static IEnumerable<IssueDto> FilterUatIssuesList(IEnumerable<IssueDto> list, DateTime fromDate)
-        {
-            List<IssueDto> filteredList = new List<IssueDto>();
-
-            foreach (var l in list.OrderBy(f => f.Id))
-            {
-                if (l.Created > fromDate)
-                    filteredList.Add(l);
-            }
-
-            return filteredList;
-        }
-
 
         #region Private
         

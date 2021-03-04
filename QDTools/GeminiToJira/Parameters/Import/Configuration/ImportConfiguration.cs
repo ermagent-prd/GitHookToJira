@@ -13,7 +13,7 @@ namespace GeminiToJira.Parameters.Import
     {
         public string JiraProjectCode { get; set; }
         //for developmentImportEngine
-        public List<String> ComponentsforDevelopment { get; set; }
+        public List<String> ComponentsForDevelopment { get; set; }
 
         public FilterConfiguration Filter { get; set; }
 
@@ -23,7 +23,7 @@ namespace GeminiToJira.Parameters.Import
 
         //local path
         public string LogDirectory { get; set; }
-        public string AttachmenDownloadedtPath { get; set; }
+        public string AttachmenDownloadedPath { get; set; }
 
 
         public IGeminiToolsParameters GeminiParameters { get; set; }

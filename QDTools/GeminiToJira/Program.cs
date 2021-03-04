@@ -13,9 +13,9 @@ namespace GeminiToJira
     {           
         static void Main(string[] args)
         {
-            var cfgKey = ImportType.EIB;
+            var cfgKey = ImportCfgType.ERM;
             var cfgManager = new ConfigurationManager();
-            var fileCfg = cfgManager.Execute(cfgKey, Assembly.GetExecutingAssembly());
+            var configurationSetup = cfgManager.Execute(cfgKey);
 
             var unityContainer = ContainerFactory.Execute();
 
@@ -24,13 +24,10 @@ namespace GeminiToJira
 
             #region Development
 
-            //string jiraProjectCode = "ER";
-            string jiraProjectCode = "EOIB";
-            var components = new List<String> { "ILIAS", "ILIAS-STA", "BSM", "Other" };
             var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
             timer.Start();
             Console.WriteLine("[" + DateTime.Now + "] Start Development");
-            developmentEngine.Execute(jiraProjectCode, components);
+            //developmentEngine.Execute(configurationSetup);
             timer.Stop();
             Console.WriteLine("[" + DateTime.Now + "] Development imported in " + timer.Elapsed);
 
@@ -41,7 +38,7 @@ namespace GeminiToJira
             var uatEngine = unityContainer.Resolve<ImportUatEngine>();
             timer.Restart();
             Console.WriteLine("[" + DateTime.Now + "] Start UAT");
-            uatEngine.Execute(jiraProjectCode);
+            uatEngine.Execute(configurationSetup);
             timer.Stop();
             Console.WriteLine("[" + DateTime.Now + "] UAT imported in " + timer.Elapsed);
 
@@ -52,7 +49,7 @@ namespace GeminiToJira
             var bugEngine = unityContainer.Resolve<ImportBugEngine>();
             timer.Restart();
             Console.WriteLine("[" + DateTime.Now + "] Start BUG");
-            //bugEngine.Execute(jiraProjectCode);
+            bugEngine.Execute(configurationSetup);
             timer.Stop();
             Console.WriteLine("[" + DateTime.Now + "] BUG imported in " + timer.Elapsed); 
             

@@ -101,7 +101,7 @@
     <Compile Include="Parameters\Import\Configuration\FilterConfiguration.cs" />
     <Compile Include="Parameters\Import\Configuration\JiraConfiguration.cs" />
     <Compile Include="Parameters\Import\EmbeddedCfgLoader.cs" />
-    <Compile Include="Parameters\Import\ImportType.cs" />
+    <Compile Include="Parameters\Import\ImportCfgType.cs" />
     <Compile Include="Parameters\Jira\JiraConstants.cs" />
     <Compile Include="Parameters\Jira\JiraParamContainer.cs" />
     <Compile Include="Program.cs" />
@@ -110,7 +110,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Parameters\Import\CfgFiles\EIB.json" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\Test.json" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\ERM.json" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\SSSP.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AlfrescoTools\AlfrescoTools.csproj">

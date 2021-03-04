@@ -9,7 +9,7 @@ namespace JiraTools.Engine
 {
     public class CreateIssueEngine
     {
-        private Dictionary<string, string> RESOLUTION_DICTIONARY = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> RESOLUTION_DICTIONARY = new Dictionary<string, string>()
         {
             { "Done",           "10000" },
             { "Won't Do",       "10001" },
@@ -18,7 +18,7 @@ namespace JiraTools.Engine
         };
 
         //TODO to map
-        private Dictionary<string, string> RESOLUTION_MAPPING = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> RESOLUTION_MAPPING = new Dictionary<string, string>()
         {
             { "Completed",   "Done" },
             { "Unresolved",   "Won't Do" },
@@ -26,6 +26,7 @@ namespace JiraTools.Engine
 
 
         private readonly string SubTaskType = "10003";
+        private readonly string UatType = "10014";
 
         private readonly ServiceManagerContainer requestFactory;
 
@@ -59,12 +60,16 @@ namespace JiraTools.Engine
 
         private async Task<Issue> addIssue(CreateIssueInfo fieldsInfo)
         {
+            IssueTimeTrackingData timeTrackingData = null;
+
+            if (fieldsInfo.Type.Id != UatType)
+                timeTrackingData = new IssueTimeTrackingData(
+                    fieldsInfo.OriginalEstimate,
+                    fieldsInfo.RemainingEstimate);
+
             var fields = new CreateIssueFields(fieldsInfo.ProjectKey)
             {
-                TimeTrackingData = new IssueTimeTrackingData(
-                    fieldsInfo.OriginalEstimate,
-                    fieldsInfo.RemainingEstimate),
-                    
+                    TimeTrackingData = timeTrackingData
             };
 
             if (fieldsInfo.Type.Id == SubTaskType)

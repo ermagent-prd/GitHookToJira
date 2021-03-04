@@ -5,6 +5,7 @@ namespace GeminiToJira.GeminiFilter
     public static class DevelopmentConstants
     {
         public static readonly string DEVELOPMENT_PROJECT_ID = "36";  //developmente project
+        public static readonly bool DEVELOPMENT_INCLUDED_CLOSED = true;
         public static readonly string DEVELOPMENT_TYPES = "|Developer|Task|";
         public static readonly List<string> DEVELOPMENT_RELEASES = new List<string>() {
                 "ERMAS",

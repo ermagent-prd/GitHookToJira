@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GeminiToJira.Parameters.Import
 {
-    public enum ImportType
+    public enum ImportCfgType
     {
         /// <summary>
         /// Test configuration
@@ -14,8 +14,13 @@ namespace GeminiToJira.Parameters.Import
         Test = 0,
 
         /// <summary>
-        /// EIB
+        /// ERM
         /// </summary>
-        EIB = 1,
+        ERM = 1,
+
+        /// <summary>
+        /// SSSP
+        /// </summary>
+        SSSP = 2,
     }
 }

@@ -25,26 +25,33 @@ namespace GeminiToJira.Mapper
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
         private readonly TimeLogEngine timeLogEngine;
+
         private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
         {
-            { "assigned",   "Select for development" },
-            { "in progress",   "In Progress" },
-            { "testing",   "In Progress" },
-            { "cancelled",   "Done" },
-            { "rejected",   "Done" },
-            { "fixed",  "Fixed" },
-            { "closed",  "Fixed" },
+            { "assigned",   "To Do" },
+            { "in progress",   "In progress" },
+            { "fixed",  "Ready for test" },
+            { "testing",   "Testing" },
+            { "closed",  "Closed" },
+            { "rejected",   "Rejected" },
+            { "cancelled",   "Cancelled" },
             { "in Backlog",  "In Backlog" },
         };
-
-        private readonly string STATUS_MAPPING_DEFAULT = "Backlog";
+        private readonly string STATUS_MAPPING_DEFAULT = "To Do";
 
         private readonly Dictionary<string, string> PRIORITY_MAPPING = new Dictionary<string, string>()
         {
-            { "trivial",   "Low" },
-            { "minor",   "Medium" },
-            { "major",   "High" },
-            { "blocking",   "Highest" },
+            { "low", "Low" },
+            { "medium", "Medium" },
+            { "high", "High" },
+        };
+
+        private readonly Dictionary<string, string> SEVERITY_MAPPING = new Dictionary<string, string>()
+        {
+            { "low", "Trivial" },
+            { "medium", "Minor" },
+            { "high", "Major" },
+            { "highest", "Blocking" },
         };
 
         private readonly Dictionary<string, string> CATEGORY_MAPPING = new Dictionary<string, string>()
@@ -101,9 +108,7 @@ namespace GeminiToJira.Mapper
                 Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments) + " " + DateTime.Now.ToString(),
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
-                RemainingEstimate = geminiIssue.RemainingTime,
-                                
-                //Resolution = geminiIssue.Resolution
+                RemainingEstimate = geminiIssue.RemainingTime
             };
 
             string status = "";
@@ -112,12 +117,10 @@ namespace GeminiToJira.Mapper
             else
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", STATUS_MAPPING_DEFAULT));
 
-
             jiraIssue.AffectVersions = new List<string>();
             jiraIssue.FixVersions = new List<string>();
 
-            string priority = "";
-            if (PRIORITY_MAPPING.TryGetValue(geminiIssue.Priority.ToLower(), out priority))
+            if (PRIORITY_MAPPING.TryGetValue(geminiIssue.Priority.ToLower(), out string priority))
                 jiraIssue.Priority = priority;
 
             //Assignee
@@ -173,18 +176,16 @@ namespace GeminiToJira.Mapper
             }
 
             //UAT Category
-            if (geminiIssue.Components != null && geminiIssue.Components.Count > 0)
-            {
-                string category;
-                if (CATEGORY_MAPPING.TryGetValue(geminiIssue.Components[0].Entity.Name.ToLower(), out category))
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Category", category));
-                else
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Category", CATEGORY_MAPPING_DEFAULT));
-            }
+            if (geminiIssue.Components != null && geminiIssue.Components.Count > 0 && CATEGORY_MAPPING.TryGetValue(geminiIssue.Components[0].Entity.Name.ToLower(), out string category))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Category", category));
+            else
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Category", CATEGORY_MAPPING_DEFAULT));
 
             //UAT Severity
             //map severity from gemini
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("UAT Severity", ParseSeverity(geminiIssue)));
+            var severity = ParseSeverity(geminiIssue);
+            if(SEVERITY_MAPPING.TryGetValue(severity.ToLower(), out string jiraSeverity))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Severity", jiraSeverity));
 
             //Fixed in build
             var fixedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == FIXED_IN_BUILD);

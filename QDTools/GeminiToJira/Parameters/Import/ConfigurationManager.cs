@@ -16,7 +16,7 @@ namespace GeminiToJira.Parameters.Import
 
         #region private property
 
-        private readonly Dictionary<ImportType, string> configurations;
+        private readonly Dictionary<ImportCfgType, string> configurations;
 
         private readonly EmbeddedCfgLoader loader;
 
@@ -39,8 +39,10 @@ namespace GeminiToJira.Parameters.Import
 
         #region Public methods
 
-        public GeminiToJiraParameters Execute(ImportType importType, Assembly resourceAssembly)
+        public GeminiToJiraParameters Execute(ImportCfgType importType)
         {
+            Assembly resourceAssembly = Assembly.GetExecutingAssembly();
+
             configurations.TryGetValue(importType, out string cfgName);
 
             var cfgResource = string.IsNullOrWhiteSpace(cfgName) ?
@@ -57,13 +59,13 @@ namespace GeminiToJira.Parameters.Import
 
         #region Private methods
 
-        private Dictionary<ImportType, string> getConfigurations()
+        private Dictionary<ImportCfgType, string> getConfigurations()
         {
-            var cfgList = new Dictionary<ImportType, string>();
+            var cfgList = new Dictionary<ImportCfgType, string>();
 
-            //cfgList.Add(ImportType.Test, string.Concat(resourceNameSpace, "Test.json"));
-
-            cfgList.Add(ImportType.EIB, string.Concat(resourceNameSpace, "ERM.json"));            
+            cfgList.Add(ImportCfgType.Test, string.Concat(resourceNameSpace, "Test.json"));      
+            cfgList.Add(ImportCfgType.ERM, string.Concat(resourceNameSpace, "ERM.json"));      
+            cfgList.Add(ImportCfgType.SSSP, string.Concat(resourceNameSpace, "SSSP.json"));      
 
             return cfgList;
         }

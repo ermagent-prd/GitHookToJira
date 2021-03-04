@@ -27,7 +27,6 @@ namespace GeminiToJira.Engine
         public string Execute(string comment, string commentPrefix, List<string> descAttachments)
         {
             comment = SaveAndReferAttachmentImages(comment, commentPrefix, descAttachments);
-
             
             var text = Regex.Replace(CleanFromImageTag(comment), HTML_TAG_PATTERN, string.Empty);
 

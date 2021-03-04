@@ -1,0 +1,73 @@
+{
+  "JiraProjectCode": "EIB",
+  "ComponentsForDevelopment": [
+    "ILIAS",
+    "ILIAS-STA",
+    "BSM",
+    "Other"
+  ],
+  "Filter": {
+    "DEVELOPMENT_PROJECT_ID": "|36|",
+    "DEVELOPMENT_TYPES": "|Developer|Task|",
+    "DEVELOPMENT_RELEASES": [
+      "ERMAS",
+      "ERMAS 5.24.0",
+      "ERMAS 5.24.1",
+      "ERMAS 5.25.0",
+      "ERMAS 5.26.0",
+      "ERMAS 5.27.0",
+      "ERMAS 5.28.0",
+      "ERMAS 5.29.0",
+      "0.0.0.0"
+    ],
+    "DEVELOPMENT_LINES": [
+      "BSM",
+      "ILIAS",
+      "ILIAS-STA",
+      "Other"
+    ],
+    "DEVELOPMENT_RELEASE_KEY": "Release Version",
+    "DEVELOPMENT_LINE_KEY": "DVL",
+    "DEVELOPMENT_INCLUDED_CLOSED": true,
+    "UAT_PROJECT_ID": "|37|",
+    "UAT_CREATED_FROM": "12/03/2020",
+    "UAT_GROUP_DEPENDENCIES": true,
+    "UAT_INCLUDED_CLOSED": true,
+    "UAT_FUNCTIONALITY": [
+      "PYTHO"
+    ],
+    "ERMBUG_PROJECT_ID": "38",
+    "ERMBUG_INCLUDED_CLOSED": true
+  },
+  "Alfresco": {
+    "ServiceUrl": "http://10.100.2.85:8080/alfresco/cmisatom",
+    "UserName": "apiuser",
+    "Password": "cmis",
+    "RootFolder": "APi Test"
+  },
+  "Gemini": {
+    "Url": "https://erm-swfactory.prometeia.com/Gemini",
+    "ErmBugProjectCode": "ERMBUG",
+    "ErmPrefix": "ERM-",
+    "ProjectUrl": "https://erm-swfactory.prometeia.com/Gemini/project/",
+    "GroupTypeCode": "Group"
+  },
+  "Jira": {
+    "User": "pierluigi.nanni@prometeia.com",
+    "Token": "GOojveJqyGUAgi6mzSAu3FAA",
+    "Url": "https://prometeia-erm.atlassian.net/",
+    "IssueApi": "rest/api/3/issue/",
+    "MaxIssuesPerRequest": 10,
+    "EpicCode": "10000",
+    "StoryTypeCode": "10001",
+    "TaskCode": "10002",
+    "SubTaskTypeCode": "10003",
+    "UatTypeCode": "10014",
+    "BugTypeCode": "10004"
+  },
+  "LogDirectory": "C:\\GeminiPorting\\Log\\",
+  "AttachmenDownloadedPath": "C:\\GeminiPorting\\AttachmentDownloaded\\",
+  "GeminiParameters": null,
+  "JiraParameters": null,
+  "AlfrescoParameter": null
+}

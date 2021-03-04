@@ -17,17 +17,22 @@ namespace ImportConfigurationTest
             {
                 JiraProjectCode = "EIB",
 
-                ComponentsforDevelopment = new List<String> { "ILIAS", "ILIAS-STA", "BSM", "Other" },
+                ComponentsForDevelopment = new List<String> { "ILIAS", "ILIAS-STA", "BSM", "Other" },
 
-                AttachmenDownloadedtPath = @"C:\GeminiPorting\AttachmentDownloaded\",
+                AttachmenDownloadedPath = @"C:\GeminiPorting\AttachmentDownloaded\",
                 LogDirectory = @"C:\GeminiPorting\Log\",
 
                 Filter = new FilterConfiguration()
                 {
                     DEVELOPMENT_PROJECT_ID = "|36|",
+                    DEVELOPMENT_INCLUDED_CLOSED = true,
+                    UAT_FUNCTIONALITY = new List<String> { "PYTHO" },
                     UAT_PROJECT_ID = "|37|",
                     UAT_CREATED_FROM = "8/27/2020",
+                    UAT_GROUP_DEPENDENCIES = true,
+                    UAT_INCLUDED_CLOSED = true,
                     ERMBUG_PROJECT_ID = "38",
+                    ERMBUG_INCLUDED_CLOSED = true,
 
                     DEVELOPMENT_TYPES = "|Developer|Task|",
 
