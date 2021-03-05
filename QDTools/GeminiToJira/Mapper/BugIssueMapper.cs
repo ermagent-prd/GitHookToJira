@@ -2,6 +2,7 @@
 using Countersoft.Gemini.Commons.Dto;
 using GeminiToJira.Engine;
 using GeminiToJira.Parameters;
+using GeminiToJira.Parameters.Import;
 using GeminiTools.Items;
 using GeminiTools.Parameters;
 using JiraTools.Model;
@@ -94,7 +95,7 @@ namespace GeminiToJira.Mapper
         }
 
 
-        public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode)
+        public CreateIssueInfo Execute(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, string projectCode)
         {
             var descAttachments = new List<string>();
 
@@ -102,7 +103,7 @@ namespace GeminiToJira.Mapper
             {
                 ProjectKey = projectCode,//for bug without title
                 Summary = geminiIssue.Title.TrimEnd() == "" ? geminiIssue.IssueKey : geminiIssue.Title.TrimEnd(),
-                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments) + " " + DateTime.Now.ToString(),
+                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments, configurationSetup.AttachmentDownloadedPath) + " " + DateTime.Now.ToString(),
                 Priority = geminiIssue.Priority,
                 Type = type,
                 OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
@@ -124,16 +125,16 @@ namespace GeminiToJira.Mapper
 
             //Load all issue's attachment
             jiraIssue.Attachments = descAttachments;
-            attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments);
+            attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments, configurationSetup.Gemini.ProjectUrl, configurationSetup.AttachmentDownloadedPath);
             
             //Load and map all gemini comments
-            commentMapper.Execute(jiraIssue, geminiIssue);
+            commentMapper.Execute(configurationSetup, jiraIssue, geminiIssue);
             
             //Load custom fields
-            LoadCustomFields(jiraIssue, geminiIssue);
+            LoadCustomFields(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmBugPrefix);
             
             //For components use
-            SetRelatedDevelopment(jiraIssue, geminiIssue);
+            SetRelatedDevelopment(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix);
 
             //For worklog
             jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
@@ -141,22 +142,19 @@ namespace GeminiToJira.Mapper
             return jiraIssue;
         }
 
-
-
-
         #region Private        
-        private void SetRelatedDevelopment(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        private void SetRelatedDevelopment(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix)
         {
             //Related Development Build
             var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == PROJECT_MODULE);
             if (relatedDev != null)
             {
                 jiraIssue.RelatedDevelopment = relatedDev.FormattedData;
-                jiraIssue.RelatedDevelopmentId = GeminiConstants.ErmPrefix + relatedDev.Entity.Data;
+                jiraIssue.RelatedDevelopmentId = ermPrefix + relatedDev.Entity.Data;
             }
         }
 
-        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermBugPrefix)
         {
             var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
             if (owner != null && owner.FormattedData != "")
@@ -229,7 +227,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Notes", parseCommentEngine.Execute(notes.FormattedData)));
 
             //Gemini : save the original issue's code from gemini
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", GeminiConstants.ErmBugPrefix + geminiIssue.Id.ToString()));
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", ermBugPrefix + geminiIssue.Id.ToString()));
         }
 
         private void SetAffectedVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue)

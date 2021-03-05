@@ -19,7 +19,7 @@ namespace ImportConfigurationTest
 
                 ComponentsForDevelopment = new List<String> { "ILIAS", "ILIAS-STA", "BSM", "Other" },
 
-                AttachmenDownloadedPath = @"C:\GeminiPorting\AttachmentDownloaded\",
+                AttachmentDownloadedPath = @"C:\GeminiPorting\AttachmentDownloaded\",
                 LogDirectory = @"C:\GeminiPorting\Log\",
 
                 Filter = new FilterConfiguration()
@@ -73,6 +73,8 @@ namespace ImportConfigurationTest
                     Url = "https://erm-swfactory.prometeia.com/Gemini",
                     ErmBugProjectCode = "ERMBUG",
                     ErmPrefix = "ERM-",
+                    UatPrefix = "UAT-",
+                    ErmBugPrefix = "ERMBUG-",
                     ProjectUrl = "https://erm-swfactory.prometeia.com/Gemini/project/",
                     GroupTypeCode = "Group"
 

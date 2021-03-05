@@ -5,13 +5,9 @@ namespace AlfrescoTools.Parameters
     {
         string ServerUrl { get; }
 
-        string ALFRESCO_PATH { get; }
-
         string UserName { get; }
 
         string Password { get; }
-
-        string AttachmentPath { get; }
 
     }
 }

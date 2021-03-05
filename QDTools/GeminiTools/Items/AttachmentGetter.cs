@@ -12,9 +12,13 @@ namespace GeminiTools.Items
 {
     public class AttachmentGetter
     {
-        private readonly IGeminiToolsParameters parameters;
+        
+        /// <summary>
+        /// Image used only for email signature
+        /// </summary>
         private readonly List<string> AttachementToExlude = new List<string>
         {
+            "image001.png",
             "image002.png",
             "image003.png",
             "image004.png",
@@ -26,12 +30,12 @@ namespace GeminiTools.Items
             "image010.png",
         };
 
-        public AttachmentGetter(IGeminiToolsParameters parameters)
+        public AttachmentGetter()
         {
-            this.parameters = parameters;
+           
         }
 
-        public void Execute(CreateIssueInfo jiraIssue, List<IssueAttachmentDto> attachments)
+        public void Execute(CreateIssueInfo jiraIssue, List<IssueAttachmentDto> attachments, string projectUrl, string attachmentPath)
         {
             
             foreach (var attachment in attachments)
@@ -42,14 +46,16 @@ namespace GeminiTools.Items
                         attachment.Entity.ProjectId,
                         attachment.Entity.IssueId,
                         attachment.Entity.Id,
-                        attachment.Entity.Name);
+                        attachment.Entity.Name,
+                        projectUrl,
+                        attachmentPath);
 
                     jiraIssue.Attachments.Add(attachment.Entity.Name);
                 }
             }
         }
 
-        public bool Save(int projectId, int issueId, int attachmentId, string attachmentName)
+        public bool Save(int projectId, int issueId, int attachmentId, string attachmentName, string projectUrl, string attachmentPath)
         {
             try
             {
@@ -58,8 +64,8 @@ namespace GeminiTools.Items
                 webClient.UseDefaultCredentials = true;
 
                 webClient.DownloadFile(
-                    parameters.GEMINI_PATH + projectId + "/item/attachment?issueid=" + issueId + "&fileid=" + attachmentId,
-                    parameters.SAVING_PATH + attachmentName);
+                    projectUrl + projectId + "/item/attachment?issueid=" + issueId + "&fileid=" + attachmentId,
+                    attachmentPath + attachmentName);
                 
                 webClient.Dispose();
 
@@ -71,7 +77,7 @@ namespace GeminiTools.Items
             }
         }
 
-        public bool Save(LinkItem linkItem)
+        public bool Save(LinkItem linkItem, string attachmentDownloadedPath)
         {
             if (linkItem == null)
                 return false;
@@ -82,7 +88,7 @@ namespace GeminiTools.Items
                 webClient.UseDefaultCredentials = true;
 
                 webClient.DownloadFile(linkItem.Href,
-                    parameters.SAVING_PATH + linkItem.FileName);
+                    attachmentDownloadedPath + linkItem.FileName);
 
                 webClient.Dispose();
 

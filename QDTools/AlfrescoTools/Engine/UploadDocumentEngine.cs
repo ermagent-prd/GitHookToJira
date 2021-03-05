@@ -34,7 +34,7 @@ namespace AlfrescoTools.Engine
 
         #region Public methods
 
-        public string Execute(IFolder parentFolder, string documentName)
+        public string Execute(IFolder parentFolder, string documentName, string attachmentPath)
         {
             
             // Check if document already exist, if not create it
@@ -59,7 +59,7 @@ namespace AlfrescoTools.Engine
                 // Setup document content
                 String mimetype = "text/plain; charset=UTF-8";
 
-                byte[] bytes = File.ReadAllBytes(parameters.AttachmentPath + documentName);
+                byte[] bytes = File.ReadAllBytes(attachmentPath + documentName);
 
                 // read a empty document with empty bytes  
                 // fileUpload1: is a .net file upload control  

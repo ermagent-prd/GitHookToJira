@@ -27,7 +27,7 @@ namespace AlfrescoToolsTest
 
             var engineDocument = container.Resolve<UploadDocumentEngine>();
 
-            var path = engineDocument.Execute(newFolder, "prova.docx");
+            var path = engineDocument.Execute(newFolder, "prova.docx", AlfrescoToolsTestContants.AttachmentPath);
 
             Assert.IsNotNull(path);
 

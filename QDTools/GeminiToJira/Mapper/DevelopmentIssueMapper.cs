@@ -2,6 +2,7 @@
 using Countersoft.Gemini.Commons.Dto;
 using GeminiToJira.Engine;
 using GeminiToJira.Parameters;
+using GeminiToJira.Parameters.Import;
 using GeminiTools.Engine;
 using GeminiTools.Items;
 using GeminiTools.Parameters;
@@ -36,9 +37,26 @@ namespace GeminiToJira.Mapper
             { "done", "Done" },
             { "in progress", "In progress" },
         };
-
-
         private readonly string STATUS_MAPPING_DEFAULT = "Backlog";
+
+        private readonly Dictionary<string, string> TASK_TYPE_MAPPING = new Dictionary<string, string>()
+        {
+            { "analysis", "Analysis" },
+            { "development", "Development" },
+            { "test",       "Test" },
+            { "documentation",    "Documentation" },
+        };
+        private readonly string TASK_TYPE_MAPPING_DEFAULT = "Other";
+
+        private readonly Dictionary<string, string> ESTIMATE_TYPE_MAPPING = new Dictionary<string, string>()
+        {
+            { "Planned", "Planned" },
+            { "CR-mkt", "Internal change request" },
+            { "CR-int",  "Market change request" },
+            { "Overbudget", "Overbudget" },
+        };
+        
+
 
         public DevelopmentIssueMapper(
             CommentMapper commentMapper, 
@@ -55,7 +73,7 @@ namespace GeminiToJira.Mapper
             this.timeLogEngine = timeLogEngine;
         }
 
-        public CreateIssueInfo Execute(IssueDto geminiIssue, string type, string projectCode, List<string> components)
+        public CreateIssueInfo Execute(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, string projectCode)
         {
             var descAttachments = new List<string>();
 
@@ -63,7 +81,7 @@ namespace GeminiToJira.Mapper
             {
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title.TrimEnd(),
-                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments) + " " + DateTime.Now.ToString(), 
+                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments, configurationSetup.AttachmentDownloadedPath) + " " + DateTime.Now.ToString(), 
                 Type = type,
             };
 
@@ -105,15 +123,15 @@ namespace GeminiToJira.Mapper
 
             //Load all issue's attachment
             jiraIssue.Attachments = descAttachments;
-            attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments);
+            attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments, configurationSetup.Gemini.ProjectUrl, configurationSetup.AttachmentDownloadedPath);
 
             //Load and map all gemini comments
-            commentMapper.Execute(jiraIssue, geminiIssue);
+            commentMapper.Execute(configurationSetup, jiraIssue, geminiIssue);
 
             //Load custom fields
-            LoadCustomFields(jiraIssue, geminiIssue, type);
+            LoadCustomFields(jiraIssue, geminiIssue, type, configurationSetup.Gemini.ErmPrefix);
 
-            SetComponents(geminiIssue, jiraIssue, components);
+            SetComponents(geminiIssue, jiraIssue, configurationSetup.ComponentsForDevelopment);
 
             //worklog: only for sybtask issues
             if (type == JiraConstants.SubTaskType)
@@ -141,7 +159,7 @@ namespace GeminiToJira.Mapper
         }
 
 
-        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string devType)
+        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string devType, string ermPrefix)
         {
             jiraIssue.CustomFields.Add(new CustomFieldInfo("Completition", geminiIssue.PercentComplete.ToString()));
 
@@ -199,13 +217,15 @@ namespace GeminiToJira.Mapper
             {
                 //Task Type
                 var taskType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "TaskType");
-                if (taskType != null && taskType.FormattedData != "")
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Task Type", taskType.FormattedData));
+                if (taskType != null && taskType.FormattedData != "" && TASK_TYPE_MAPPING.TryGetValue(taskType.FormattedData, out string jiraTaskType))
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Task Type", jiraTaskType));
+                else
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Task Type", TASK_TYPE_MAPPING_DEFAULT));
 
-                //Task Type
+                //Estimate Type
                 var estimateType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Estimate Type");
-                if (estimateType != null && estimateType.FormattedData != "")
-                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Estimate Type", estimateType.FormattedData));
+                if (estimateType != null && estimateType.FormattedData != "" && ESTIMATE_TYPE_MAPPING.TryGetValue(estimateType.FormattedData, out string jiraEstimateType))
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Estimate Type", jiraEstimateType));
             }
 
             
@@ -230,7 +250,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.ChangeDocumentUrl = changeDocumentUrl.FormattedData;
 
             //Gemini : save the original issue's code from gemini
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", GeminiConstants.ErmPrefix + geminiIssue.Id.ToString()));
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", ermPrefix + geminiIssue.Id.ToString()));
 
             
         }

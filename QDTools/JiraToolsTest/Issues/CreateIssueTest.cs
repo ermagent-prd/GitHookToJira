@@ -86,7 +86,7 @@ namespace JiraToolsTest
                 "1d",
                 "Logging worklog test: author paololuca"));
 
-            var issue = engine.Execute(issueInfo);
+            var issue = engine.Execute(issueInfo, JiraTestConstants.AttachmentPath);
 
 
             //issue.Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
@@ -143,7 +143,7 @@ namespace JiraToolsTest
                 "Logging worklog test: author pierluigi"));
 
 
-            var issue = engine.Execute(issueInfo);
+            var issue = engine.Execute(issueInfo, JiraTestConstants.AttachmentPath);
             
             issue.Reporter = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             issue.SaveChanges();
@@ -180,7 +180,7 @@ namespace JiraToolsTest
             remoteWrkLog.startDate = DateTime.Now;
             remoteWrkLog.timeSpent = "1d";
 
-            var issue = engine.Execute(issueInfo);
+            var issue = engine.Execute(issueInfo, JiraTestConstants.AttachmentPath);
 
             issue.Reporter = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             issue.SaveChanges();
@@ -198,9 +198,8 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "ER",
-                Summary = "Attachments Test PL attachment (Atlassian SDK)",
+                Summary = "Attachments Test PL attachment refactoring (Atlassian SDK)",
                 Description = "This is a (PL attachment) test " + DateTime.Now.ToString(),
-                Priority = "Medium",
                 Type = "Story",
                 OriginalEstimate = "1w",
                 RemainingEstimate = "1d",
@@ -229,10 +228,10 @@ namespace JiraToolsTest
                 "Logging attachment test"));
 
 
-            var issue = engine.Execute(issueInfo);
+            var issue = engine.Execute(issueInfo, JiraTestConstants.AttachmentPath);
 
-            var byteArray = System.IO.File.ReadAllBytes(JiraTestConstants.AttachmentPath + "PD_AKBANK_PD_SML10_BAD20201031.xlsx");
-            var uAttachmentInfo = new UploadAttachmentInfo("PD_AKBANK_PD_SML10_BAD20201031.xlsx", byteArray);
+            var byteArray = System.IO.File.ReadAllBytes(JiraTestConstants.AttachmentPath + "prova.docx");
+            var uAttachmentInfo = new UploadAttachmentInfo("prova.docx.xlsx", byteArray);
             issue.AddAttachment(uAttachmentInfo);
 
             byteArray = System.IO.File.ReadAllBytes(JiraTestConstants.AttachmentPath + "prova.txt");
@@ -254,7 +253,7 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "ER",
-                Summary = "create Test PL UAT (Atlassian SDK)",
+                Summary = "create Test PL reafactoring (Atlassian SDK)",
                 Description = "This is a (PL UAT) test " + DateTime.Now.ToString(),
                 Type = "UAT",
                 OriginalEstimate = "1w",
@@ -271,7 +270,7 @@ namespace JiraToolsTest
             issueInfo.CommentList.Add(comment);
 
 
-            var issue = engine.Execute(issueInfo);
+            var issue = engine.Execute(issueInfo, JiraTestConstants.AttachmentPath);
 
             
 

@@ -23,7 +23,7 @@ namespace GeminiToJira.Parameters.Import
 
         //local path
         public string LogDirectory { get; set; }
-        public string AttachmenDownloadedPath { get; set; }
+        public string AttachmentDownloadedPath { get; set; }
 
 
         public IGeminiToolsParameters GeminiParameters { get; set; }

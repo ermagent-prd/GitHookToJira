@@ -47,9 +47,9 @@ namespace JiraTools.Engine
             this.attachmentEngine = attachmentEngineEngine;
         }
 
-        public Issue Execute(CreateIssueInfo issueFields)
+        public Issue Execute(CreateIssueInfo issueFields, string attachmentPath)
         {
-            var task = addIssue(issueFields);
+            var task = addIssue(issueFields, attachmentPath);
 
             task.Wait();
 
@@ -58,7 +58,7 @@ namespace JiraTools.Engine
 
         #region Private methods
 
-        private async Task<Issue> addIssue(CreateIssueInfo fieldsInfo)
+        private async Task<Issue> addIssue(CreateIssueInfo fieldsInfo, string attachmentPath)
         {
             IssueTimeTrackingData timeTrackingData = null;
 
@@ -116,7 +116,7 @@ namespace JiraTools.Engine
 
             commentEngine.Execute(issue, fieldsInfo.CommentList);
 
-            attachmentEngine.Execute(issue, fieldsInfo.Attachments);
+            attachmentEngine.Execute(issue, fieldsInfo.Attachments, attachmentPath);
 
             return issue;
         }

@@ -8,12 +8,8 @@ namespace GeminiToJira.Parameters
     {
         public string ServerUrl => AlfrescoConstants.ServiceUrl;
 
-        public string ALFRESCO_PATH => AlfrescoConstants.Alfresco_PATH;
-
         public string UserName => AlfrescoConstants.UserName;
 
         public string Password => AlfrescoConstants.Password;
-
-        public string AttachmentPath => AlfrescoConstants.AttachmentPath;
     }
 }

@@ -7,9 +7,5 @@ namespace GeminiToJira.Parameters
     {
         public string ServerUrl => GeminiConstants.GeminiUrl;
 
-        public string GEMINI_PATH => GeminiConstants.GEMINI_PATH;
-
-        public string SAVING_PATH => GeminiConstants.SAVING_PATH;
-
     }
 }

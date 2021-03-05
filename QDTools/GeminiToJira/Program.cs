@@ -27,7 +27,7 @@ namespace GeminiToJira
             var developmentEngine = unityContainer.Resolve<ImportDevelopmentEngine>();
             timer.Start();
             Console.WriteLine("[" + DateTime.Now + "] Start Development");
-            //developmentEngine.Execute(configurationSetup);
+            developmentEngine.Execute(configurationSetup);
             timer.Stop();
             Console.WriteLine("[" + DateTime.Now + "] Development imported in " + timer.Elapsed);
 
@@ -38,7 +38,7 @@ namespace GeminiToJira
             var uatEngine = unityContainer.Resolve<ImportUatEngine>();
             timer.Restart();
             Console.WriteLine("[" + DateTime.Now + "] Start UAT");
-            uatEngine.Execute(configurationSetup);
+            //uatEngine.Execute(configurationSetup);
             timer.Stop();
             Console.WriteLine("[" + DateTime.Now + "] UAT imported in " + timer.Elapsed);
 
@@ -49,12 +49,13 @@ namespace GeminiToJira
             var bugEngine = unityContainer.Resolve<ImportBugEngine>();
             timer.Restart();
             Console.WriteLine("[" + DateTime.Now + "] Start BUG");
-            bugEngine.Execute(configurationSetup);
+            //bugEngine.Execute(configurationSetup);
             timer.Stop();
-            Console.WriteLine("[" + DateTime.Now + "] BUG imported in " + timer.Elapsed); 
-            
+            Console.WriteLine("[" + DateTime.Now + "] BUG imported in " + timer.Elapsed);
+
             #endregion
 
+            Console.WriteLine("[" + DateTime.Now + "] Finished");
             Console.WriteLine("Press a key to close");
             Console.ReadLine();
         }

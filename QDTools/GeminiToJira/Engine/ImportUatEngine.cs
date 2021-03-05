@@ -78,9 +78,9 @@ namespace GeminiToJira.Engine
                     {
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
                     
-                        var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, configurationSetup.Jira.UatTypeCode, projectCode);
+                        var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.UatTypeCode, projectCode);
                     
-                        var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
+                        var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.AttachmentDownloadedPath);
                         SetAndSaveReporter(jiraIssue, geminiIssue);
                     
                         if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")

@@ -46,18 +46,18 @@ namespace GeminiToJira.Engine
             Countersoft.Gemini.Commons.Entity.IssuesFilter filter = GetBugFilter(configurationSetup);
 
             var geminiBugIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter);
+
             var bugLogFile = "BugLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
-
-
+            
             foreach (var geminiIssue in geminiBugIssueList.OrderBy(f => f.Id).ToList())
             {
                 try
                 {
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
             
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, configurationSetup.Jira.BugTypeCode, projectCode);
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode);
             
-                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
+                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.AttachmentDownloadedPath);
                     SetAndSaveReporter(jiraIssue, geminiIssue);
                 }
                 catch
