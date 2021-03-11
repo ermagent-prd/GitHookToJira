@@ -54,6 +54,7 @@ namespace JiraTools.Model
         public List<Comment> CommentList { get; set; }
 
         public List<string> Attachments { get; set; }
+        public List<string> Resources { get; set; }
 
         public String Resolution { get; set; }
 
@@ -65,7 +66,9 @@ namespace JiraTools.Model
         public string AnalysisUrl { get; set; }
         public string TestDocumentUrl { get; set; }
         public string ChangeDocumentUrl { get; set; }
+        public string NewFeatureDocumentUrl { get; set; }
         public string Status { get; set; }
         public int PercentComplete { get; set; }
+        
     }
 }

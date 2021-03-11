@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Atlassian.Jira;
 using JiraTools.Model;
+using JiraTools.Parameters;
 using JiraTools.Service;
 
 namespace JiraTools.Engine
@@ -24,12 +25,7 @@ namespace JiraTools.Engine
             { "Unresolved",   "Won't Do" },
             { "Duplicate",  "Duplicate" },        };
 
-
-        private readonly string SubTaskType = "10003";
-        private readonly string UatType = "10014";
-
         private readonly ServiceManagerContainer requestFactory;
-
         private readonly AddWorklogEngine worklogEngine;
         private readonly AddCommentEngine commentEngine;
         private readonly AddAttachmentEngine attachmentEngine;
@@ -47,9 +43,9 @@ namespace JiraTools.Engine
             this.attachmentEngine = attachmentEngineEngine;
         }
 
-        public Issue Execute(CreateIssueInfo issueFields, string attachmentPath)
+        public Issue Execute(CreateIssueInfo issueFields, JiraConfiguration jiraConfiguration, string attachmentPath)
         {
-            var task = addIssue(issueFields, attachmentPath);
+            var task = addIssue(issueFields, jiraConfiguration, attachmentPath);
 
             task.Wait();
 
@@ -58,11 +54,11 @@ namespace JiraTools.Engine
 
         #region Private methods
 
-        private async Task<Issue> addIssue(CreateIssueInfo fieldsInfo, string attachmentPath)
+        private async Task<Issue> addIssue(CreateIssueInfo fieldsInfo, JiraConfiguration jiraConfiguration, string attachmentPath)
         {
             IssueTimeTrackingData timeTrackingData = null;
 
-            if (fieldsInfo.Type.Id != UatType)
+            if (fieldsInfo.Type.Id != jiraConfiguration.UatTypeCode && fieldsInfo.Type.Id != jiraConfiguration.BugTypeCode)
                 timeTrackingData = new IssueTimeTrackingData(
                     fieldsInfo.OriginalEstimate,
                     fieldsInfo.RemainingEstimate);
@@ -72,7 +68,7 @@ namespace JiraTools.Engine
                     TimeTrackingData = timeTrackingData
             };
 
-            if (fieldsInfo.Type.Id == SubTaskType)
+            if (fieldsInfo.Type.Id == jiraConfiguration.SubTaskTypeCode || fieldsInfo.Type.Id == jiraConfiguration.StorySubTaskTypeCode)
                 fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
 
             var newIssue = new Issue(this.requestFactory.Service, fields);
@@ -118,7 +114,16 @@ namespace JiraTools.Engine
 
             attachmentEngine.Execute(issue, fieldsInfo.Attachments, attachmentPath);
 
+            if (fieldsInfo.Resources != null && fieldsInfo.Resources.Count > 0)
+                AddResourcesAsWatchers(issue, fieldsInfo.Resources);
+
             return issue;
+        }
+
+        private static void AddResourcesAsWatchers(Issue issue, List<string> resources)
+        {
+            foreach (var resource in resources)
+                issue.AddWatcherAsync(resource);
         }
 
         private static void SetAffectVersions(CreateIssueInfo fieldsInfo, Issue newIssue)

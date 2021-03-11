@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GeminiToJira.Parameters.Import
+namespace AlfrescoTools.Parameters
 {
     public class AlfrescoConfiguration
     {

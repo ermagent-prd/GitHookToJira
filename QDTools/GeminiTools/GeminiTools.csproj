@@ -90,6 +90,7 @@
     <Compile Include="Items\ItemGetter.cs" />
     <Compile Include="Items\ItemListGetter.cs" />
     <Compile Include="Items\LinkItem.cs" />
+    <Compile Include="Parameters\GeminiConfiguration.cs" />
     <Compile Include="Parameters\IGeminiToolsParameters.cs" />
     <Compile Include="Projects\ProjectGetter.cs" />
     <Compile Include="Projects\ProjectFinder.cs" />

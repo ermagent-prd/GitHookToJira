@@ -22,5 +22,10 @@ namespace GeminiToJira.Parameters.Import
         /// SSSP
         /// </summary>
         SSSP = 2,
+
+        /// <summary>
+        /// RMS5
+        /// </summary>
+        RMS5 = 3,
     }
 }

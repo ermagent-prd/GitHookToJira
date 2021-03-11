@@ -10,6 +10,5 @@ namespace JiraTools.Parameters
     {
         ByCode,
         BySummary,
-
     }
 }

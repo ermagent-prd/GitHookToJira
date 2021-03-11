@@ -125,8 +125,9 @@ namespace GeminiToJira.Mapper
                 jiraIssue.Priority = priority;
 
             //Assignee
-            if (geminiIssue.Resources.Count > 0)
-                jiraIssue.Assignee = accountEngine.Execute(geminiIssue.Resources.First().Entity.Fullname).AccountId;
+            var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
+            if (owner != null && owner.FormattedData != "")
+                jiraIssue.Assignee = accountEngine.Execute(owner.FormattedData).AccountId;
 
             //Load all issue's attachment
             jiraIssue.Attachments = descAttachments;
@@ -141,14 +142,29 @@ namespace GeminiToJira.Mapper
             //Related Dev
             SetRelatedDevelopment(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix);
 
-            //For worklog
+            //worklog
             jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
+
+            SetResources(jiraIssue, geminiIssue);
 
             return jiraIssue;
         }
 
 
+
+
         #region Private        
+        private void SetResources(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        {
+            if (geminiIssue.Resources != null && geminiIssue.Resources.Count > 0)
+            {
+                jiraIssue.Resources = new List<string>();
+
+                foreach (var resource in geminiIssue.Resources)
+                    jiraIssue.Resources.Add(accountEngine.Execute(resource.User.Fullname).AccountId);
+            }
+        }
+
 
         private void SetRelatedDevelopment(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix)
         {
@@ -162,11 +178,7 @@ namespace GeminiToJira.Mapper
         }
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string uatPrefix)
-        {            
-            var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
-            if (owner != null && owner.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Owner", accountEngine.Execute(owner.FormattedData).AccountId));
-
+        {   
             //UAT Type
             var issueType = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == ISSUE_TYPE);
             if (issueType != null)
@@ -198,10 +210,10 @@ namespace GeminiToJira.Mapper
             if (affectedBuild != null && affectedBuild.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Affected Build", affectedBuild.FormattedData));
 
-            //Save release build, if present
-            var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_RELEASE_KEY);
-            if (release != null && release.FormattedData != "")
-                jiraIssue.FixVersions.Add(release.FormattedData);
+            //Save release build, if present, as Fix Versions
+            //var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_RELEASE_KEY);
+            //if (release != null && release.FormattedData != "")
+            //    jiraIssue.FixVersions.Add(release.FormattedData);
 
             //Gemini : save the original issue's code from gemini
             jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", uatPrefix + geminiIssue.Id.ToString()));

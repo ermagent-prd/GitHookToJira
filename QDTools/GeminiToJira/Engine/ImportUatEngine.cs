@@ -80,7 +80,7 @@ namespace GeminiToJira.Engine
                     
                         var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.UatTypeCode, projectCode);
                     
-                        var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.AttachmentDownloadedPath);
+                        var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                         SetAndSaveReporter(jiraIssue, geminiIssue);
                     
                         if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")

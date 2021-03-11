@@ -1,5 +1,5 @@
 {
-  "JiraProjectCode": "ER",
+  "JiraProjectCode": "RMS5",
   "ComponentsForDevelopment": [
     "ILIAS",
     "ILIAS-STA",
@@ -70,7 +70,7 @@
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
     "ImportStory": true,
-    "ImportTask": false,
+    "ImportTask": true,
     "ImportUat": true,
     "ImportBug": true,
     "EpicTypeCode": "10000",

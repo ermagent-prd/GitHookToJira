@@ -66,6 +66,8 @@ namespace GeminiToJira.Parameters.Import
             cfgList.Add(ImportCfgType.Test, string.Concat(resourceNameSpace, "Test.json"));      
             cfgList.Add(ImportCfgType.ERM, string.Concat(resourceNameSpace, "ERM.json"));      
             cfgList.Add(ImportCfgType.SSSP, string.Concat(resourceNameSpace, "SSSP.json"));      
+            cfgList.Add(ImportCfgType.RMS5, string.Concat(resourceNameSpace, "RMS5.json"));      
+
 
             return cfgList;
         }

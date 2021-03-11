@@ -19,6 +19,12 @@ namespace GeminiToJira.Engine
             this.userListDictionary = new Lazy<Dictionary<string, JiraUser>> (() => GetUsersDictionary(userListGetter));
         }
 
+        //for test purpose
+        public Dictionary<string, JiraUser> Execute()
+        {
+            return userListDictionary.Value;
+        }
+
         public JiraUser Execute(string fullname)
         {
             JiraUser userAccount;

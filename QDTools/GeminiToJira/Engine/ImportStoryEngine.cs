@@ -12,12 +12,13 @@ using GeminiTools.Items;
 using AlfrescoTools.Engine;
 using DotCMIS.Client;
 using GeminiToJira.Parameters.Import;
+using JiraTools.Parameters;
 
 namespace GeminiToJira.Engine
 {
-    public class ImportDevelopmentEngine
+    public class ImportStoryEngine
     {
-        private readonly DevelopmentIssueMapper geminiToJiraMapper;
+        private readonly StoryIssueMapper geminiToJiraMapper;
         private readonly GeminiTools.Items.ItemListGetter geminiItemsEngine;
         private readonly CreateIssueEngine jiraSaveEngine;
         private readonly JiraAccountIdEngine accountEngine;
@@ -27,8 +28,8 @@ namespace GeminiToJira.Engine
         private readonly UploadDocumentEngine uploadAlfrescoEngine;
 
 
-        public ImportDevelopmentEngine(
-            DevelopmentIssueMapper geminiToJiraMapper,
+        public ImportStoryEngine(
+            StoryIssueMapper geminiToJiraMapper,
             GeminiTools.Items.ItemListGetter geminiItemsEngine,
             CreateIssueEngine jiraSaveEngine,
             JiraAccountIdEngine accountEngine,
@@ -57,12 +58,12 @@ namespace GeminiToJira.Engine
             var storyFolderDictionary = new Dictionary<string, string>();
 
             var storyType = configurationSetup.Jira.StoryTypeCode;
-            var subTaskType = configurationSetup.Jira.SubTaskTypeCode;
+            var storySubTaskType = configurationSetup.Jira.StorySubTaskTypeCode;
 
             var filter = GetDevFilter(configurationSetup);
             var geminiDevelopmentIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter, configurationSetup);
 
-            var developmentLogFile = "DevelopmentLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+            var storyLogFile = "DevelopmentLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
             foreach (var geminiIssue in geminiDevelopmentIssueList.Where(l => l.Type == "Development").OrderBy(f => f.Id).ToList())
             {
@@ -72,28 +73,28 @@ namespace GeminiToJira.Engine
                     var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, storyType, projectCode);
 
                     //Create Story
-                    Issue jiraIssue = SaveAndSetStory(jiraSavedDictionary, geminiIssue, jiraIssueInfo, configurationSetup.AttachmentDownloadedPath);
+                    Issue jiraIssue = SaveAndSetStory(jiraSavedDictionary, geminiIssue, jiraIssueInfo, configurationSetup);
                     var storyFolder = SetAndSaveAlfrescoUrls(jiraIssueInfo, jiraIssue, "", configurationSetup);
                     storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
 
                     var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != configurationSetup.Gemini.GroupTypeCode && i.Value.Id != currentIssue.Id);
 
-                    //SubTask
+                    //Story-SubTask
                     foreach (var sub in hierarchy)
                     {
                         if (sub.Value.Type == "Task")
                         {
                             var currentSubIssue = geminiItemsEngine.Execute(sub.Value.Id);
 
-                            SaveAndSetSubTask(configurationSetup, jiraIssue, currentSubIssue, jiraSavedDictionary, subTaskType, storyFolder);
+                            SaveAndSetStorySubTask(configurationSetup, jiraIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     File.AppendAllText(
-                        configurationSetup.LogDirectory + developmentLogFile,
-                        "[Task] - " + geminiIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
+                        configurationSetup.LogDirectory + storyLogFile,
+                        "[Story] - " + geminiIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
                 }
             }
 
@@ -111,12 +112,12 @@ namespace GeminiToJira.Engine
                         {
                             //Create Story
                             var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentSubIssue, storyType, projectCode);
-                            Issue jiraIssue = SaveAndSetStory(jiraSavedDictionary, geminiIssue, jiraIssueInfo, configurationSetup.AttachmentDownloadedPath);
+                            Issue jiraIssue = SaveAndSetStory(jiraSavedDictionary, geminiIssue, jiraIssueInfo, configurationSetup);
                             var storyFolder = SetAndSaveAlfrescoUrls(jiraIssueInfo, jiraIssue, "", configurationSetup);
                             storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
                           
                             //and become a subtask of myself
-                            SaveAndSetSubTask(configurationSetup, jiraIssue, currentSubIssue, jiraSavedDictionary, subTaskType, storyFolder);
+                            SaveAndSetStorySubTask(configurationSetup, jiraIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder);
 
                         }
                         else
@@ -128,15 +129,15 @@ namespace GeminiToJira.Engine
                             {
                                 storyFolderDictionary.TryGetValue(jiraFatherIssue.JiraIdentifier, out string storyFolder);
 
-                                SaveAndSetSubTask(configurationSetup, jiraFatherIssue, currentSubIssue, jiraSavedDictionary, subTaskType, storyFolder);
+                                SaveAndSetStorySubTask(configurationSetup, jiraFatherIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder);
                             }
                         }
                     }
                     catch (Exception ex)
                     {
                         File.AppendAllText(
-                            configurationSetup.LogDirectory + developmentLogFile,
-                            "[SubT] - " + currentSubIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
+                            configurationSetup.LogDirectory + storyLogFile,
+                            "[SubStory] - " + currentSubIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
                     }
                 }
             }
@@ -144,39 +145,41 @@ namespace GeminiToJira.Engine
             #endregion
         }
 
-        private Issue SaveAndSetStory(Dictionary<int, Issue> jiraSavedDictionary, IssueDto geminiIssue, CreateIssueInfo jiraIssueInfo, string attachmentPath)
+        private Issue SaveAndSetStory(Dictionary<int, Issue> jiraSavedDictionary, IssueDto geminiIssue, CreateIssueInfo jiraIssueInfo, GeminiToJiraParameters configurationSetup)
         {
-            var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, attachmentPath);
+            //save story
+            var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
             //and set as saved
             if(!jiraSavedDictionary.TryGetValue(geminiIssue.Id, out Issue existing))
                 jiraSavedDictionary.Add(geminiIssue.Id, jiraIssue);
 
+            //save reporter
             SetAndSaveReporter(jiraIssue, geminiIssue);
             return jiraIssue;
         }
 
-        private void SaveAndSetSubTask(
+        private void SaveAndSetStorySubTask(
             GeminiToJiraParameters configurationSetup,
             Issue jiraIssue,
             IssueDto currentSubIssue,
             Dictionary<int, Issue> jiraSavedDictionary,
-            string subTaskType,
+            string storySubTaskType,
             string storyFolder)
         {
             if (CheckIfValidItem(currentSubIssue, configurationSetup))
             {
-                var jiraSubTaskInfo = geminiToJiraMapper.Execute(configurationSetup, currentSubIssue, subTaskType, configurationSetup.JiraProjectCode);
+                var jiraStorySubTaskInfo = geminiToJiraMapper.Execute(configurationSetup, currentSubIssue, storySubTaskType, configurationSetup.JiraProjectCode);
 
-                jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
+                jiraStorySubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
 
                 //create subtask
-                var subIssue = jiraSaveEngine.Execute(jiraSubTaskInfo, configurationSetup.AttachmentDownloadedPath);
+                var subIssue = jiraSaveEngine.Execute(jiraStorySubTaskInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                 //and set as saved
                 if (!jiraSavedDictionary.TryGetValue(currentSubIssue.Id, out Issue existing))
                     jiraSavedDictionary.Add(currentSubIssue.Id, subIssue);
 
                 SetAndSaveReporter(subIssue, currentSubIssue);
-                SetAndSaveAlfrescoUrls(jiraSubTaskInfo, subIssue, storyFolder, configurationSetup);
+                SetAndSaveAlfrescoUrls(jiraStorySubTaskInfo, subIssue, storyFolder, configurationSetup);
 
             }
         }
@@ -185,19 +188,18 @@ namespace GeminiToJira.Engine
 
         #region Private 
         /// <summary>
-        /// The subtask must have the same release and development lines of his father (story)
+        /// 
         /// </summary>
         /// <param name="geminiIssue"></param>
         /// <returns></returns>
         private bool CheckIfValidItem(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
-            var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Filter.DEVELOPMENT_RELEASE_KEY);
-            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Filter.DEVELOPMENT_LINE_KEY);
+            var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Filter.STORY_RELEASE_KEY);
+            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Filter.STORY_LINE_KEY);
 
-            //Solo i development: i task sono quelli associati ai development trovati
             if (release != null && devLine != null &&
-                configurationSetup.Filter.DEVELOPMENT_RELEASES.Contains(release.FormattedData) &&
-                configurationSetup.Filter.DEVELOPMENT_LINES.Contains(devLine.FormattedData))
+                configurationSetup.Filter.STORY_RELEASES.Contains(release.FormattedData) &&
+                configurationSetup.Filter.STORY_LINES.Contains(devLine.FormattedData))
                 return true;
             else
                 return false;
@@ -226,10 +228,9 @@ namespace GeminiToJira.Engine
         {
             return new Countersoft.Gemini.Commons.Entity.IssuesFilter
             {
-                IncludeClosed = configurationSetup.Filter.DEVELOPMENT_INCLUDED_CLOSED,
-                Projects = configurationSetup.Filter.DEVELOPMENT_PROJECT_ID,
-                Types = configurationSetup.Filter.DEVELOPMENT_TYPES,
-                Issues = "|59721|"
+                IncludeClosed = configurationSetup.Filter.STORY_INCLUDED_CLOSED,
+                Projects = configurationSetup.Filter.STORY_PROJECT_ID,
+                Types = configurationSetup.Filter.STORY_TYPES,
             };
         }
 
@@ -252,14 +253,16 @@ namespace GeminiToJira.Engine
             LinkItem brAnalysisLink = null;
             LinkItem changeDocumentLink = null;
             LinkItem testDocumentLink = null;
+            LinkItem newFeatureDocumentUrl = null;
 
-            GetLinks(jiraIssueInfo, ref analysisLink, ref brAnalysisLink, ref changeDocumentLink, ref testDocumentLink);
+            GetLinks(jiraIssueInfo, ref analysisLink, ref brAnalysisLink, ref changeDocumentLink, ref testDocumentLink, ref newFeatureDocumentUrl);
 
             //if all links are anull no url to save
             if (analysisLink == null && 
                 brAnalysisLink == null && 
                 changeDocumentLink == null && 
-                testDocumentLink == null)
+                testDocumentLink == null &&
+                newFeatureDocumentUrl == null)
                 return "";
 
             var newFolder = jiraIssue.Key.Value + " " + jiraIssue.Summary;
@@ -269,7 +272,9 @@ namespace GeminiToJira.Engine
             if((analysisLink != null && analysisLink.FileName != "") ||
                 (brAnalysisLink != null && brAnalysisLink.FileName != "") ||
                 (changeDocumentLink != null && changeDocumentLink.FileName != "") ||
-                (testDocumentLink != null && testDocumentLink.FileName != ""))
+                (testDocumentLink != null && testDocumentLink.FileName != "") ||
+                (newFeatureDocumentUrl != null && newFeatureDocumentUrl.FileName != "") 
+                )
                 folderAlfresco = folderEngine.Execute(configurationSetup.Alfresco.RootFolder, newFolder, storyFolder);
 
             if (analysisLink != null)
@@ -279,10 +284,18 @@ namespace GeminiToJira.Engine
                 jiraIssue.CustomFields.Add("BR Analysis Url", SaveAndUploadToAlfresco(folderAlfresco, brAnalysisLink, configurationSetup));
 
             if (changeDocumentLink != null)
-                jiraIssue.CustomFields.Add("Change Document Url", SaveAndUploadToAlfresco(folderAlfresco, changeDocumentLink, configurationSetup));
+            {
+                if(jiraIssueInfo.Type.Id == configurationSetup.Jira.StoryTypeCode)
+                    jiraIssue.CustomFields.Add("Change Document Url", SaveAndUploadToAlfresco(folderAlfresco, changeDocumentLink, configurationSetup));
+                else
+                    jiraIssue.CustomFields.Add("Documentation Url", SaveAndUploadToAlfresco(folderAlfresco, changeDocumentLink, configurationSetup));
+            }
 
             if (testDocumentLink != null)
                 jiraIssue.CustomFields.Add("Test Document Url", SaveAndUploadToAlfresco(folderAlfresco, testDocumentLink, configurationSetup));
+
+            if (newFeatureDocumentUrl != null)
+                jiraIssue.CustomFields.Add("New Feature Doc Url", SaveAndUploadToAlfresco(folderAlfresco, newFeatureDocumentUrl, configurationSetup));
 
             jiraIssue.SaveChanges();
 
@@ -293,7 +306,8 @@ namespace GeminiToJira.Engine
             ref LinkItem analysisLink, 
             ref LinkItem brAnalysisLink, 
             ref LinkItem changeDocumentLink, 
-            ref LinkItem testDocumentLink)
+            ref LinkItem testDocumentLink,
+            ref LinkItem newFeatureDocumentUrl)
         {
             if (jiraIssueInfo.AnalysisUrl != null && jiraIssueInfo.AnalysisUrl != "")
                 analysisLink = GetAttachmentLinkItem(jiraIssueInfo.AnalysisUrl);
@@ -306,6 +320,9 @@ namespace GeminiToJira.Engine
 
             if (jiraIssueInfo.TestDocumentUrl != null && jiraIssueInfo.TestDocumentUrl != "")
                 testDocumentLink = GetAttachmentLinkItem(jiraIssueInfo.TestDocumentUrl);
+
+            if (jiraIssueInfo.NewFeatureDocumentUrl != null && jiraIssueInfo.NewFeatureDocumentUrl != "")
+                newFeatureDocumentUrl = GetAttachmentLinkItem(jiraIssueInfo.NewFeatureDocumentUrl);
         }
 
         private LinkItem GetAttachmentLinkItem(string attachmentUrl)

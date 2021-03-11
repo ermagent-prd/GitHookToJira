@@ -67,12 +67,7 @@ namespace GeminiToJira.Mapper
 
 
         private const string AFFECTEDBUILD = "FoundInBuild";
-        private const string DEVELOPMENT_RELEASE_KEY = "Release Version";
-        private const string FUNCTIONALITY = "Functionality";
-        private const string PROJECT_MODULE = "Product Module";
-        private const string RELATED_DEVELOPMENT = "Development";
-        private const string ISSUE_TYPE = "IssueType";
-        private const string FIXED_IN_BUILD = "FixedInBuild";
+        private const string PROJECT_MODULE = "Product Module";        
 
         private readonly AttachmentGetter attachmentGetter;
         private readonly CommentMapper commentMapper;
@@ -101,27 +96,27 @@ namespace GeminiToJira.Mapper
 
             var jiraIssue = new CreateIssueInfo
             {
-                ProjectKey = projectCode,//for bug without title
-                Summary = geminiIssue.Title.TrimEnd() == "" ? geminiIssue.IssueKey : geminiIssue.Title.TrimEnd(),
+                ProjectKey = projectCode,   
+                Summary = geminiIssue.Title.TrimEnd() == "" ? geminiIssue.IssueKey : geminiIssue.Title.TrimEnd(), //for bug without title
                 Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments, configurationSetup.AttachmentDownloadedPath) + " " + DateTime.Now.ToString(),
                 Priority = geminiIssue.Priority,
                 Type = type,
-                OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
-                RemainingEstimate = geminiIssue.RemainingTime,
+                //OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
+                //RemainingEstimate = geminiIssue.RemainingTime,
             };
 
 
             //it's the same from the one from Gemini
-            string status = "";
             if (geminiIssue.Status != null && geminiIssue.Status != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", geminiIssue.Status));
 
             SetAffectedVersion(geminiIssue, jiraIssue);
             SetFixVersion(geminiIssue, jiraIssue);
-                        
+
             //Assignee
-            if (geminiIssue.Resources.Count > 0)
-                jiraIssue.Assignee = accountEngine.Execute(geminiIssue.Resources.First().Entity.Fullname).AccountId;
+            var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
+            if (owner != null && owner.FormattedData != "")
+                jiraIssue.Assignee = accountEngine.Execute(owner.FormattedData).AccountId;
 
             //Load all issue's attachment
             jiraIssue.Attachments = descAttachments;
@@ -136,13 +131,25 @@ namespace GeminiToJira.Mapper
             //For components use
             SetRelatedDevelopment(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix);
 
-            //For worklog
+            //worklog
             jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
+
+            SetResources(jiraIssue, geminiIssue);
 
             return jiraIssue;
         }
 
         #region Private        
+
+        private void SetResources(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        {
+            if (geminiIssue.Resources != null && geminiIssue.Resources.Count > 0)
+            {
+                foreach (var resource in geminiIssue.Resources)
+                    jiraIssue.Resources.Add(accountEngine.Execute(resource.User.Fullname).AccountId);
+            }
+        }
+
         private void SetRelatedDevelopment(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix)
         {
             //Related Development Build
@@ -156,11 +163,6 @@ namespace GeminiToJira.Mapper
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermBugPrefix)
         {
-            var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
-            if (owner != null && owner.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Owner", accountEngine.Execute(owner.FormattedData).AccountId));
-
-            
             var bugType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "BugType");
             string jiraBugType;
             if (bugType != null && bugType.FormattedData != "" && BUG_TYPE_MAPPING.TryGetValue(bugType.FormattedData, out jiraBugType))

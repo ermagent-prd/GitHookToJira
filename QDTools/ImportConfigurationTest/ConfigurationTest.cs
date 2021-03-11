@@ -4,6 +4,9 @@ using GeminiToJira.Parameters.Import;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using JiraTools.Parameters;
+using GeminiTools.Parameters;
+using AlfrescoTools.Parameters;
 
 namespace ImportConfigurationTest
 {
@@ -24,8 +27,8 @@ namespace ImportConfigurationTest
 
                 Filter = new FilterConfiguration()
                 {
-                    DEVELOPMENT_PROJECT_ID = "|36|",
-                    DEVELOPMENT_INCLUDED_CLOSED = true,
+                    STORY_PROJECT_ID = "|36|",
+                    STORY_INCLUDED_CLOSED = true,
                     UAT_FUNCTIONALITY = new List<String> { "PYTHO" },
                     UAT_PROJECT_ID = "|37|",
                     UAT_CREATED_FROM = "8/27/2020",
@@ -34,9 +37,9 @@ namespace ImportConfigurationTest
                     ERMBUG_PROJECT_ID = "38",
                     ERMBUG_INCLUDED_CLOSED = true,
 
-                    DEVELOPMENT_TYPES = "|Developer|Task|",
+                    STORY_TYPES = "|Developer|Task|",
 
-                    DEVELOPMENT_RELEASES = new List<string>() {
+                    STORY_RELEASES = new List<string>() {
                     "ERMAS",
                     "ERMAS 5.24.0",
                     "ERMAS 5.24.1",
@@ -48,15 +51,15 @@ namespace ImportConfigurationTest
                     "0.0.0.0"
                     },
 
-                    DEVELOPMENT_LINES = new List<string> {
+                    STORY_LINES = new List<string> {
                     "BSM",
                     "ILIAS",
                     "ILIAS-STA",
                     "Other"
                     },
 
-                    DEVELOPMENT_RELEASE_KEY = "Release Version",
-                    DEVELOPMENT_LINE_KEY = "DVL",
+                    STORY_RELEASE_KEY = "Release Version",
+                    STORY_LINE_KEY = "DVL",
                 },
                 Alfresco = new AlfrescoConfiguration()
                 {
@@ -88,10 +91,14 @@ namespace ImportConfigurationTest
                     IssueApi = "rest/api/3/issue/",
                     MaxIssuesPerRequest = 10, //Max 100 ??
 
-
-                    EpicCode = "10000",
+                    ImportTask = false,
+                    ImportStory = true,
+                    ImportBug = true,
+                    ImportUat = true,
+                    EpicTypeCode = "10000",
                     StoryTypeCode = "10001",
-                    TaskCode = "10002",
+                    StorySubTaskTypeCode = "10017",
+                    TaskTypeCode = "10002",
                     SubTaskTypeCode = "10003",
                     UatTypeCode = "10014",
                     BugTypeCode = "10004",

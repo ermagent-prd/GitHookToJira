@@ -25,7 +25,8 @@ namespace GeminiToJira.Container
             container.RegisterType<CommentMapper>();
             container.RegisterType<JiraAccountIdEngine>();
 
-            container.RegisterType<ImportDevelopmentEngine>();
+            container.RegisterType<ImportTaskEngine>();
+            container.RegisterType<ImportStoryEngine>();
             container.RegisterType<ImportUatEngine>();
             container.RegisterType<ImportBugEngine>();
             container.RegisterType<TimeLogEngine>();
