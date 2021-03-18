@@ -15,7 +15,7 @@ namespace GeminiToJira.Engine
 {
     public class ImportUatEngine
     {
-        private readonly UatIssueMapper geminiToJiraMapper;
+        private readonly BugIssueMapper geminiToJiraMapper;
         private readonly GeminiTools.Items.ItemListGetter geminiItemsEngine;
         private readonly JiraTools.Engine.ItemListGetter jiraItemsEngine;
         private readonly CreateIssueEngine jiraSaveEngine;
@@ -23,7 +23,7 @@ namespace GeminiToJira.Engine
         private readonly LinkEngine linkEngine;
 
         public ImportUatEngine(
-            UatIssueMapper geminiToJiraMapper,
+            BugIssueMapper geminiToJiraMapper,
             GeminiTools.Items.ItemListGetter geminiItemsEngine,
             JiraTools.Engine.ItemListGetter jiraItemsEngine,
             CreateIssueEngine jiraSaveEngine,
@@ -78,7 +78,7 @@ namespace GeminiToJira.Engine
                     {
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
                     
-                        var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.UatTypeCode, projectCode);
+                        var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode);
                     
                         var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                         SetAndSaveReporter(jiraIssue, geminiIssue);
@@ -96,12 +96,7 @@ namespace GeminiToJira.Engine
                     
                                 foreach (var v in relatedDev.FixVersions)
                                     jiraIssue.FixVersions.Add(v);
-                    
-                                var owner = jiraIssue.CustomFields.FirstOrDefault(c => c.Name == "Owner");
-                                //if owner is null i'll set it as father's owner
-                                if (owner == null)
-                                    jiraIssue.CustomFields.Add("Owner", relatedDev.CustomFields.First(c => c.Name == "Owner").Values);
-                    
+
                                 jiraIssue.SaveChanges();
                             }
                         }

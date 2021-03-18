@@ -15,7 +15,7 @@ namespace GeminiToJira
         {
             var unityContainer = ContainerFactory.Execute();
 
-            var cfgKey = ImportCfgType.RMS5;
+            var cfgKey = ImportCfgType.SSSP;
             GeminiToJiraParameters configurationSetup = Readconfiguration(cfgKey);
 
             Stopwatch timer = new Stopwatch();
@@ -23,7 +23,7 @@ namespace GeminiToJira
 
             #region Task
 
-            if (configurationSetup.Jira.ImportStory)
+            if (configurationSetup.Jira.ImportTask)
                 ImportTask(configurationSetup, unityContainer, timer);
 
             #endregion

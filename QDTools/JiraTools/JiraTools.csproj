@@ -80,6 +80,7 @@
     <Compile Include="Model\WorkLogInfo.cs" />
     <Compile Include="Parameters\IJiraToolsParameters.cs" />
     <Compile Include="Parameters\JiraConfiguration.cs" />
+    <Compile Include="Parameters\MappingConfiguration.cs" />
     <Compile Include="Parameters\QuerableType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\ServiceManagerContainer.cs" />

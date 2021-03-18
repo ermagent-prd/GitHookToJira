@@ -15,27 +15,11 @@ namespace GeminiToJira.Mapper
 {
     public class TaskIssueMapper
     {
-        private const string LINE_KEY = "DVL";
-
         private readonly AttachmentGetter attachmentGetter;
         private readonly CommentMapper commentMapper;
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
         private readonly TimeLogEngine timeLogEngine;
-        private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
-        {
-            { "backlog",        "Backlog" },
-            { "in Backlog",     "Backlog" },
-            { "assigned",       "Select for development" },
-            { "analysis",       "In Progress" },
-            { "development",    "In progress" },
-            { "waiting for test", "In progress" },
-            { "testing", "In progress" },
-            { "cancelled", "Done" },
-            { "done", "Done" },
-            { "in progress", "In progress" },
-        };
-        private readonly string STATUS_MAPPING_DEFAULT = "Backlog";
 
         public TaskIssueMapper(
             CommentMapper commentMapper, 
@@ -75,11 +59,6 @@ namespace GeminiToJira.Mapper
             if (geminiIssue.DueDate.HasValue)
                 jiraIssue.DueDate = geminiIssue.DueDate.Value;
 
-            string status = "";
-            if (STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out status))
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
-            else
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", STATUS_MAPPING_DEFAULT));
 
             //Assignee
             var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
@@ -93,14 +72,15 @@ namespace GeminiToJira.Mapper
             //Load and map all gemini comments
             commentMapper.Execute(configurationSetup, jiraIssue, geminiIssue);
 
-            if (type == configurationSetup.Jira.TaskTypeCode)
-            {
-                LoadTaskCustomFields(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix);
+            LoadTaskCustomFields(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix, configurationSetup.Mapping);
 
-                SetComponents(geminiIssue, jiraIssue, configurationSetup.ComponentsForDevelopment);
-            }
+            SetComponents(geminiIssue, jiraIssue, configurationSetup.ComponentsForDevelopment, configurationSetup.Mapping);
 
-            LoadCommonCustomFields(jiraIssue, geminiIssue);
+            //FixVersion
+            var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Mapping.RELEASE_KEY_LABEL);
+            if (release != null && release.FormattedData != "")
+                jiraIssue.FixVersions.Add(release.FormattedData);
+
 
             return jiraIssue;
         }
@@ -133,7 +113,6 @@ namespace GeminiToJira.Mapper
                 else
                     jiraIssue.RemainingEstimate = "0m";
 
-
                 //worklog: only for sybtask issues
                 jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
             }
@@ -150,9 +129,9 @@ namespace GeminiToJira.Mapper
             return minuteSpent;
         }
     
-        private static void SetComponents(IssueDto geminiIssue, CreateIssueInfo jiraIssue, List<string> components)
+        private static void SetComponents(IssueDto geminiIssue, CreateIssueInfo jiraIssue, List<string> components, JiraTools.Parameters.MappingConfiguration mapping)
         {
-            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == LINE_KEY);
+            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.LINE_KEY_LABEL);
             if (devLine != null && devLine.Entity.Data != "")
             {
                 foreach (var component in components)
@@ -163,23 +142,31 @@ namespace GeminiToJira.Mapper
             }
         }        
 
-        private void LoadTaskCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix)
-        {
-            
-            //Gemini : save the original issue's code from gemini
-            //jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", ermPrefix + geminiIssue.Id.ToString()));
-
-            //JDE Code
-            var jdeCode = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "JDE");
-            if (jdeCode != null)
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("JDE", jdeCode.FormattedData));
-        }
-
-        private void LoadCommonCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        private void LoadTaskCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
         {
             //Start Date
             if (geminiIssue.StartDate.HasValue)
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Start date", geminiIssue.StartDate.Value.ToString("yyyy-M-d")));  //US Format
+
+            var estimateType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Estimate Type");
+            if (estimateType != null && estimateType.FormattedData != "" && mapping.DEV_ESTIMATE_TYPE_MAPPING.TryGetValue(estimateType.FormattedData.ToLower(), out string jiraEstimateType))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Estimate Type", jiraEstimateType));
+            else
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Estimate Type", mapping.DEV_ESTIMATE_TYPE_MAPPING_DEFAULT));
+
+            string status = "";
+            if (mapping.DEV_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out status))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
+            else
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", mapping.DEV_STATUS_MAPPING_DEFAULT));
+
+            //Gemini : save the original issue's code from gemini
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", ermPrefix + geminiIssue.Id.ToString()));
+
+            //JDE Code
+            var jdeCode = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "JDE");
+            if (jdeCode != null)
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("JDE Module", jdeCode.FormattedData));
         }
 
         #endregion

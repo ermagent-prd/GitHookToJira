@@ -68,7 +68,7 @@ namespace JiraTools.Engine
                     TimeTrackingData = timeTrackingData
             };
 
-            if (fieldsInfo.Type.Id == jiraConfiguration.SubTaskTypeCode || fieldsInfo.Type.Id == jiraConfiguration.StorySubTaskTypeCode)
+            if (fieldsInfo.Type.Id == jiraConfiguration.SubTaskTypeCode)
                 fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
 
             var newIssue = new Issue(this.requestFactory.Service, fields);

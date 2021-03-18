@@ -18,20 +18,23 @@ namespace GeminiToJira.Engine
 {
     public class ImportTaskEngine
     {
-        private readonly TaskIssueMapper geminiToJiraMapper;
+        private readonly TaskIssueMapper geminiToJiraTaskMapper;
+        private readonly StoryIssueMapper geminiToJiraSubTaskMapper;
         private readonly GeminiTools.Items.ItemListGetter geminiItemsEngine;
         private readonly CreateIssueEngine jiraSaveEngine;
         private readonly JiraAccountIdEngine accountEngine;
 
 
         public ImportTaskEngine(
-            TaskIssueMapper geminiToJiraMapper,
+            TaskIssueMapper geminiToJiraTaskMapper,
+            StoryIssueMapper geminiToJiraSubTaskMapper,
             GeminiTools.Items.ItemListGetter geminiItemsEngine,
             CreateIssueEngine jiraSaveEngine,
             JiraAccountIdEngine accountEngine
             )
         {
-            this.geminiToJiraMapper = geminiToJiraMapper;
+            this.geminiToJiraTaskMapper = geminiToJiraTaskMapper;
+            this.geminiToJiraSubTaskMapper = geminiToJiraSubTaskMapper;
             this.geminiItemsEngine = geminiItemsEngine;
             this.jiraSaveEngine = jiraSaveEngine;
             this.accountEngine = accountEngine;
@@ -56,7 +59,7 @@ namespace GeminiToJira.Engine
                 try
                 {
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, taskType, projectCode);
+                    var jiraIssueInfo = geminiToJiraTaskMapper.Execute(configurationSetup, currentIssue, taskType, projectCode);
 
                     //Create task
                     Issue jiraIssue = SaveAndSetTask(jiraSavedDictionary, geminiIssue, jiraIssueInfo, configurationSetup);
@@ -95,7 +98,7 @@ namespace GeminiToJira.Engine
                         if (currentSubIssue.HierarchyKey == "")
                         {
                             //Create Story
-                            var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentSubIssue, taskType, projectCode);
+                            var jiraIssueInfo = geminiToJiraTaskMapper.Execute(configurationSetup, currentSubIssue, taskType, projectCode);
                             Issue jiraIssue = SaveAndSetTask(jiraSavedDictionary, geminiIssue, jiraIssueInfo, configurationSetup);
 
                             //and become a subtask of myself
@@ -145,7 +148,7 @@ namespace GeminiToJira.Engine
         {
             if (CheckIfValidItem(currentSubIssue, configurationSetup))
             {
-                var jiraSubTaskInfo = geminiToJiraMapper.Execute(configurationSetup, currentSubIssue, subTaskType, configurationSetup.JiraProjectCode);
+                var jiraSubTaskInfo = geminiToJiraSubTaskMapper.Execute(configurationSetup, currentSubIssue, subTaskType, configurationSetup.JiraProjectCode);
 
                 jiraSubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
 

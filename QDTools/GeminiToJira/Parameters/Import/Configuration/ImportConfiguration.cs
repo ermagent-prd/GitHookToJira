@@ -20,6 +20,7 @@ namespace GeminiToJira.Parameters.Import
         public AlfrescoConfiguration Alfresco { get; set; }
         public GeminiConfiguration Gemini { get; set; }
         public JiraConfiguration Jira { get; set; }
+        public MappingConfiguration Mapping { get; set; }
 
         //local path
         public string LogDirectory { get; set; }

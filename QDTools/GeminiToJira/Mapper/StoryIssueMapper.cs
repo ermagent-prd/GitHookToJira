@@ -15,48 +15,12 @@ namespace GeminiToJira.Mapper
 {
     public class StoryIssueMapper
     {
-        private const string AFFECTEDBUILD = "AffectedBuild";
-        private const string RELEASE_KEY = "Release Version";
-        private const string LINE_KEY = "DVL";
-
         private readonly AttachmentGetter attachmentGetter;
         private readonly CommentMapper commentMapper;
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
         private readonly TimeLogEngine timeLogEngine;
-        private readonly Dictionary<string, string> STATUS_MAPPING = new Dictionary<string, string>()
-        {
-            { "backlog",        "Backlog" },
-            { "in Backlog",     "Backlog" },
-            { "assigned",       "Select for development" },
-            { "analysis",       "In Progress" },
-            { "development",    "In progress" },
-            { "waiting for test", "In progress" },
-            { "testing", "In progress" },
-            { "cancelled", "Done" },
-            { "done", "Done" },
-            { "in progress", "In progress" },
-        };
-        private readonly string STATUS_MAPPING_DEFAULT = "Backlog";
-
-        private readonly Dictionary<string, string> TASK_TYPE_MAPPING = new Dictionary<string, string>()
-        {
-            { "analysis", "Analysis" },
-            { "development", "Development" },
-            { "test",       "Test" },
-            { "documentation",    "Documentation" },
-        };
-        private readonly string TASK_TYPE_MAPPING_DEFAULT = "Other";
-
-        private readonly Dictionary<string, string> ESTIMATE_TYPE_MAPPING = new Dictionary<string, string>()
-        {
-            { "Planned", "Planned" },
-            { "CR-mkt", "Internal change request" },
-            { "CR-int",  "Market change request" },
-            { "Overbudget", "Overbudget" },
-        };
-
-        private readonly string ESTIMATE_TYPE_MAPPING_DEFAULT = "Planned";
+        
 
         public StoryIssueMapper(
             CommentMapper commentMapper, 
@@ -86,24 +50,18 @@ namespace GeminiToJira.Mapper
             };
 
             jiraIssue.Priority = geminiIssue.Priority;
-            jiraIssue.OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m";
 
+            jiraIssue.OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m";
             CalculateRemainigEstimate(configurationSetup, geminiIssue, type, jiraIssue);
 
             jiraIssue.AffectVersions = new List<string>();
             jiraIssue.FixVersions = new List<string>();
 
             if (geminiIssue.DueDate.HasValue)
-                jiraIssue.DueDate = geminiIssue.DueDate.Value;
-
-            string status = "";
-            if (STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out status))
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
-            else
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", STATUS_MAPPING_DEFAULT));
+                jiraIssue.DueDate = geminiIssue.DueDate.Value;            
 
             //AffectedBuild
-            var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == AFFECTEDBUILD);
+            var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Mapping.AFFECTEDBUILD_LABEL);
             if (affectedBuild != null && affectedBuild.FormattedData != "")
                 jiraIssue.AffectVersions.Add(affectedBuild.FormattedData);
 
@@ -121,20 +79,21 @@ namespace GeminiToJira.Mapper
 
             if (type == configurationSetup.Jira.StoryTypeCode)
             {
-                LoadStoryCustomFields(jiraIssue, geminiIssue);
+                LoadStoryCustomFields(jiraIssue, geminiIssue, configurationSetup.Mapping);
 
                 //FixVersion
-                var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == RELEASE_KEY);
+                var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Mapping.RELEASE_KEY_LABEL);
                 if (release != null && release.FormattedData != "")
                     jiraIssue.FixVersions.Add(release.FormattedData);
 
-                SetComponents(geminiIssue, jiraIssue, configurationSetup.ComponentsForDevelopment);
+                //Component
+                SetComponents(geminiIssue, jiraIssue, configurationSetup.ComponentsForDevelopment, configurationSetup.Mapping);
             }
             else
-                LoadStorySubTaskCustomFields(jiraIssue, geminiIssue);
+                LoadStorySubTaskCustomFields(jiraIssue, geminiIssue, configurationSetup.Mapping);
 
             //Load custom fields in common
-            LoadCommonCustomFields(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix);
+            LoadCommonCustomFields(jiraIssue, geminiIssue, configurationSetup.Mapping, configurationSetup.Gemini.ErmPrefix);
 
             return jiraIssue;
         }
@@ -186,9 +145,9 @@ namespace GeminiToJira.Mapper
             return minuteSpent;
         }
     
-        private static void SetComponents(IssueDto geminiIssue, CreateIssueInfo jiraIssue, List<string> components)
+        private static void SetComponents(IssueDto geminiIssue, CreateIssueInfo jiraIssue, List<string> components, JiraTools.Parameters.MappingConfiguration mapping)
         {
-            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == LINE_KEY);
+            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.LINE_KEY_LABEL);
             if (devLine != null && devLine.Entity.Data != "")
             {
                 foreach (var component in components)
@@ -200,14 +159,13 @@ namespace GeminiToJira.Mapper
         }
 
 
-        private void LoadCommonCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix)
+        private void LoadCommonCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, JiraTools.Parameters.MappingConfiguration mapping, string ermPrefix)
         {
-            //Estimate Type
-            var estimateType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Estimate Type");
-            if (estimateType != null && estimateType.FormattedData != "" && ESTIMATE_TYPE_MAPPING.TryGetValue(estimateType.FormattedData, out string jiraEstimateType))
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Estimate Type", jiraEstimateType));
+            string status = "";
+            if (mapping.DEV_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out status))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
             else
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Estimate Type", ESTIMATE_TYPE_MAPPING_DEFAULT));
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", mapping.DEV_STATUS_MAPPING_DEFAULT));
 
             //Start Date
             if (geminiIssue.StartDate.HasValue)
@@ -217,34 +175,28 @@ namespace GeminiToJira.Mapper
             jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", ermPrefix + geminiIssue.Id.ToString()));                        
         }
 
-        private void LoadStorySubTaskCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        private void LoadStorySubTaskCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, JiraTools.Parameters.MappingConfiguration mapping)
         {
             var taskType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "TaskType");
-            if (taskType != null && taskType.FormattedData != "" && TASK_TYPE_MAPPING.TryGetValue(taskType.FormattedData, out string jiraTaskType))
+            if (taskType != null && taskType.FormattedData != "" && mapping.TASK_TYPE_MAPPING.TryGetValue(taskType.FormattedData, out string jiraTaskType))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Task Type", jiraTaskType));
             else
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Task Type", TASK_TYPE_MAPPING_DEFAULT));
-
-            var refAnalysis = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefAnalysis");
-            if (refAnalysis != null)
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Documentation Owners", accountEngine.Execute(refAnalysis.FormattedData).AccountId));
-
-            //"Changes Document"
-            var analysisUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Analysis Links");
-            if (analysisUrl != null && analysisUrl.FormattedData != "" && !analysisUrl.FormattedData.Contains("\n") && !analysisUrl.FormattedData.Contains("\r"))
-                jiraIssue.ChangeDocumentUrl = analysisUrl.FormattedData;
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Task Type", mapping.TASK_TYPE_MAPPING_DEFAULT));
         }
 
-        private void LoadStoryCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        private void LoadStoryCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, JiraTools.Parameters.MappingConfiguration mapping)
         {
+            //Estimate Type
+            var estimateType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Estimate Type");
+            if (estimateType != null && estimateType.FormattedData != "" && mapping.DEV_ESTIMATE_TYPE_MAPPING.TryGetValue(estimateType.FormattedData.ToLower(), out string jiraEstimateType))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Estimate Type", jiraEstimateType));
+            else
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Estimate Type", mapping.DEV_ESTIMATE_TYPE_MAPPING_DEFAULT));
+
             //JDE Code
             var jdeCode = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "JDE");
             if (jdeCode != null)
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("JDE", jdeCode.FormattedData));
-
-            var refAnalysis = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefAnalysis");
-            if (refAnalysis != null)
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Owner", accountEngine.Execute(refAnalysis.FormattedData).AccountId));
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("JDE Module", jdeCode.FormattedData));
 
             //BR Analysis Url
             var brAnalysisUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Requirements");
@@ -260,25 +212,6 @@ namespace GeminiToJira.Mapper
             var gdprActivities = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "GDPR Activities");
             if (gdprActivities != null && gdprActivities.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("GDPR Activities", gdprActivities.FormattedData));
-
-            //IT Responsible 
-            var itResponsible = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefIT");
-            if (itResponsible != null)
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("IT Responsible", accountEngine.Execute(itResponsible.FormattedData).AccountId));
-
-            var testResponsible = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "RefTest");
-            if (testResponsible != null)
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Responsible", accountEngine.Execute(testResponsible.FormattedData).AccountId));
-
-            //Analysis start date
-            var analysisStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "AnalysisStartDate");
-            if (analysisStartDate != null && analysisStartDate.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Analysis Start Date", InternalConvertDate(analysisStartDate.FormattedData).ToString("yyyy-M-d")));
-
-            //Test start date
-            var testStartDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Test Start Date");
-            if (testStartDate != null && testStartDate.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Test Start Date", InternalConvertDate(testStartDate.FormattedData).ToString("yyyy-M-d")));
 
             //"Test Document"
             var testDocumentUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Test Document");
@@ -303,24 +236,6 @@ namespace GeminiToJira.Mapper
 
         #endregion
 
-        private DateTime InternalConvertDate(String dateValue)
-        {
-            double dt;
-            DateTime dtDate;
-
-            if (DateTime.TryParse(dateValue, out dtDate))
-            {
-                return dtDate.Date;
-            }
-            else
-            {
-                String[] formats = new String[4] { "dd/MM/yyyy", "MM/dd/yyyy", "dd/MM/yy", "MM/dd/yy" };
-
-                if (DateTime.TryParseExact(dateValue, formats, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal, out dtDate))
-                    return dtDate.Date;                
-            }
-
-            return DateTime.Now;
-        }
+        
     }
 }

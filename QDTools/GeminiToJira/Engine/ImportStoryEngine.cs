@@ -58,7 +58,7 @@ namespace GeminiToJira.Engine
             var storyFolderDictionary = new Dictionary<string, string>();
 
             var storyType = configurationSetup.Jira.StoryTypeCode;
-            var storySubTaskType = configurationSetup.Jira.StorySubTaskTypeCode;
+            var storySubTaskType = configurationSetup.Jira.SubTaskTypeCode;
 
             var filter = GetDevFilter(configurationSetup);
             var geminiDevelopmentIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter, configurationSetup);
@@ -164,7 +164,7 @@ namespace GeminiToJira.Engine
             IssueDto currentSubIssue,
             Dictionary<int, Issue> jiraSavedDictionary,
             string storySubTaskType,
-            string storyFolder)
+            string rooStoryFolder)
         {
             if (CheckIfValidItem(currentSubIssue, configurationSetup))
             {
@@ -179,7 +179,7 @@ namespace GeminiToJira.Engine
                     jiraSavedDictionary.Add(currentSubIssue.Id, subIssue);
 
                 SetAndSaveReporter(subIssue, currentSubIssue);
-                SetAndSaveAlfrescoUrls(jiraStorySubTaskInfo, subIssue, storyFolder, configurationSetup);
+                SetAndSaveAlfrescoUrls(jiraStorySubTaskInfo, subIssue, rooStoryFolder, configurationSetup);
 
             }
         }
@@ -246,7 +246,7 @@ namespace GeminiToJira.Engine
         private string SetAndSaveAlfrescoUrls(
             CreateIssueInfo jiraIssueInfo, 
             Issue jiraIssue, 
-            string storyFolder, 
+            string rooStoryFolder, 
             GeminiToJiraParameters configurationSetup)
         {
             LinkItem analysisLink = null;
@@ -275,29 +275,30 @@ namespace GeminiToJira.Engine
                 (testDocumentLink != null && testDocumentLink.FileName != "") ||
                 (newFeatureDocumentUrl != null && newFeatureDocumentUrl.FileName != "") 
                 )
-                folderAlfresco = folderEngine.Execute(configurationSetup.Alfresco.RootFolder, newFolder, storyFolder);
+                folderAlfresco = folderEngine.Execute(configurationSetup.Alfresco.RootFolder, newFolder, rooStoryFolder);
 
             if (analysisLink != null)
-                jiraIssue.CustomFields.Add("Analysis Document Url", SaveAndUploadToAlfresco(folderAlfresco, analysisLink, configurationSetup));
+                SaveAndUploadToAlfresco(folderAlfresco, analysisLink, configurationSetup);
 
             if (brAnalysisLink != null)
-                jiraIssue.CustomFields.Add("BR Analysis Url", SaveAndUploadToAlfresco(folderAlfresco, brAnalysisLink, configurationSetup));
+                SaveAndUploadToAlfresco(folderAlfresco, brAnalysisLink, configurationSetup);
 
             if (changeDocumentLink != null)
-            {
-                if(jiraIssueInfo.Type.Id == configurationSetup.Jira.StoryTypeCode)
-                    jiraIssue.CustomFields.Add("Change Document Url", SaveAndUploadToAlfresco(folderAlfresco, changeDocumentLink, configurationSetup));
-                else
-                    jiraIssue.CustomFields.Add("Documentation Url", SaveAndUploadToAlfresco(folderAlfresco, changeDocumentLink, configurationSetup));
-            }
+                SaveAndUploadToAlfresco(folderAlfresco, changeDocumentLink, configurationSetup);
 
             if (testDocumentLink != null)
-                jiraIssue.CustomFields.Add("Test Document Url", SaveAndUploadToAlfresco(folderAlfresco, testDocumentLink, configurationSetup));
+                SaveAndUploadToAlfresco(folderAlfresco, testDocumentLink, configurationSetup);
 
             if (newFeatureDocumentUrl != null)
-                jiraIssue.CustomFields.Add("New Feature Doc Url", SaveAndUploadToAlfresco(folderAlfresco, newFeatureDocumentUrl, configurationSetup));
+                SaveAndUploadToAlfresco(folderAlfresco, newFeatureDocumentUrl, configurationSetup);
 
-            jiraIssue.SaveChanges();
+            //TODOPL save alfresco folder in csustomField if and only if folderAlfresco != null
+            if (folderAlfresco != null && jiraIssue.Type.Id == configurationSetup.Jira.StoryTypeCode)
+            {
+                jiraIssue.CustomFields.Add("Documentation Url", "http://10.100.2.85:8080/share/page/folder-details?nodeRef="+folderAlfresco.Id);
+                
+                jiraIssue.SaveChanges();
+            }
 
             return newFolder;
         }
