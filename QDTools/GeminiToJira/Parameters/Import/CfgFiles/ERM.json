@@ -1,5 +1,5 @@
 {
-  "JiraProjectCode": "ER",
+  "JiraProjectCode": "EOIB",
   "ComponentsForDevelopment": [
     "ILIAS",
     "ILIAS-STA",
@@ -69,10 +69,10 @@
     "Url": "https://prometeia-erm.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
-    "ImportStory": true,
+    "ImportStory": false,
     "ImportTask": false,
     "ImportUat": true,
-    "ImportBug": true,
+    "ImportBug": false,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10001",
     "StorySubTaskTypeCode": "10017",

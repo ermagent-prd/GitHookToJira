@@ -1,0 +1,16 @@
+{
+  "JsqlQuery": "project = RMS5 AND type = Sub-task ORDER BY id ASC",
+  "ExcelFileName": "export",
+  "SheetName": "sheetName",
+  "ExcelFilePath": "C:\\Users\\lucap\\Desktop\\Sviluppi\\GeminiToJira\\",
+  "FieldNames": [
+    "IssueCode",
+    "Summary",
+    "GeminiCode",
+    "Status",
+    "OriginalEstimate",
+    "DueDate",
+    "JDECode",
+    "IssueParentCode"
+  ]
+}

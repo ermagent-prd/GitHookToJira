@@ -28,6 +28,7 @@ namespace JiraTools.Container
             Container.RegisterType<UserGetter>();
             Container.RegisterType<UserListGetter>();
             Container.RegisterType<LinkEngine>();
+            Container.RegisterType<ItemListGetter>();
         }
 
         #endregion

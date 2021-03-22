@@ -73,6 +73,10 @@
       <Project>{E0C684EB-4D0F-4B6B-985F-F6264BC47C6E}</Project>
       <Name>GeminiTools</Name>
     </ProjectReference>
+    <ProjectReference Include="..\JiraReport\JiraReport.csproj">
+      <Project>{4B7E9CD9-30D6-4EF6-82B0-E33732539E1D}</Project>
+      <Name>JiraReport</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JiraTools\JiraTools.csproj">
       <Project>{D089F776-B54C-4E4C-A1A1-642FFEBC9DA0}</Project>
       <Name>JiraTools</Name>

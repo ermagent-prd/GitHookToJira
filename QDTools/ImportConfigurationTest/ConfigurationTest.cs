@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using JiraTools.Parameters;
 using GeminiTools.Parameters;
 using AlfrescoTools.Parameters;
+using JiraReport.Parameters.Export;
 
 namespace ImportConfigurationTest
 {
@@ -282,14 +283,41 @@ namespace ImportConfigurationTest
         }
 
         [TestMethod]
+        public void SerializeExcelCOnfigurationTest()
+        {
+            var conf = new ExcelConfiguration()
+            {
+                JsqlQuery = "project = RMS5 AND type = Sub-task ORDER BY id ASC",
+                SheetName = "sheetName",
+                ExcelFilePath = @"C:\Users\lucap\Desktop\Sviluppi\GeminiToJira\",
+                ExcelFileName = "export.xlsx",
+                FieldNames = new List<string>()
+                {
+                    "JiraCode",
+                    "Summary",
+                    "GeminiCode",
+                    "Status",
+                    "Original Estimate",
+                    "Due Date",
+                    "JDE Code",
+                    "ParentCode"
+
+                }
+            };
+
+            // serialize JSON to a string and then write string to a file
+            File.WriteAllText(@"C:\GeminiPorting\exportconf.json", JsonConvert.SerializeObject(conf, Formatting.Indented));
+
+        }
+
+
+        [TestMethod]
         public void DeSerializeConfigurationTest()
         {
             GeminiToJiraParameters configuration = JsonConvert.DeserializeObject<GeminiToJiraParameters>(File.ReadAllText(@"C:\GeminiPorting\configuration.json"));
 
 
             Assert.IsNotNull(configuration);
-
-
         }
     }
 }
