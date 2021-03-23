@@ -6,9 +6,9 @@ Use SecureString.ps1 to create token secure string file
 param (
     [string]$Username = "pierluigi.nanni@prometeia.com",
     [string]$TokenFilePath = "C:\Projects\Others\Processtools\JiraExport\ExportedPassword.txt",
-    [string]$Jql = "category = ""Active Development""",
+    [string]$Jql = "project = Ermas5 and issuetype = Bug and ""Epic Link"" = OA-28 and status = Fixed",
     [string]$server = "https://prometeia-erm.atlassian.net/",
-    [string]$ExcelFilePath = "C:\Tmp\jIRA\JiraIssues.xlsx",
+    [string]$ExcelFilePath = "C:\Tmp\jIRA\JiraBugs.xlsx",
     [string]$sheetName = "Jira Issues"
 ) 
 
@@ -31,21 +31,13 @@ try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     New-JiraSession -Credential $cred 
 
-<#
     $list = Get-JiraIssue `
-        -Fields "project, key,summary,timespent,parent,worklog"  `
-        -Query $Jql `
-        -First 100 | `
-        Select-Object  -Property project, key, summary
-#>
-
-    $list = Get-JiraIssue `
-    -Fields "project, key, summary, status, customfield_10015, duedate"  `
+    -Fields "project, key, customfield_10052, status, summary"  `
     -Query $Jql | `
-    Select-Object project, key, summary, status, customfield_10015, duedate
+    Select-Object project, key, customfield_10052, status, summary
 
-    $list | Export-XLSX -WorksheetName $sheetName -Path $ExcelFilePath -Table -Force -Autofit  `
-        -Header project, key, summary, status, startdate, duedate
+    $list | Export-XLSX -WorksheetName $sheetName -Path $ExcelFilePath -Table -Force -Autofit `
+        -Header project, ID,  BugFixing, Status, Summary
 
 }
 Catch {
