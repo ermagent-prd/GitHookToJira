@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Atlassian.Jira;
+﻿using Atlassian.Jira;
 using JiraReport.Engine;
-using JiraTools.Engine;
-using JiraTools.Parameters;
 
 namespace JiraReport.Parameters.Export.Getters.Columns
 {
-    public class IssueRelatedDevKeyCodeCodeGetter : IExcelFieldGetter
+    public class IssueRelatedDevKeyCodeGetter : IExcelFieldGetter
     {
         private readonly RelatedDevEngine relatedDevEngine;
 
-        public IssueRelatedDevKeyCodeCodeGetter(RelatedDevEngine relatedDevEngine)
+        public IssueRelatedDevKeyCodeGetter(RelatedDevEngine relatedDevEngine)
         {
             this.relatedDevEngine = relatedDevEngine;
 

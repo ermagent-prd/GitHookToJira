@@ -288,7 +288,7 @@ namespace ImportConfigurationTest
             var conf = new ExcelConfiguration()
             {
                 JsqlQuery = "project = RMS5 AND type = Sub-task ORDER BY id ASC",
-                SheetName = "sheetName",
+                ReportSheetName = "sheetName",
                 ExcelFilePath = @"C:\Users\lucap\Desktop\Sviluppi\GeminiToJira\",
                 ExcelFileName = "export.xlsx",
                 FieldNames = new List<string>()

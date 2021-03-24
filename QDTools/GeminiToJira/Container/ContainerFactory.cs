@@ -7,7 +7,6 @@ using GeminiToJira.Parameters;
 using GeminiTools.Container;
 using GeminiTools.Parameters;
 using JiraTools.Container;
-using JiraTools.Engine;
 using JiraTools.Parameters;
 using Unity;
 

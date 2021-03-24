@@ -1,10 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JiraReport.Parameters.Export
 {
@@ -55,7 +52,6 @@ namespace JiraReport.Parameters.Export
             return JsonConvert.DeserializeObject<ExcelConfiguration>(cfgResource);
         }
         #endregion
-
 
         #region Private methods
 

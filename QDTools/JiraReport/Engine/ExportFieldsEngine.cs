@@ -8,18 +8,18 @@ namespace JiraReport.Engine
 {
     public class ExportFieldsEngine
     {
-        private readonly Lazy<Dictionary<string, IExcelFieldGetter>> _columnsGetters;
+        private readonly Lazy<Dictionary<string, IExcelFieldGetter>> fieldGetters;
         private readonly RelatedDevEngine relatedDevEngine;
 
         public ExportFieldsEngine(RelatedDevEngine relatedDevEngine)
         {
             this.relatedDevEngine = relatedDevEngine;
-            _columnsGetters = getColumnsGetters();
+            fieldGetters = getColumnsGetters();
         }
 
         public string Execute(Issue issue, string fieldName)
         {
-            _columnsGetters.Value.TryGetValue(fieldName, out IExcelFieldGetter getter);
+            fieldGetters.Value.TryGetValue(fieldName, out IExcelFieldGetter getter);
 
             if (getter != null)
                 return getter.Execute(issue);
@@ -42,7 +42,7 @@ namespace JiraReport.Engine
                     getters.Add("OriginalEstimate", new IssueOriginalEstimateGetter());
                     getters.Add("DueDate", new IssueDueDateGetter());
                     getters.Add("JDECode", new IssueJdeCodeGetter(relatedDevEngine));
-                    getters.Add("IssueParentCode", new IssueRelatedDevKeyCodeCodeGetter(relatedDevEngine));
+                    getters.Add("IssueParentCode", new IssueRelatedDevKeyCodeGetter(relatedDevEngine));
 
                     return getters;
                 }

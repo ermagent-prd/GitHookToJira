@@ -2,11 +2,11 @@
 
 namespace JiraReport.Parameters.Export.Getters.Columns
 {
-    class IssueOriginalEstimateGetter : IExcelFieldGetter
+    public class IssueCreatedGetter : IExcelFieldGetter
     {
         public string Execute(Issue issue)
         {
-            return issue.TimeTrackingData != null ? issue.TimeTrackingData.OriginalEstimate : "";
+            return issue.Created.HasValue ? issue.Created.Value.ToString("yyyy/MM/dd") : "";
         }
     }
 }

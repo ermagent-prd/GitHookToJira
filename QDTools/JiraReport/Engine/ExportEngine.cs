@@ -35,11 +35,67 @@ namespace JiraReport.Engine
                 fileFullname = Path.Combine(configurationSetup.ExcelFilePath, configurationSetup.ExcelFileName+"_" + datetime + ".xlsx");
             }
 
-            using (SpreadsheetDocument document = SpreadsheetDocument.Create(fileFullname, SpreadsheetDocumentType.Workbook))
+            SpreadsheetDocument document;
+
+            var template = configurationSetup.ExcelTemplateFilePath + configurationSetup.ExcelTemplateFileName + ".xlsx";
+            if (File.Exists(template))
             {
+                document = SpreadsheetDocument.CreateFromTemplate(template);
+
+                CreateExcelFromTemplateFile(document, issueList, configurationSetup);
+
+                SetRefreshOnLoad(document);
+
+                document.SaveAs(fileFullname).Close();
+
+                return fileFullname;
+            }
+            else
+            {
+                document = SpreadsheetDocument.Create(fileFullname, SpreadsheetDocumentType.Workbook);
                 CreateExcelFile(document, issueList, configurationSetup);
                 return fileFullname;
             }
+        }
+
+        
+
+        private void CreateExcelFromTemplateFile(SpreadsheetDocument document, IEnumerable<Issue> issueList, ExcelConfiguration configurationSetup)
+        {
+            WorksheetPart worksheetPart =
+                      GetWorksheetPartByName(document, configurationSetup.ReportSheetName);
+
+            SheetData sheetData = worksheetPart.Worksheet.GetFirstChild<SheetData>();
+
+            Row headerRow = new Row();
+                        
+            foreach (var column in configurationSetup.FieldNames)
+            {
+                Cell cell = new Cell();
+                cell.DataType = CellValues.String;
+                cell.CellValue = new CellValue(column);
+                headerRow.AppendChild(cell);
+            }
+
+            sheetData.AppendChild(headerRow);
+
+
+            foreach (var issue in issueList)
+            {
+                Row newRow = new Row();
+                foreach (var field in configurationSetup.FieldNames)
+                {
+                    Cell cell = new Cell();
+                    cell.DataType = CellValues.String;
+                    cell.CellValue = new CellValue(fieldsEngine.Execute(issue, field));
+                    newRow.AppendChild(cell);
+                }
+
+                sheetData.AppendChild(newRow);
+            }
+
+            // Save the worksheet.
+            worksheetPart.Worksheet.Save();
         }
 
         private void CreateExcelFile(SpreadsheetDocument document, IEnumerable<Issue> issueList, ExcelConfiguration configurationSetup)
@@ -65,16 +121,13 @@ namespace JiraReport.Engine
                     sheets.Elements<Sheet>().Select(s => s.SheetId.Value).Max() + 1;
             }
 
-            Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = configurationSetup.SheetName};
+            Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = configurationSetup.ReportSheetName};
             sheets.Append(sheet);
 
             Row headerRow = new Row();
 
-            List<String> columns = new List<string>();
             foreach (var column in configurationSetup.FieldNames)
             {
-                columns.Add(column);
-
                 Cell cell = new Cell();
                 cell.DataType = CellValues.String;
                 cell.CellValue = new CellValue(column);
@@ -97,6 +150,48 @@ namespace JiraReport.Engine
 
                 sheetData.AppendChild(newRow);
             }
+        }
+
+        private WorksheetPart GetWorksheetPartByName(
+            SpreadsheetDocument document,
+            string sheetName)
+        {
+            IEnumerable<Sheet> sheets =
+               document.WorkbookPart.Workbook.GetFirstChild<Sheets>().
+               Elements<Sheet>().Where(s => s.Name == sheetName);
+
+            if (!sheets.Any())
+                return null;
+
+            string relationshipId = sheets.First().Id.Value;
+            WorksheetPart worksheetPart = (WorksheetPart)
+                 document.WorkbookPart.GetPartById(relationshipId);
+            return worksheetPart;
+        }
+
+        private void SetRefreshOnLoad(SpreadsheetDocument document)
+        {
+            var uriPartDictionary = BuildUriPartDictionary(document);
+
+            PivotTableCacheDefinitionPart pivotTableCacheDefinitionPart1 = (PivotTableCacheDefinitionPart)uriPartDictionary["/xl/pivotCache/pivotCacheDefinition11.xml"];
+            PivotCacheDefinition pivotCacheDefinition1 = pivotTableCacheDefinitionPart1.PivotCacheDefinition;
+            pivotCacheDefinition1.RefreshOnLoad = true;
+        }
+
+        protected Dictionary<String, OpenXmlPart> BuildUriPartDictionary(SpreadsheetDocument document)
+        {
+            var uriPartDictionary = new Dictionary<String, OpenXmlPart>();
+            var queue = new Queue<OpenXmlPartContainer>();
+            queue.Enqueue(document);
+            while (queue.Count > 0)
+            {
+                foreach (var part in queue.Dequeue().Parts.Where(part => !uriPartDictionary.Keys.Contains(part.OpenXmlPart.Uri.ToString())))
+                {
+                    uriPartDictionary.Add(part.OpenXmlPart.Uri.ToString(), part.OpenXmlPart);
+                    queue.Enqueue(part.OpenXmlPart);
+                }
+            }
+            return uriPartDictionary;
         }
     }
 }
