@@ -55,7 +55,7 @@ namespace GeminiToJira.Engine
                 {
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
             
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode);
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode, configurationSetup.Gemini.ErmBugPrefix);
             
                     var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                     SetAndSaveReporter(jiraIssue, geminiIssue);
@@ -70,7 +70,7 @@ namespace GeminiToJira.Engine
 
         #region Private 
 
-        private static Countersoft.Gemini.Commons.Entity.IssuesFilter GetBugFilter(GeminiToJiraParameters configurationSetup)
+        private Countersoft.Gemini.Commons.Entity.IssuesFilter GetBugFilter(GeminiToJiraParameters configurationSetup)
         {
             return new Countersoft.Gemini.Commons.Entity.IssuesFilter()
             {

@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonConfigurationTest", "Im
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraReport", "JiraReport\JiraReport.csproj", "{4B7E9CD9-30D6-4EF6-82B0-E33732539E1D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraToJira", "JiraToJira\JiraToJira.csproj", "{3219FD9B-7EFE-4FEE-AB98-4404CBF39AEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{4B7E9CD9-30D6-4EF6-82B0-E33732539E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B7E9CD9-30D6-4EF6-82B0-E33732539E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B7E9CD9-30D6-4EF6-82B0-E33732539E1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3219FD9B-7EFE-4FEE-AB98-4404CBF39AEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3219FD9B-7EFE-4FEE-AB98-4404CBF39AEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3219FD9B-7EFE-4FEE-AB98-4404CBF39AEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3219FD9B-7EFE-4FEE-AB98-4404CBF39AEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

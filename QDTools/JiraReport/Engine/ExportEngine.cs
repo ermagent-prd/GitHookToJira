@@ -42,7 +42,7 @@ namespace JiraReport.Engine
             {
                 document = SpreadsheetDocument.CreateFromTemplate(template);
 
-                CreateExcelFromTemplateFile(document, issueList, configurationSetup);
+                UpdateExcelFile(document, issueList, configurationSetup);
 
                 SetRefreshOnLoad(document);
 
@@ -60,7 +60,7 @@ namespace JiraReport.Engine
 
         
 
-        private void CreateExcelFromTemplateFile(SpreadsheetDocument document, IEnumerable<Issue> issueList, ExcelConfiguration configurationSetup)
+        private void UpdateExcelFile(SpreadsheetDocument document, IEnumerable<Issue> issueList, ExcelConfiguration configurationSetup)
         {
             WorksheetPart worksheetPart =
                       GetWorksheetPartByName(document, configurationSetup.ReportSheetName);

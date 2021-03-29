@@ -78,7 +78,7 @@ namespace GeminiToJira.Engine
                     {
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
                     
-                        var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode);
+                        var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode, configurationSetup.Gemini.UatPrefix);
                     
                         var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                         SetAndSaveReporter(jiraIssue, geminiIssue);
@@ -96,7 +96,7 @@ namespace GeminiToJira.Engine
                     
                                 foreach (var v in relatedDev.FixVersions)
                                     jiraIssue.FixVersions.Add(v);
-
+                    
                                 jiraIssue.SaveChanges();
                             }
                         }
@@ -111,7 +111,7 @@ namespace GeminiToJira.Engine
         }
 
         #region Private 
-        private static Countersoft.Gemini.Commons.Entity.IssuesFilter GetUatFilter(GeminiToJiraParameters configurationSetup)
+        private Countersoft.Gemini.Commons.Entity.IssuesFilter GetUatFilter(GeminiToJiraParameters configurationSetup)
         {
             return new Countersoft.Gemini.Commons.Entity.IssuesFilter()
             {
@@ -178,7 +178,7 @@ namespace GeminiToJira.Engine
             return jiraDev;
         }
 
-        private static string RemoveSpecialChar(JiraTools.Model.CreateIssueInfo jiraIssueInfo)
+        private string RemoveSpecialChar(JiraTools.Model.CreateIssueInfo jiraIssueInfo)
         {
             var search = jiraIssueInfo.RelatedDevelopment.Replace("\"", "");
             search = search.Replace("+", "");
@@ -187,7 +187,7 @@ namespace GeminiToJira.Engine
             return search;
         }
 
-        private static Issue SearchRelatedDevelopment(JiraTools.Model.CreateIssueInfo jiraIssueInfo, Issue jiraDev, IEnumerable<Issue> jiraDevList)
+        private Issue SearchRelatedDevelopment(JiraTools.Model.CreateIssueInfo jiraIssueInfo, Issue jiraDev, IEnumerable<Issue> jiraDevList)
         {
             foreach (var curr in jiraDevList)
             {

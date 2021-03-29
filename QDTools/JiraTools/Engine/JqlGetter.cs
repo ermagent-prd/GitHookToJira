@@ -67,7 +67,7 @@ namespace JiraTools.Engine
 
         private async Task<IPagedQueryResult<Issue>> GetIssues(IssueSearchOptions options)
         {
-
+            
             return await this.requestFactory.Service.Issues.GetIssuesFromJqlAsync(options);
         }
 

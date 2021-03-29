@@ -35,7 +35,7 @@ namespace GeminiToJira.Mapper
         }
 
 
-        public CreateIssueInfo Execute(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, string projectCode)
+        public CreateIssueInfo Execute(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, string projectCode, string ermPrefix)
         {
             var descAttachments = new List<string>();
 
@@ -68,7 +68,7 @@ namespace GeminiToJira.Mapper
             commentMapper.Execute(configurationSetup, jiraIssue, geminiIssue);
             
             //Load custom fields
-            LoadCustomFields(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmBugPrefix, configurationSetup.Mapping);
+            LoadCustomFields(jiraIssue, geminiIssue, ermPrefix, configurationSetup.Mapping);
             
             //For components use
             SetRelatedDevelopment(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix, configurationSetup.Mapping);
@@ -105,7 +105,7 @@ namespace GeminiToJira.Mapper
             }
         }
 
-        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermBugPrefix, JiraTools.Parameters.MappingConfiguration mapping)
+        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
         {
             if (mapping.BUG_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out string status))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
@@ -175,7 +175,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Notes", parseCommentEngine.Execute(notes.FormattedData)));
 
             //Gemini : save the original issue's code from gemini
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", ermBugPrefix + geminiIssue.Id.ToString()));
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", ermPrefix + geminiIssue.Id.ToString()));
         }
 
         private void SetAffectedVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue)
