@@ -68,7 +68,7 @@ namespace GeminiToJira.Mapper
             commentMapper.Execute(configurationSetup, jiraIssue, geminiIssue);
             
             //Load custom fields
-            LoadCustomFields(jiraIssue, geminiIssue, ermPrefix, configurationSetup.Mapping);
+            LoadCustomFields(jiraIssue, geminiIssue, ermPrefix, configurationSetup);
             
             //For components use
             SetRelatedDevelopment(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix, configurationSetup.Mapping);
@@ -105,11 +105,15 @@ namespace GeminiToJira.Mapper
             }
         }
 
-        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
+        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix, GeminiToJiraParameters configurationSetup)
         {
+            var mapping = configurationSetup.Mapping;
+
             if (mapping.BUG_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out string status))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
-            
+            else if (mapping.UAT_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out status))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
+
             var bugType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "BugType");
             string jiraBugType;
             if (bugType != null && bugType.FormattedData != "" && mapping.BUG_TYPE_MAPPING.TryGetValue(bugType.FormattedData, out jiraBugType))

@@ -62,6 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\ContainerFactory.cs" />
+    <Compile Include="Container\Jira\JiraConstants.cs" />
+    <Compile Include="Container\Jira\JiraToJiraParamContainer.cs" />
     <Compile Include="Engine\CloneIssueEngine.cs" />
     <Compile Include="Engine\ImportEngine.cs" />
     <Compile Include="Program.cs" />

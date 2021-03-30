@@ -13,19 +13,14 @@ namespace JiraTools.Engine
 
         private readonly ServiceManagerContainer requestFactory;
 
-        private readonly IJiraToolsParameters parameters;
-
         #endregion
 
         #region Constructor
 
         public UserListGetter(
-            ServiceManagerContainer requestFactory,
-            IJiraToolsParameters parameters)
+            ServiceManagerContainer requestFactory)
         {
             this.requestFactory = requestFactory;
-
-            this.parameters = parameters;
         }
 
         #endregion

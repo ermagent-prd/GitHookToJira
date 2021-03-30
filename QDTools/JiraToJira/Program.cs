@@ -19,13 +19,13 @@ namespace JiraToJira
 
             Console.WriteLine("[" + DateTime.Now + "] Started...");
 
-            var fromProject = "MOD";
+            var fromProject = "EOIB";
             var destProject = "RMS5";
-            var jqlSearch = "project = \"Modeling Platform\" and  key = MOD-26 order by created ASC";
+            var jqlSearch = "project = \"ERM-OTHERS-ILIAS-BSM\" and  key = EOIB-6478 order by created ASC";
 
             importEngine.Execute(fromProject, destProject, jqlSearch);
 
-            jqlSearch = "project = \"Modeling Platform\" and key = MOD-132 order by created ASC";
+            jqlSearch = "project = \"ERM-OTHERS-ILIAS-BSM\" and key = EOIB-6479 order by created ASC";
 
             importEngine.Execute(fromProject, destProject, jqlSearch);
 

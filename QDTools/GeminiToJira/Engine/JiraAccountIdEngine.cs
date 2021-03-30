@@ -14,7 +14,7 @@ namespace GeminiToJira.Engine
         private readonly List<string> userGroups = new List<string>() { "Administrators" };
         private readonly Lazy<Dictionary<string, JiraUser>> userListDictionary;
 
-        public JiraAccountIdEngine(UserListGetter userListGetter, ServiceManagerContainer requestFactory)
+        public JiraAccountIdEngine(UserListGetter userListGetter)
         {
             this.userListDictionary = new Lazy<Dictionary<string, JiraUser>> (() => GetUsersDictionary(userListGetter));
         }
