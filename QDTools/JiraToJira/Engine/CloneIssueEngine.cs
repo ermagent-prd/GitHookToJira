@@ -27,12 +27,14 @@ namespace JiraToJira.Engine
             AddCommentEngine commentEngine,
             AddAttachmentEngine attachmentEngineEngine)
         {
-            this.requestFactory = requestFactory;
             this.worklogEngine = worklogEngine;
             this.commentEngine = commentEngine;
-            this.accountEngine = UserAccountEngine();
 
+            //saving issues and user account search must be done on destination site
+            this.requestFactory = JiraDestinantionRequestFactory();
+            this.accountEngine = UserAccountEngine();
         }
+
 
         internal Issue Execute(Issue issue, string destProject, Issue relatedDev)
         {
@@ -97,6 +99,13 @@ namespace JiraToJira.Engine
             clonedIssue.SaveChanges();
 
             return clonedIssue;
+        }
+
+        private ServiceManagerContainer JiraDestinantionRequestFactory()
+        {
+            return new ServiceManagerContainer(
+                new JiraToJiraParamContainer()
+                );
         }
 
         private JiraAccountIdEngine UserAccountEngine()

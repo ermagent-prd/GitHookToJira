@@ -1,4 +1,5 @@
 ﻿using Atlassian.Jira;
+using JiraToJira.Container.Jira;
 using JiraTools.Engine;
 using JiraTools.Parameters;
 using JiraTools.Service;
@@ -14,17 +15,20 @@ namespace JiraToJira.Engine
     {
         private readonly CloneIssueEngine cloneIssueEngine;
         private readonly JqlGetter jqlEngine;
-        private readonly ItemListGetter jiraItemsEngine;
-        private readonly LinkEngine linkEngine;
+
+        //Original search engine
+        private readonly ItemListGetter searchJiraOriginalItemsEngine;
+
+        //Destinantion search engine
+        private readonly ItemListGetter searchJiraDestItemsEngine;
 
         public ImportEngine(JqlGetter jqlEngine, CloneIssueEngine cloneIssueEngine, ItemListGetter jiraItemsEngine, LinkEngine linkEngine)
         {
             this.cloneIssueEngine = cloneIssueEngine;
             this.jqlEngine = jqlEngine;
-            this.jiraItemsEngine = jiraItemsEngine;
-            this.linkEngine = linkEngine;
+            this.searchJiraOriginalItemsEngine = jiraItemsEngine;
 
-
+            this.searchJiraDestItemsEngine = GetJiraDestItemsEngine();
         }
 
         internal void Execute(string fromProject, string destProject, string jqlSearch)
@@ -40,13 +44,7 @@ namespace JiraToJira.Engine
                 clonedIssue.SaveChanges();
 
 
-                if (issue.ParentIssueKey != null && issue.ParentIssueKey != "" && relatedDev != null)
-                {
-                    //linkEngine.Execute(clonedIssue, relatedDev.Key.ToString(), "Relates");
-
-                    clonedIssue.SaveChanges();
-                }
-                else
+                if (issue.ParentIssueKey == null || issue.ParentIssueKey == "")
                 {
                     var epicLink = issue.CustomFields.FirstOrDefault(x => x.Name == "Epic Link");
                     if (epicLink != null && epicLink.Values[0] != "")
@@ -59,6 +57,12 @@ namespace JiraToJira.Engine
             }
         }
 
+        private ItemListGetter GetJiraDestItemsEngine()
+        {
+            var parContainer = new JiraToJiraParamContainer();
+            var serviceManagerContainer = new ServiceManagerContainer(parContainer);
+            return new ItemListGetter(serviceManagerContainer, parContainer);
+        }
 
         private Issue GetRelatedDevelopment(string parentIssueKey, string destProject, string fromProject)
         {
@@ -67,11 +71,11 @@ namespace JiraToJira.Engine
 
             Issue jiraDev = null;
 
-            var jiraOriginalDevList = jiraItemsEngine.Execute(parentIssueKey, QuerableType.ByCode, fromProject).ToList();
+            var jiraOriginalDevList = searchJiraOriginalItemsEngine.Execute(parentIssueKey, QuerableType.ByCode, fromProject).ToList();
 
             if(jiraOriginalDevList != null && jiraOriginalDevList.Count > 0)
             {
-                var jiraNewDevList = jiraItemsEngine.Execute(RemoveSpecialChar(jiraOriginalDevList[0].Summary), QuerableType.BySummary, destProject).ToList();
+                var jiraNewDevList = searchJiraDestItemsEngine.Execute(RemoveSpecialChar(jiraOriginalDevList[0].Summary), QuerableType.BySummary, destProject).ToList();
 
                 if (jiraNewDevList != null && jiraNewDevList.Count > 0)
                     jiraDev = jiraNewDevList[0];
