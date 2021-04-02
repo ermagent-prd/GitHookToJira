@@ -9,7 +9,7 @@
   "FieldNames": [
     "IssueCode",
     "Summary",
-    "GeminiCode",
+    "OriginalKey",
     "Status",
     "OriginalEstimate",
     "DueDate",

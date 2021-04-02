@@ -28,6 +28,7 @@ namespace JiraTools.Container
             Container.RegisterType<UserGetter>();
             Container.RegisterType<UserListGetter>();
             Container.RegisterType<LinkEngine>();
+            Container.RegisterType<IssueLinkSearchEngine>();
             Container.RegisterType<ItemListGetter>();
         }
 

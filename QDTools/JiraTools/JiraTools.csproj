@@ -69,6 +69,7 @@
     <Compile Include="Engine\AddWorklogEngine.cs" />
     <Compile Include="Engine\CreateIssueEngine.cs" />
     <Compile Include="Engine\AddCommentEngine.cs" />
+    <Compile Include="Engine\IssueLinkSearchEngine.cs" />
     <Compile Include="Engine\LinkSubTaskEngine.cs" />
     <Compile Include="Engine\UserGetter.cs" />
     <Compile Include="Engine\ItemListGetter.cs" />

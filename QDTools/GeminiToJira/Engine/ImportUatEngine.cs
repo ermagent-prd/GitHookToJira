@@ -191,7 +191,7 @@ namespace GeminiToJira.Engine
         {
             foreach (var curr in jiraDevList)
             {
-                var geminiId = curr.CustomFields.FirstOrDefault(j => j.Name == "GEMINI");
+                var geminiId = curr.CustomFields.FirstOrDefault(j => j.Name == "OriginalKey");
                 if (geminiId != null && geminiId.Values[0] == jiraIssueInfo.RelatedDevelopmentId)
                     jiraDev = curr;
             }

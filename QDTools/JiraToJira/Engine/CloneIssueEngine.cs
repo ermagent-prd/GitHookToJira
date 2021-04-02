@@ -18,7 +18,23 @@ namespace JiraToJira.Engine
         private readonly AddCommentEngine commentEngine;
         private readonly JiraAccountIdEngine accountEngine;
 
-        private readonly Dictionary<string, string> issueTypeMapping = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> SPRINT_MAPPING = new Dictionary<string, string>()
+        {
+            {"MP Sprint 1", "177" },
+            {"MP Sprint 2", "178" }
+        };
+
+        private readonly Dictionary<string, string> issueTypeMapping = new Dictionary<string, string>()
+        {
+            { "10000", "10000" },    //epic
+            { "10001", "10005" },    //story
+            { "10002", "10023" },    //task
+            { "10003", "10025" },    //subtask
+            { "10014", "10001" },    //bug
+            { "10004", "10001" }    //bug
+        };
+
+
         private readonly Dictionary<string, string> customFieldsMapping = new Dictionary<string, string>();
         
         public CloneIssueEngine(
@@ -30,7 +46,7 @@ namespace JiraToJira.Engine
             this.worklogEngine = worklogEngine;
             this.commentEngine = commentEngine;
 
-            //saving issues and user account search must be done on destination site
+            //saving issues and user_account_search must be done on destination site
             this.requestFactory = JiraDestinantionRequestFactory();
             this.accountEngine = UserAccountEngine();
         }
@@ -50,8 +66,12 @@ namespace JiraToJira.Engine
 
             IssueTimeTrackingData timeTrackingData = null;
 
-            if (issue.Type.Id == "10001")
-                timeTrackingData = issue.TimeTrackingData;
+            if (issue.Type.Id == "10001" || issue.Type.Id == "10002" || issue.Type.Id == "10003")
+            {
+                timeTrackingData = new IssueTimeTrackingData(
+                    issue.TimeTrackingData.OriginalEstimate,
+                    issue.TimeTrackingData.RemainingEstimate);
+            }
 
             var fields = new CreateIssueFields(destProject)
             {
@@ -61,29 +81,33 @@ namespace JiraToJira.Engine
 
             //da gestire
             if (relatedDev != null)
+            {
                 fields.ParentIssueKey = relatedDev.Key.Value;
+            }
+            else if (issue.Type.Id == "10003")  //sub-task
+                return null;
 
             var newIssue = new Issue(this.requestFactory.Service, fields);
 
-            newIssue.Summary = "CLONED - " + issue.Summary;
+            newIssue.Summary = issue.Summary;
             newIssue.Description = issue.Description;
 
             CloneIssueType(issue, newIssue);
 
             newIssue.Priority = issue.Priority;
 
-            newIssue.DueDate = issue.DueDate;
-            //newIssue.Resolution = issue.Resolution;
+            if (issue.Type.Id != "10004")   // != BUG
+                newIssue.DueDate = issue.DueDate;
 
-            //CloneVersions(issue, newIssue);
-            //CloneComponents(issue, newIssue);
+            newIssue.Resolution = issue.Resolution;
+
+            CloneVersions(issue, newIssue);
+            CloneComponents(issue, newIssue);
 
             CloneCustomFields(issue, newIssue);
 
             if (issue.Type.Id == "10000")
                 newIssue.CustomFields.Add("Epic Name", issue.CustomFields.FirstOrDefault(x => x.Name == "Epic Name").Values[0]);
-
-            newIssue.Assignee = SetUser(issue.AssigneeUser.Username);
 
             var clonedIssue = await newIssue.SaveChangesAsync();
 
@@ -95,7 +119,8 @@ namespace JiraToJira.Engine
 
             await CloneWatchers(issue, clonedIssue);
 
-            clonedIssue.Reporter = SetUser(issue.ReporterUser.Username);
+            clonedIssue.Reporter = SetUser(issue.ReporterUser);
+            clonedIssue.Assignee = SetUser(issue.AssigneeUser);
             clonedIssue.SaveChanges();
 
             return clonedIssue;
@@ -117,17 +142,23 @@ namespace JiraToJira.Engine
 
         private void CloneComponents(Issue issue, Issue newIssue)
         {
-            foreach (var comp in issue.Components)
-                newIssue.Components.Add(comp);
+            if (issue.Type.Id != "10003")    //subtask
+            {
+                foreach (var comp in issue.Components)
+                    newIssue.Components.Add(comp.Name);
+            }
         }
 
         private void CloneVersions(Issue issue, Issue newIssue)
         {
-            foreach (var v in issue.FixVersions)
-                newIssue.FixVersions.Add(v);
+            if (issue.Type.Id != "10003")    //subtask
+            {
+                foreach (var v in issue.FixVersions)
+                    newIssue.FixVersions.Add(v.Name);
+            }
 
             foreach (var a in issue.AffectsVersions)
-                newIssue.AffectsVersions.Add(a);
+                newIssue.AffectsVersions.Add(a.Name);
         }
 
         private async Task CloneComments(Issue issue, Issue clonedIssue)
@@ -148,13 +179,15 @@ namespace JiraToJira.Engine
         {
             var watchers = await issue.GetWatchersAsync();
             foreach (var w in watchers)
-                await clonedIssue.AddWatcherAsync(SetUser(w.Username));
+                await clonedIssue.AddWatcherAsync(SetUser(w));
         }
 
-        private string SetUser(string username)
+        private string SetUser(JiraUser user)
         {
-            var account = accountEngine.Execute(username);
+            if (user == null)
+                return "";
 
+            var account = accountEngine.Execute(user.DisplayName);
             return account.AccountId;
         }
 
@@ -177,28 +210,106 @@ namespace JiraToJira.Engine
             if (issueTypeMapping.TryGetValue(issue.Type.Id, out string mappedType))
                 newIssue.Type = mappedType;
             else
-                newIssue.Type = issue.Type;
+                newIssue.Type = issue.Type.Id;
         }
 
         private void CloneCustomFields(Issue issue, Issue newIssue)
-        {
-            return; //TODOPL
-
+        {   
             foreach (var c in issue.CustomFields)
-            {
-                if (c.Id != "customfield_10018" &&   //parent_link
-                    c.Id != "customfield_10019" &&  //rank
-                    c.Id != "customfield_10000" &&  //development
-                    c.Id != "customfield_10011" &&  //epic name
-                    c.Id != "customfield_10014")    //epic_link
-                {
-
-                    if(customFieldsMapping.TryGetValue(c.Name, out string mappedName))
+            {       
+                if (CheckIfValidCustomFields(issue, c))
+                { 
+                    if (customFieldsMapping.TryGetValue(c.Name, out string mappedName))
                         newIssue.CustomFields.Add(mappedName, c.Values);
                     else
                         newIssue.CustomFields.Add(c.Name, c.Values);
                 }
+                else if(c.Id == "customfield_10020" && issue.Type.Id != "10003")
+                {
+                    //Sprint
+                    var sprintink = issue.CustomFields.FirstOrDefault(x => x.Name == "Sprint");
+                    if (sprintink != null && sprintink.Values[0] != "" && SPRINT_MAPPING.TryGetValue(sprintink.Values[0], out string sprint))
+                            newIssue.CustomFields.Add("Sprint", sprint);
+                }
             }
+
+            newIssue.CustomFields.Add("StatusTmp", issue.Status.Name);
+            newIssue.CustomFields.Add("OriginalKey", issue.Key.Value);
+        }
+
+        private bool CheckIfValidCustomFields(Issue issue, CustomFieldValue c)
+        {
+            bool result = true;
+
+            if (c.Name == "StatusTmp")
+                return false;
+
+            if(issue.Type.Id == "10000")    //epic
+            {
+                result = c.Id != "customfield_10018" &&  //parent_link
+                    c.Id != "customfield_10019" &&  //rank
+                    c.Id != "customfield_10000" &&  //development
+                    c.Id != "customfield_10011" &&  //epic name
+                    c.Id != "customfield_10014" &&  //epic_link
+                    c.Id != "customfield_10072" &&  //estimate_type
+                    c.Id != "customfield_10020" &&  //sprint (è settato dopo)
+                    c.Id != "customfield_10013" &&  //epic_color
+                    c.Id != "customfield_10012" &&  //epic_status
+                    c.Id != "customfield_10030" &&  //jde_module
+                    c.Id != "customfield_10031";    //tasktype
+            }
+            else if (issue.Type.Id == "10002")  //task 
+            {
+                result = c.Id != "customfield_10018" &&  //parent_link
+                    c.Id != "customfield_10019" &&  //rank
+                    c.Id != "customfield_10028" &&  //story_points
+                    c.Id != "customfield_10020" &&  //sprint (è settato dopo)
+                    c.Id != "customfield_10000" &&  //epic_status
+                    c.Id != "customfield_10014" &&  //epic_link
+                    c.Id != "customfield_10031" &&  //tasktype
+                    !c.Name.Contains("[CHART]");    //[CHART]
+            }
+            else if (issue.Type.Id == "10001")  //story 
+            {
+                result = c.Id != "customfield_10018" &&  //parent_link
+                    c.Id != "customfield_10019" &&  //rank
+                    c.Id != "customfield_10028" &&  //story_points
+                    c.Id != "customfield_10020" &&  //sprint (è settato dopo)
+                    c.Id != "customfield_10000" &&  //epic_status
+                    c.Id != "customfield_10014" &&  //epic_link
+                    c.Id != "customfield_10031" &&  //tasktype
+                    !c.Name.Contains("[CHART]");    //[CHART]
+            }
+            else if (issue.Type.Id == "10003") //subtask
+            {
+                result = c.Id != "customfield_10018" &&  //parent_link
+                    c.Id != "customfield_10019" &&  //rank
+                    c.Id != "customfield_10028" &&  //story_points
+                    c.Id != "customfield_10020" &&  //sprint (è settato dopo)
+                    c.Id != "customfield_10000" &&  //epic_status
+                    c.Id != "customfield_10014" &&  //epic_link
+                    c.Id != "customfield_10030" &&  //JDE Module
+                    !c.Name.Contains("[CHART]");    //[CHART]
+            }
+            else if(issue.Type.Id == "10004")   //bug
+            {
+                result = c.Id != "customfield_10018" &&  //parent_link
+                    c.Id != "customfield_10019" &&  //rank
+                    c.Id != "customfield_10028" &&  //story_points
+                    c.Id != "customfield_10020" &&  //sprint (è settato dopo)
+                    c.Id != "customfield_10000" &&  //epic_status
+                    c.Id != "customfield_10014" &&  //epic_link
+                    c.Id != "customfield_10031" &&  //tasktype
+                    c.Id != "customfield_10072" &&  //estimate type
+                    c.Id != "customfield_10021" &&  //Flagged
+                    //c.Id != "customfield_10030" &&  //JDE Module
+                    !c.Name.Contains("[CHART]") &&
+                    !c.Name.Contains("GEMINI") &&
+                    c.Name != "Notes";    //[CHART]
+            }
+
+
+            return result;
         }
     }
 }

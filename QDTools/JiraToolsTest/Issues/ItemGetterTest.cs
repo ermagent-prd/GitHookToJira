@@ -78,7 +78,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-5946");   //ER-5892 is a subtask of ER-5885
+            var issues = engine.Execute("MOD-98", QuerableType.ByCode, "MOD");   //ER-5892 is a subtask of ER-5885
 
             var list = new List<Issue>();
 
@@ -339,7 +339,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("RMS5-3747", QuerableType.ByCode, "RMS5");
+            var issues = engine.Execute("MOD-140", QuerableType.ByCode, "MOD");
 
             var list = new List<Issue>();
 

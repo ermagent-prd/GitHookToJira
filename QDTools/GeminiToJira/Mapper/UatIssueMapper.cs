@@ -153,7 +153,7 @@ namespace GeminiToJira.Mapper
             //    jiraIssue.FixVersions.Add(release.FormattedData);
 
             //Gemini : save the original issue's code from gemini
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("Gemini", uatPrefix + geminiIssue.Id.ToString()));
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("OriginalKey", uatPrefix + geminiIssue.Id.ToString()));
 
         }
 

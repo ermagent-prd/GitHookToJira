@@ -37,7 +37,7 @@ namespace JiraReport.Engine
 
                     getters.Add("IssueCode", new IssueKeyCodeGetter());
                     getters.Add("Summary", new IssueSummaryGetter());
-                    getters.Add("GeminiCode", new IssueGeminiCodeGetter());
+                    getters.Add("OriginalKey", new IssueGeminiCodeGetter());
                     getters.Add("Status", new IssueStatusGetter());
                     getters.Add("OriginalEstimate", new IssueOriginalEstimateGetter());
                     getters.Add("DueDate", new IssueDueDateGetter());

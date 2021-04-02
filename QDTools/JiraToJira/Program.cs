@@ -19,15 +19,23 @@ namespace JiraToJira
 
             Console.WriteLine("[" + DateTime.Now + "] Started...");
 
-            var fromProject = "EOIB";
-            var destProject = "RMS5";
-            var jqlSearch = "project = \"ERM-OTHERS-ILIAS-BSM\" and  key = EOIB-6478 order by created ASC";
+            var fromProjectCode = "MOD";
+            var fromProjectName = "Modeling Platform";
 
-            importEngine.Execute(fromProject, destProject, jqlSearch);
+            var destProjectCode = "ESMP";
+            var destProjectName = "ERM SHL Modeling Platform";
 
-            jqlSearch = "project = \"ERM-OTHERS-ILIAS-BSM\" and key = EOIB-6479 order by created ASC";
+            //var type = " Epic";
+            //var type = " Task";
+            //var type = " Story";
+            //var type = " Sub-task";
+            var type = "Bug";
 
-            importEngine.Execute(fromProject, destProject, jqlSearch);
+            importEngine.Execute(fromProjectCode, destProjectCode, fromProjectName, destProjectName, type);
+
+            //jqlSearch = "project = \"ERM-OTHERS-ILIAS-BSM\" and key = EOIB-6479 order by created ASC";
+            //
+            //importEngine.Execute(fromProject, destProject, jqlSearch);
 
             Console.WriteLine("[" + DateTime.Now + "] Finished");
             Console.WriteLine("Press a key to close");

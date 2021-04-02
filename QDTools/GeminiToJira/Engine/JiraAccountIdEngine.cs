@@ -43,7 +43,10 @@ namespace GeminiToJira.Engine
             {
                 var userList = userListGetter.Execute();      //returns all active users
                 foreach (var user in userList)
-                    result.Add(user.DisplayName, user);
+                {
+                    if(!result.TryGetValue(user.DisplayName, out JiraUser founded))
+                        result.Add(user.DisplayName, user);
+                }
             }
 
             return result;

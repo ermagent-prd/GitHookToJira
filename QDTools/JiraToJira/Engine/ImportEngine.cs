@@ -4,67 +4,124 @@ using JiraTools.Engine;
 using JiraTools.Parameters;
 using JiraTools.Service;
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JiraToJira.Engine
 {
     public class ImportEngine
     {
         private readonly CloneIssueEngine cloneIssueEngine;
-        private readonly JqlGetter jqlEngine;
+        private readonly IssueLinkSearchEngine issueLinkearchEngine;
+        private readonly LinkEngine linkEngine;
 
         //Original search engine
         private readonly ItemListGetter searchJiraOriginalItemsEngine;
+        private readonly JqlGetter jqlOriginalEngine;
 
         //Destinantion search engine
-        private readonly ItemListGetter searchJiraDestItemsEngine;
+        private readonly JqlGetter jqlDestItemsEngine;
 
-        public ImportEngine(JqlGetter jqlEngine, CloneIssueEngine cloneIssueEngine, ItemListGetter jiraItemsEngine, LinkEngine linkEngine)
+        public ImportEngine(JqlGetter jqlEngine, 
+            CloneIssueEngine cloneIssueEngine, 
+            ItemListGetter jiraItemsEngine, 
+            LinkEngine linkEngine, IssueLinkSearchEngine issueLinkearchEngine)
         {
             this.cloneIssueEngine = cloneIssueEngine;
-            this.jqlEngine = jqlEngine;
+
+            this.issueLinkearchEngine = issueLinkearchEngine;
+            this.linkEngine = linkEngine;
+
+            this.jqlOriginalEngine = jqlEngine;
             this.searchJiraOriginalItemsEngine = jiraItemsEngine;
 
-            this.searchJiraDestItemsEngine = GetJiraDestItemsEngine();
+            this.jqlDestItemsEngine = GetJiraDestJqlGetterEngine();
         }
 
-        internal void Execute(string fromProject, string destProject, string jqlSearch)
+        internal void Execute(string fromProjectCode, string destProjectCode, string fromProjectName, string destProjectName, string type)
         {
-            var issueList = jqlEngine.Execute(jqlSearch);
+            var jqlSearch = "project = \"" + fromProjectName + "\" AND type = " + type + " ORDER BY key ASC";
+
+            string ExcelFilePath = "C:\\GeminiPorting\\Log\\";
+
+            var issueList = jqlOriginalEngine.Execute(jqlSearch);
+
+            var datetime = DateTime.Now.ToString().Replace("/", "_").Replace(":", "_");
+            string ExcelFileName = "Migration" + "_" + destProjectCode + "_" + type + "_" + datetime + ".txt";
+
+            Path.Combine(ExcelFilePath, ExcelFileName);
+            File.AppendAllText(ExcelFilePath + ExcelFileName, jqlSearch + Environment.NewLine);
 
             foreach (var issue in issueList)
             {
-                Issue relatedDev = GetRelatedDevelopment(issue.ParentIssueKey, destProject, fromProject);
+                Issue relatedDev = GetRelatedDevelopment(issue.ParentIssueKey, destProjectName, fromProjectCode);
+                Issue relatedEpicDev = GetEpicRelatedDev(fromProjectCode, destProjectName, issue);
 
-                var clonedIssue = cloneIssueEngine.Execute(issue, destProject, relatedDev);
-                
-                clonedIssue.SaveChanges();
+                var clonedIssue = cloneIssueEngine.Execute(issue, destProjectCode, relatedDev);
 
-
-                if (issue.ParentIssueKey == null || issue.ParentIssueKey == "")
+                if(clonedIssue == null)
                 {
-                    var epicLink = issue.CustomFields.FirstOrDefault(x => x.Name == "Epic Link");
-                    if (epicLink != null && epicLink.Values[0] != "")
-                    {
-                        relatedDev = GetRelatedDevelopment(epicLink.Values[0], destProject, fromProject);
-                        clonedIssue.CustomFields.Add("Epic Link", relatedDev.Key.Value);
-                        clonedIssue.SaveChanges();
-                    }
+                    Console.WriteLine("During " + type + " import failed to save " + issue.Key.Value);
+                    continue;
                 }
+
+                if (relatedEpicDev != null)
+                {
+                    clonedIssue.CustomFields.Add("Epic Link", relatedEpicDev.Key.Value);
+                    clonedIssue.SaveChanges();
+                }
+                               
+
+                if(type == "Bug")
+                {
+                    var linkItems = issueLinkearchEngine.Execute(issue);
+
+                    foreach(var item in linkItems)
+                    {
+                        var jsql = "project = \"" + destProjectName + "\" and summary ~ \"" + RemoveSpecialChar(item.InwardIssue.Summary) + "\" and type = " + item.InwardIssue.Type.Name + " ORDER BY key ASC";
+                        var links = jqlDestItemsEngine.Execute(jsql).ToList();
+
+                        if(links != null && links.Count > 0)
+                        {
+                            foreach (var l in links)
+                            {
+                                if(clonedIssue.Key.Value != l.Key.ToString())
+                                    linkEngine.Execute(clonedIssue, l.Key.ToString(), "Relates");
+                            }
+                        }
+                    }
+
+                }
+                File.AppendAllText(ExcelFilePath + ExcelFileName, issue.Key.Value + ";" + clonedIssue.Key.Value + Environment.NewLine);
+
+
             }
         }
 
-        private ItemListGetter GetJiraDestItemsEngine()
+        private Issue GetEpicRelatedDev(string fromProject, string destProjectName, Issue issue)
+        {
+            Issue relatedEpicDev = null;
+            if (issue.ParentIssueKey == null || issue.ParentIssueKey == "")
+            {
+                var epicLink = issue.CustomFields.FirstOrDefault(x => x.Name == "Epic Link");
+                if (epicLink != null && epicLink.Values[0] != "")
+                {
+                    relatedEpicDev = GetRelatedDevelopment(epicLink.Values[0], destProjectName, fromProject);
+                }
+
+            }
+
+            return relatedEpicDev;
+        }
+
+        private JqlGetter GetJiraDestJqlGetterEngine()
         {
             var parContainer = new JiraToJiraParamContainer();
             var serviceManagerContainer = new ServiceManagerContainer(parContainer);
-            return new ItemListGetter(serviceManagerContainer, parContainer);
+            return new JqlGetter(serviceManagerContainer, parContainer);
         }
 
-        private Issue GetRelatedDevelopment(string parentIssueKey, string destProject, string fromProject)
+        private Issue GetRelatedDevelopment(string parentIssueKey, string destProjectName, string fromProject)
         {
             if (parentIssueKey == "" || parentIssueKey == null)
                 return null;
@@ -75,10 +132,23 @@ namespace JiraToJira.Engine
 
             if(jiraOriginalDevList != null && jiraOriginalDevList.Count > 0)
             {
-                var jiraNewDevList = searchJiraDestItemsEngine.Execute(RemoveSpecialChar(jiraOriginalDevList[0].Summary), QuerableType.BySummary, destProject).ToList();
+                var key = jiraOriginalDevList[0].Key.Value;
+                var devType = jiraOriginalDevList[0].Type.Name;
+                var summary = jiraOriginalDevList[0].Summary;
 
-                if (jiraNewDevList != null && jiraNewDevList.Count > 0)
-                    jiraDev = jiraNewDevList[0];
+                var jsql = "project = \"" + destProjectName + "\" and summary ~ \"" + RemoveSpecialChar(summary) + "\" and type = " + devType + " ORDER BY key ASC";
+                var issueList = jqlDestItemsEngine.Execute(jsql);
+
+                if (issueList != null)
+                {
+                    foreach (var i in issueList)
+                    {
+                        var originalKey = i.CustomFields.First(x => x.Name == "OriginalKey").Values[0];
+
+                        if (originalKey == key)
+                            jiraDev = i;
+                    }
+                }
             }
 
             return jiraDev;
@@ -87,10 +157,19 @@ namespace JiraToJira.Engine
         private string RemoveSpecialChar(string summary)
         {
             var search = summary.Replace("\"", "");
+            search = search.Replace(" [", " ");
             search = search.Replace("[", "");
+            search = search.Replace("] ", " ");
             search = search.Replace("]", "");
-            search = search.Replace("+", "");
-            search = search.Replace("-", "");
+            search = search.Replace(" : ", " ");
+            search = search.Replace(": ", " ");
+            search = search.Replace(":", " ");            
+            search = search.Replace(" , ", " ");
+            search = search.Replace(", ", " ");
+            search = search.Replace(",", " ");
+            search = search.Replace(" + ", " ");
+            search = search.Replace("+", " ");
+            search = search.Replace(" - ", " ");
 
             return search;
         }

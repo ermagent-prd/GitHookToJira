@@ -7,7 +7,7 @@ namespace JiraReport.Parameters.Export.Getters.Columns
     {
         public string Execute(Issue issue)
         {
-            var gemini = issue.CustomFields.FirstOrDefault(c => c.Name == "GEMINI");
+            var gemini = issue.CustomFields.FirstOrDefault(c => c.Name == "OriginalKey");
             return gemini != null ? gemini.Values[0] : "";
         }
     }

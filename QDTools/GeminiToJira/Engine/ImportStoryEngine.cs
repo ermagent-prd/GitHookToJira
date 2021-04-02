@@ -145,12 +145,15 @@ namespace GeminiToJira.Engine
             #endregion
         }
 
+
+        #region Private 
+
         private Issue SaveAndSetStory(Dictionary<int, Issue> jiraSavedDictionary, IssueDto geminiIssue, CreateIssueInfo jiraIssueInfo, GeminiToJiraParameters configurationSetup)
         {
             //save story
             var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
             //and set as saved
-            if(!jiraSavedDictionary.TryGetValue(geminiIssue.Id, out Issue existing))
+            if (!jiraSavedDictionary.TryGetValue(geminiIssue.Id, out Issue existing))
                 jiraSavedDictionary.Add(geminiIssue.Id, jiraIssue);
 
             //save reporter
@@ -184,9 +187,6 @@ namespace GeminiToJira.Engine
             }
         }
 
-
-
-        #region Private 
         /// <summary>
         /// 
         /// </summary>
