@@ -8,11 +8,11 @@
     update-module sqlserver
 #>
 param (
-    [string]$ExcelFilePath = "C:\Tmp\Gemini Query\Bugs.xlsx",
+    [string]$ExcelFilePath = "E:\Projects\ErmasBugPublish\Work\Bugs.xlsx",
     [string]$dbServer = "ERM-DB-05",
     [string]$dbName = "GEMINI_CLOUD",
     [string]$sheetName = "Ermas5 Bugs",
-    [string]$sqlQuery = "SELECT cast(ID as int) ID, [Bug fixing], Status, Product, [Product Modules], Title, [Deliverable Version], [Fixed In Build], Description FROM V_BUG_LIST_ERM_PRODUCT ORDER BY [Bug fixing] DESC"
+    [string]$sqlQuery = "SELECT cast(ID as int) ID, [Bug fixing], Status, [Product Modules], Title, [Deliverable Version], [Fixed In Build], Description FROM V_BUG_LIST_ERM ORDER BY [Bug fixing] DESC"
  )
 Import-Module PSExcel
 import-module sqlserver
