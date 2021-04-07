@@ -25,11 +25,12 @@ namespace JiraToJira
             var destProjectCode = "ESMP";
             var destProjectName = "ERM SHL Modeling Platform";
 
-            //var type = " Epic";
+            var type = " Epic";
             //var type = " Task";
             //var type = " Story";
+            //var type = "Bug";
             //var type = " Sub-task";
-            var type = "Bug";
+
 
             importEngine.Execute(fromProjectCode, destProjectCode, fromProjectName, destProjectName, type);
 

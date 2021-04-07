@@ -42,15 +42,19 @@ namespace JiraToJira.Engine
         {
             var jqlSearch = "project = \"" + fromProjectName + "\" AND type = " + type + " ORDER BY key ASC";
 
-            string ExcelFilePath = "C:\\GeminiPorting\\Log\\";
+            string outputFilePath = "C:\\GeminiPorting\\Log\\";
 
             var issueList = jqlOriginalEngine.Execute(jqlSearch);
 
             var datetime = DateTime.Now.ToString().Replace("/", "_").Replace(":", "_");
-            string ExcelFileName = "Migration" + "_" + destProjectCode + "_" + type + "_" + datetime + ".txt";
+            string mappingFileName = "Migration" + "_" + destProjectCode + "_" + type + "_" + datetime + ".txt";
+            string exceptionFileName = "MigrationException" + "_" + destProjectCode + "_" + type + "_" + datetime + ".txt";
 
-            Path.Combine(ExcelFilePath, ExcelFileName);
-            File.AppendAllText(ExcelFilePath + ExcelFileName, jqlSearch + Environment.NewLine);
+            var oFile = Path.Combine(outputFilePath, mappingFileName);
+            var eFile = Path.Combine(outputFilePath, exceptionFileName);
+
+            File.AppendAllText(oFile, jqlSearch + Environment.NewLine);
+            File.AppendAllText(eFile, jqlSearch + Environment.NewLine);
 
             foreach (var issue in issueList)
             {
@@ -59,9 +63,9 @@ namespace JiraToJira.Engine
 
                 var clonedIssue = cloneIssueEngine.Execute(issue, destProjectCode, relatedDev);
 
-                if(clonedIssue == null)
+                if (clonedIssue == null)
                 {
-                    Console.WriteLine("During " + type + " import failed to save " + issue.Key.Value);
+                    File.AppendAllText(oFile, "During " + type + " import failed to save " + issue.Key.Value + "because parent value is null" + Environment.NewLine);
                     continue;
                 }
 
@@ -70,31 +74,37 @@ namespace JiraToJira.Engine
                     clonedIssue.CustomFields.Add("Epic Link", relatedEpicDev.Key.Value);
                     clonedIssue.SaveChanges();
                 }
-                               
 
-                if(type == "Bug")
+                ManageRelatedLinks(destProjectName, issue, clonedIssue, eFile);
+
+                File.AppendAllText(oFile, issue.Key.Value + ";" + clonedIssue.Key.Value + Environment.NewLine);
+
+
+            }
+        }
+
+
+        private void ManageRelatedLinks(string destProjectName, Issue issue, Issue clonedIssue, string eFile)
+        {
+            var linkItems = issueLinkearchEngine.Execute(issue);
+
+            foreach (var item in linkItems)
+            {
+                var jsql = "project = \"" + destProjectName + "\" and summary ~ \"" + RemoveSpecialChar(item.InwardIssue.Summary) + "\" and type = " + item.InwardIssue.Type.Name + " ORDER BY key ASC";
+                var links = jqlDestItemsEngine.Execute(jsql).ToList();
+
+                if (links != null && links.Count > 0)
                 {
-                    var linkItems = issueLinkearchEngine.Execute(issue);
-
-                    foreach(var item in linkItems)
+                    foreach (var l in links)
                     {
-                        var jsql = "project = \"" + destProjectName + "\" and summary ~ \"" + RemoveSpecialChar(item.InwardIssue.Summary) + "\" and type = " + item.InwardIssue.Type.Name + " ORDER BY key ASC";
-                        var links = jqlDestItemsEngine.Execute(jsql).ToList();
-
-                        if(links != null && links.Count > 0)
-                        {
-                            foreach (var l in links)
-                            {
-                                if(clonedIssue.Key.Value != l.Key.ToString())
-                                    linkEngine.Execute(clonedIssue, l.Key.ToString(), "Relates");
-                            }
-                        }
+                        if (clonedIssue.Key.Value != l.Key.ToString())
+                            linkEngine.Execute(clonedIssue, l.Key.ToString(), "Relates");
                     }
-
                 }
-                File.AppendAllText(ExcelFilePath + ExcelFileName, issue.Key.Value + ";" + clonedIssue.Key.Value + Environment.NewLine);
-
-
+                else
+                {
+                    File.AppendAllText(eFile, "Impossibile trovare la corrispondente issue relativa a " + item.InwardIssue.Key + " nel progetto " + destProjectName + Environment.NewLine);
+                }
             }
         }
 

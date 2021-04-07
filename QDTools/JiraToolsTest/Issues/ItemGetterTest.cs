@@ -104,6 +104,33 @@ namespace JiraToolsTest
             Assert.IsTrue(list.Any());
         }
 
+        //ar linkItems = issueLinkearchEngine.Execute(issue);
+        [TestMethod]
+        public void Linq_Execute_GetLinkedissue()
+        {
+
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("MOD-2114", QuerableType.ByCode, "MOD");   //ER-5892 is a subtask of ER-5885
+
+            var list = new List<Issue>();
+
+            var issueLinkearchEngine = container.Resolve<IssueLinkSearchEngine>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            var linkItems = issueLinkearchEngine.Execute(list[0]).ToList();
+
+
+            Assert.IsNotNull(linkItems);
+
+        }
+
         [TestMethod]
         public void Linq_Execute_GetUatIssues()
         {
