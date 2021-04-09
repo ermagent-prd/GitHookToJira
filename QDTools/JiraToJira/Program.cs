@@ -26,10 +26,10 @@ namespace JiraToJira
             var destProjectName = "ERM SHL Modeling Platform";
 
             var typeList = new List<String> {
-                //"Epic",
-                //"Task",
-                //"Story",
-                //"Bug",
+                "Epic",
+                "Task",
+                "Story",
+                "Bug",
                 "Sub-task" };
 
             foreach (var type in typeList)
@@ -37,10 +37,6 @@ namespace JiraToJira
                 importEngine.Execute(fromProjectCode, destProjectCode, fromProjectName, destProjectName, type);
                 Console.WriteLine("[" + DateTime.Now + "] "+ type + " Finished");
             }
-
-            //jqlSearch = "project = \"ERM-OTHERS-ILIAS-BSM\" and key = EOIB-6479 order by created ASC";
-            //
-            //importEngine.Execute(fromProject, destProject, jqlSearch);
 
             Console.WriteLine("[" + DateTime.Now + "] Finished");
             Console.WriteLine("Press a key to close");

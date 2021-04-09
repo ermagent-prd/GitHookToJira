@@ -113,7 +113,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("MOD-2114", QuerableType.ByCode, "MOD");   //ER-5892 is a subtask of ER-5885
+            var issues = engine.Execute("MOD-13", QuerableType.ByCode, "MOD");   //ER-5892 is a subtask of ER-5885
 
             var list = new List<Issue>();
 
@@ -126,7 +126,8 @@ namespace JiraToolsTest
 
             var linkItems = issueLinkearchEngine.Execute(list[0]).ToList();
 
-
+            var i = list[0];
+            var remote = i.GetRemoteLinksAsync();
             Assert.IsNotNull(linkItems);
 
         }
