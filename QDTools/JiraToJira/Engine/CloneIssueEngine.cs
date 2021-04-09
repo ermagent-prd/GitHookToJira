@@ -119,9 +119,24 @@ namespace JiraToJira.Engine
 
             await CloneWatchers(issue, clonedIssue);
 
-            clonedIssue.Reporter = SetUser(issue.ReporterUser);
-            clonedIssue.Assignee = SetUser(issue.AssigneeUser);
+            clonedIssue.Reporter = SetUser(issue.ReporterUser)?.AccountId;
+            try
+            {
+                clonedIssue.SaveChanges();
+            }
+            catch
+            {
+                Console.WriteLine("Impossibile settare come reporter " + SetUser(issue.ReporterUser)?.DisplayName + " a partire dalla issue " + issue.Key.Value);
+            }
+            clonedIssue.Assignee = SetUser(issue.AssigneeUser)?.AccountId;
+            try
+            { 
             clonedIssue.SaveChanges();
+            }
+            catch
+            {
+                Console.WriteLine("Impossibile settare come assignee " + SetUser(issue.AssigneeUser)?.DisplayName + " a partire dalla issue " + issue.Key.Value);
+            }
 
             return clonedIssue;
         }
@@ -165,7 +180,16 @@ namespace JiraToJira.Engine
         {
             var comments = await issue.GetCommentsAsync();
             foreach (var c in comments)
+            {
+                parseCommentByAuthor(c);
                 commentEngine.Execute(clonedIssue, c);
+            }
+        }
+
+        private void parseCommentByAuthor(Comment c)
+        {
+            if (c.Body.Length > 0 && !c.Body.StartsWith("[~accountId:"))
+                c.Body = "[~accountId:" + c.Author + "]\n" + c.Body;
         }
 
         private async Task CloneWorkLogs(Issue issue, Issue clonedIssue)
@@ -179,16 +203,25 @@ namespace JiraToJira.Engine
         {
             var watchers = await issue.GetWatchersAsync();
             foreach (var w in watchers)
-                await clonedIssue.AddWatcherAsync(SetUser(w));
+            {
+                try
+                {
+                    await clonedIssue.AddWatcherAsync(SetUser(w).AccountId);
+                }
+                catch
+                {
+                    //do nothing
+                }
+            }
         }
 
-        private string SetUser(JiraUser user)
+        private JiraUser SetUser(JiraUser user)
         {
             if (user == null)
-                return "";
+                return null;
 
             var account = accountEngine.Execute(user.DisplayName);
-            return account.AccountId;
+            return account;
         }
 
         private async Task CloneAttachments(Issue issue, Issue clonedIssue)
@@ -256,6 +289,7 @@ namespace JiraToJira.Engine
                     c.Id != "customfield_10013" &&  //epic_color
                     c.Id != "customfield_10012" &&  //epic_status
                     c.Id != "customfield_10030" &&  //jde_module
+                    !c.Name.Contains("GEMINI") &&
                     c.Id != "customfield_10031";    //tasktype
             }
             else if (issue.Type.Id == "10002")  //task 
@@ -267,6 +301,7 @@ namespace JiraToJira.Engine
                     c.Id != "customfield_10000" &&  //epic_status
                     c.Id != "customfield_10014" &&  //epic_link
                     c.Id != "customfield_10031" &&  //tasktype
+                    !c.Name.Contains("GEMINI") &&
                     !c.Name.Contains("[CHART]");    //[CHART]
             }
             else if (issue.Type.Id == "10001")  //story 
@@ -278,6 +313,7 @@ namespace JiraToJira.Engine
                     c.Id != "customfield_10000" &&  //epic_status
                     c.Id != "customfield_10014" &&  //epic_link
                     c.Id != "customfield_10031" &&  //tasktype
+                    !c.Name.Contains("GEMINI") &&
                     !c.Name.Contains("[CHART]");    //[CHART]
             }
             else if (issue.Type.Id == "10003") //subtask
@@ -289,6 +325,7 @@ namespace JiraToJira.Engine
                     c.Id != "customfield_10000" &&  //epic_status
                     c.Id != "customfield_10014" &&  //epic_link
                     c.Id != "customfield_10030" &&  //JDE Module
+                    !c.Name.Contains("GEMINI") &&
                     !c.Name.Contains("[CHART]");    //[CHART]
             }
             else if(issue.Type.Id == "10004")   //bug

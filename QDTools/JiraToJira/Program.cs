@@ -25,14 +25,18 @@ namespace JiraToJira
             var destProjectCode = "ESMP";
             var destProjectName = "ERM SHL Modeling Platform";
 
-            var type = " Epic";
-            //var type = " Task";
-            //var type = " Story";
-            //var type = "Bug";
-            //var type = " Sub-task";
+            var typeList = new List<String> {
+                //"Epic",
+                //"Task",
+                //"Story",
+                //"Bug",
+                "Sub-task" };
 
-
-            importEngine.Execute(fromProjectCode, destProjectCode, fromProjectName, destProjectName, type);
+            foreach (var type in typeList)
+            {
+                importEngine.Execute(fromProjectCode, destProjectCode, fromProjectName, destProjectName, type);
+                Console.WriteLine("[" + DateTime.Now + "] "+ type + " Finished");
+            }
 
             //jqlSearch = "project = \"ERM-OTHERS-ILIAS-BSM\" and key = EOIB-6479 order by created ASC";
             //

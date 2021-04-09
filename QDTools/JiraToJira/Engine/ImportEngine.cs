@@ -12,7 +12,7 @@ namespace JiraToJira.Engine
     public class ImportEngine
     {
         private readonly CloneIssueEngine cloneIssueEngine;
-        private readonly IssueLinkSearchEngine issueLinkearchEngine;
+        private readonly IssueLinkSearchEngine issueLinkedSearchEngine;
         private readonly LinkEngine linkEngine;
 
         //Original search engine
@@ -29,7 +29,7 @@ namespace JiraToJira.Engine
         {
             this.cloneIssueEngine = cloneIssueEngine;
 
-            this.issueLinkearchEngine = issueLinkearchEngine;
+            this.issueLinkedSearchEngine = issueLinkearchEngine;
             this.linkEngine = linkEngine;
 
             this.jqlOriginalEngine = jqlEngine;
@@ -42,9 +42,9 @@ namespace JiraToJira.Engine
         {
             var jqlSearch = "project = \"" + fromProjectName + "\" AND type = " + type + " ORDER BY key ASC";
 
-            string outputFilePath = "C:\\GeminiPorting\\Log\\";
+            string outputFilePath = "C:\\GeminiPorting\\Log\\JiraToJira\\";
 
-            var issueList = jqlOriginalEngine.Execute(jqlSearch);
+            var originalIssueList = jqlOriginalEngine.Execute(jqlSearch);
 
             var datetime = DateTime.Now.ToString().Replace("/", "_").Replace(":", "_");
             string mappingFileName = "Migration" + "_" + destProjectCode + "_" + type + "_" + datetime + ".txt";
@@ -56,16 +56,16 @@ namespace JiraToJira.Engine
             File.AppendAllText(oFile, jqlSearch + Environment.NewLine);
             File.AppendAllText(eFile, jqlSearch + Environment.NewLine);
 
-            foreach (var issue in issueList)
+            foreach (var originalIssue in originalIssueList)
             {
-                Issue relatedDev = GetRelatedDevelopment(issue.ParentIssueKey, destProjectName, fromProjectCode);
-                Issue relatedEpicDev = GetEpicRelatedDev(fromProjectCode, destProjectName, issue);
+                Issue relatedDev = GetRelatedDevelopment(originalIssue.ParentIssueKey, destProjectName, fromProjectCode);
+                Issue relatedEpicDev = GetEpicRelatedDev(fromProjectCode, destProjectName, originalIssue);
 
-                var clonedIssue = cloneIssueEngine.Execute(issue, destProjectCode, relatedDev);
+                var clonedIssue = cloneIssueEngine.Execute(originalIssue, destProjectCode, relatedDev);
 
                 if (clonedIssue == null)
                 {
-                    File.AppendAllText(oFile, "During " + type + " import failed to save " + issue.Key.Value + "because parent value is null" + Environment.NewLine);
+                    File.AppendAllText(oFile, "During " + type + " import failed to save " + originalIssue.Key.Value + "because parent value is null" + Environment.NewLine);
                     continue;
                 }
 
@@ -75,35 +75,33 @@ namespace JiraToJira.Engine
                     clonedIssue.SaveChanges();
                 }
 
-                ManageRelatedLinks(destProjectName, issue, clonedIssue, eFile);
+                ManageRelatedLinks(destProjectName, originalIssue, clonedIssue);
 
-                File.AppendAllText(oFile, issue.Key.Value + ";" + clonedIssue.Key.Value + Environment.NewLine);
+                File.AppendAllText(oFile, originalIssue.Key.Value + ";" + clonedIssue.Key.Value + Environment.NewLine);
 
 
             }
         }
 
 
-        private void ManageRelatedLinks(string destProjectName, Issue issue, Issue clonedIssue, string eFile)
+        private void ManageRelatedLinks(string destProjectName, Issue originalIssue, Issue clonedIssue)
         {
-            var linkItems = issueLinkearchEngine.Execute(issue);
+            //find linked items to the originalIssue 
+            var linkedItems = issueLinkedSearchEngine.Execute(originalIssue);
 
-            foreach (var item in linkItems)
+            foreach (var linkedItem in linkedItems)
             {
-                var jsql = "project = \"" + destProjectName + "\" and summary ~ \"" + RemoveSpecialChar(item.InwardIssue.Summary) + "\" and type = " + item.InwardIssue.Type.Name + " ORDER BY key ASC";
-                var links = jqlDestItemsEngine.Execute(jsql).ToList();
+                //find related issue to the new environment
+                var jsql = "project = \"" + destProjectName + "\" and summary ~ \"" + RemoveSpecialChar(linkedItem.InwardIssue.Summary) + "\" and type = " + linkedItem.InwardIssue.Type.Name + " ORDER BY key ASC";
+                var issuesToLink = jqlDestItemsEngine.Execute(jsql).ToList();
 
-                if (links != null && links.Count > 0)
+                if (issuesToLink != null && issuesToLink.Count > 0)
                 {
-                    foreach (var l in links)
+                    foreach (var issueToLink in issuesToLink)
                     {
-                        if (clonedIssue.Key.Value != l.Key.ToString())
-                            linkEngine.Execute(clonedIssue, l.Key.ToString(), "Relates");
+                        if (clonedIssue.Key.Value != issueToLink.Key.ToString())
+                            linkEngine.Execute(clonedIssue, issueToLink.Key.ToString(), "Relates");
                     }
-                }
-                else
-                {
-                    File.AppendAllText(eFile, "Impossibile trovare la corrispondente issue relativa a " + item.InwardIssue.Key + " nel progetto " + destProjectName + Environment.NewLine);
                 }
             }
         }

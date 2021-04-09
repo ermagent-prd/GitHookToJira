@@ -29,6 +29,11 @@ namespace JiraTools.Engine
 
         #region Constructor
 
+        /// <summary>
+        /// Motore di ricerca delle luinked issue
+        /// </summary>
+        /// <param name="requestFactory"></param>
+        /// <param name="parameters"></param>
         public IssueLinkSearchEngine(
             ServiceManagerContainer requestFactory,
             IJiraToolsParameters parameters)
