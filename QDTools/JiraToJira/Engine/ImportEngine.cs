@@ -45,6 +45,7 @@ namespace JiraToJira.Engine
             string outputFilePath = "C:\\GeminiPorting\\Log\\JiraToJira\\";
 
             var originalIssueList = jqlOriginalEngine.Execute(jqlSearch);
+            Console.WriteLine("[" + DateTime.Now + "] Founded (" + originalIssueList.Count() + ") " + type);
 
             var datetime = DateTime.Now.ToString().Replace("/", "_").Replace(":", "_");
             string mappingFileName = "Migration" + "_" + destProjectCode + "_" + type + "_" + datetime + ".txt";

@@ -20,8 +20,9 @@ namespace JiraToJira.Engine
 
         private readonly Dictionary<string, string> SPRINT_MAPPING = new Dictionary<string, string>()
         {
-            {"MP Sprint 1", "177" },
-            {"MP Sprint 2", "178" }
+            {"MP Sprint 1", "186" },
+            {"MP Sprint 2", "187" },
+            {"MP Sprint 3", "188" },
         };
 
         private readonly Dictionary<string, string> issueTypeMapping = new Dictionary<string, string>()
@@ -126,7 +127,7 @@ namespace JiraToJira.Engine
             }
             catch
             {
-                Console.WriteLine("Impossibile settare come reporter " + SetUser(issue.ReporterUser)?.DisplayName + " a partire dalla issue " + issue.Key.Value);
+                Console.WriteLine("Impossibile settare come reporter " + SetUser(issue.ReporterUser)?.DisplayName + " a partire dalla issue " + clonedIssue.Key.Value);
             }
             clonedIssue.Assignee = SetUser(issue.AssigneeUser)?.AccountId;
             try
@@ -135,7 +136,7 @@ namespace JiraToJira.Engine
             }
             catch
             {
-                Console.WriteLine("Impossibile settare come assignee " + SetUser(issue.AssigneeUser)?.DisplayName + " a partire dalla issue " + issue.Key.Value);
+                Console.WriteLine("Impossibile settare come assignee " + SetUser(issue.AssigneeUser)?.DisplayName + " a partire dalla issue " + clonedIssue.Key.Value);
             }
 
             return clonedIssue;
@@ -290,6 +291,7 @@ namespace JiraToJira.Engine
                     c.Id != "customfield_10012" &&  //epic_status
                     c.Id != "customfield_10030" &&  //jde_module
                     !c.Name.Contains("GEMINI") &&
+                    !c.Name.Contains("[CHART]") &&
                     c.Id != "customfield_10031";    //tasktype
             }
             else if (issue.Type.Id == "10002")  //task 
