@@ -7,7 +7,7 @@ using JiraTools.Service;
 
 namespace JiraTools.Engine
 {
-    internal class JqlGetter
+    public class JqlGetter
     {
         #region Private properties
 
