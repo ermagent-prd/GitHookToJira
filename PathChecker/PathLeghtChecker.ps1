@@ -1,6 +1,6 @@
 param (
     [string]$pathToScan = "C:\Projects\Ermas5\AlmProSuite\Source",  # The path to scan and the the lengths for (sub-directories will be scanned as well).
-    [string]$outputFilePath = "C:\Projects\Others\Processtools\PathChecker\PathLegthChecker.txt", # This must be a file in a directory that exists and does not require admin rights to write to.
+    [string]$outputFilePath = "C:\Tmp\PathLegthChecker.txt", # This must be a file in a directory that exists and does not require admin rights to write to.
     [bool]$writeToConsoleAsWell = $false,   # Writing to the console will be much slower.
     [int]$threshold = 249
  )
