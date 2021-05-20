@@ -27,5 +27,10 @@ namespace GeminiToJira.Parameters.Import
         /// RMS5
         /// </summary>
         RMS5 = 3,
+
+        /// <summary>
+        /// PAT System
+        /// </summary>
+        ERMPAT = 4
     }
 }

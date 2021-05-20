@@ -101,8 +101,8 @@ namespace JiraTools.Engine
             foreach (var c in fieldsInfo.CustomFields)
                 newIssue.CustomFields.Add(c.Name, c.Value);
 
-            foreach (var comp in fieldsInfo.Components)
-                newIssue.Components.Add(comp);
+//            foreach (var comp in fieldsInfo.Components)
+//                newIssue.Components.Add(comp);
 
             newIssue.Assignee = fieldsInfo.Assignee;
 
