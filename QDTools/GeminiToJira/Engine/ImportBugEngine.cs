@@ -45,7 +45,9 @@ namespace GeminiToJira.Engine
 
             Countersoft.Gemini.Commons.Entity.IssuesFilter filter = GetBugFilter(configurationSetup);
 
-            var geminiBugIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter);
+            var bugIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter);
+
+            var geminiBugIssueList = getFiltered(configurationSetup,bugIssueList);
 
             var bugLogFile = "BugLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
             
@@ -66,6 +68,14 @@ namespace GeminiToJira.Engine
                 }
             
             }
+        }
+
+        private IEnumerable<IssueDto> getFiltered(GeminiToJiraParameters configurationSetup, IEnumerable<IssueDto> bugIssueList)
+        {
+            if (String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_PRODUCT))
+              return bugIssueList;
+
+            return bugIssueList.Where(i => i.CustomFields[11].FormattedData.Equals(configurationSetup.Filter.BUG_PRODUCT));
         }
 
         #region Private 
