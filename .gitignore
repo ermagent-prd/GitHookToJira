@@ -464,3 +464,5 @@ QDTools/JiraToolsTest/obj/Debug/JiraToolsTest.pdb
 *.cache
 *.dll
 *.pdb
+*.cache
+QDTools/.vs/QDTools/v16/.suo
