@@ -122,12 +122,11 @@
       "missing functionality": "Missing Functionality"
     },
     "BUG_STATUS_MAPPING": {
-      "backlog": "Backlog",
-      "assigned": "Backlog",
-      "in progess": "Backlog",
-      "won�t fix": "Backlog",
-      "not a Bug": "Backlog",
-      "fixed": "Backlog"
+      "assigned": "Assigned",
+      "in progess": "In Progress",
+      "cancelled": "Cancelled",
+      "testing": "In review",
+      "fixed": "fixed"
     },
     "BUG_PRIORITY_MAPPING": {
       "low": "Low",
@@ -189,7 +188,8 @@
     "UatPrefix": "UAT-",
     "ErmBugPrefix": "ERMBUG-",
     "ProjectUrl": "https://erm-swfactory.prometeia.com/Gemini/project/",
-    "GroupTypeCode": "Group"
+    "GroupTypeCode": "Group",
+    "ESUPItemLinkUrl" : "https://erm-swfactory.prometeia.com/Gemini/workspace/5997/item/"
   },
   "Jira": {
     "User": "pierluigi.nanni@prometeia.com",
@@ -203,10 +203,8 @@
     "ImportBug": true,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
-    "StorySubTaskTypeCode": "10025",
     "TaskTypeCode": "10023",
     "SubTaskTypeCode": "10025",
-    "UatTypeCode": "10014",
     "BugTypeCode": "10001"
   },
   "LogDirectory": "C:\\Tmp\\Jira IMport\\Log\\",

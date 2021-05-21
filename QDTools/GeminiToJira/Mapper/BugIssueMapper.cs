@@ -43,7 +43,7 @@ namespace GeminiToJira.Mapper
             {
                 ProjectKey = projectCode,   
                 Summary = geminiIssue.Title.TrimEnd() == "" ? geminiIssue.IssueKey : geminiIssue.Title.TrimEnd(), //for bug without title
-                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments, configurationSetup.AttachmentDownloadedPath) + " " + DateTime.Now.ToString(),
+                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments, configurationSetup.AttachmentDownloadedPath),
                 Type = type,
                 //OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
                 //RemainingEstimate = geminiIssue.RemainingTime,
@@ -109,6 +109,8 @@ namespace GeminiToJira.Mapper
         {
             var mapping = configurationSetup.Mapping;
 
+            //recuperare fix versions (da capire come fare)
+
             if (mapping.BUG_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out string status))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
             else if (mapping.UAT_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out status))
@@ -119,9 +121,11 @@ namespace GeminiToJira.Mapper
             if (bugType != null && bugType.FormattedData != "" && mapping.BUG_TYPE_MAPPING.TryGetValue(bugType.FormattedData, out jiraBugType))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Type", jiraBugType));
 
-            ////Bug Severity
-            //if (geminiIssue.Severity != "")
-            //    jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Severity", ParseSeverity(geminiIssue)));
+            //Bug Severity
+            if (!string.IsNullOrWhiteSpace(geminiIssue.Severity))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Severity", ParseSeverity(geminiIssue)));
+
+
 
             //Fixing Date
             var fixingDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Fixing Date");
@@ -176,7 +180,7 @@ namespace GeminiToJira.Mapper
             //"Notes"
 
             var notes = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "Notes");
-            if (notes != null && notes.FormattedData.Length > 3)  //la string può contenere anche solo \n, \r, \nr, \rn
+            if (notes != null && !string.IsNullOrWhiteSpace(notes.FormattedData) && !notes.FormattedData.Equals("\r\n\r\n"))  //la string può contenere anche solo \n, \r, \nr, \rn
                 jiraIssue.Description += notes.FormattedData;
 
 
@@ -184,6 +188,23 @@ namespace GeminiToJira.Mapper
 
             //Gemini : save the original issue's code from gemini
             jiraIssue.CustomFields.Add(new CustomFieldInfo("OriginalKey", ermPrefix + geminiIssue.Id.ToString()));
+
+            var esup = getGeminiEsup(geminiIssue,configurationSetup);
+            if (esup != null)
+                jiraIssue.CustomFields.Add(esup);
+        }
+
+        private CustomFieldInfo getGeminiEsup(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        {
+            var esup = geminiIssue.Hierarchy.FirstOrDefault(i => i.Value.EscapedProjectCode == "ESUP");
+
+            if (esup == null)
+                return null;
+
+            string esupurl = configurationSetup.Gemini.ESUPItemLinkUrl + esup.Value.Id;
+
+            return new CustomFieldInfo("Gemini ESUP", esupurl);
+            
         }
 
         private void SetAffectedVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue)

@@ -45,7 +45,7 @@ namespace GeminiToJira.Mapper
             {
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title.TrimEnd(),
-                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments, configurationSetup.AttachmentDownloadedPath) + " " + DateTime.Now.ToString(),
+                Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments, configurationSetup.AttachmentDownloadedPath),
                 Type = type,
             };
 
