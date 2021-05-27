@@ -53,7 +53,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.Priority = priority;
 
             SetAffectedVersion(geminiIssue, jiraIssue);
-            SetFixVersion(geminiIssue, jiraIssue);
+            SetFixVersion(geminiIssue, jiraIssue, configurationSetup.Mapping);
 
             //Assignee
             var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
@@ -110,6 +110,7 @@ namespace GeminiToJira.Mapper
             var mapping = configurationSetup.Mapping;
 
             //recuperare fix versions (da capire come fare)
+            
 
             if (mapping.BUG_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out string status))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
@@ -219,11 +220,11 @@ namespace GeminiToJira.Mapper
             }
         }
 
-        private void SetFixVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue)
+        private void SetFixVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue, JiraTools.Parameters.MappingConfiguration mapping)
         {
             jiraIssue.FixVersions = new List<string>();
 
-            var fixVersion = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "Deliverable Versions");
+            var fixVersion = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.BUG_DELIVERABLE_VERSIONS);
             if (fixVersion != null && fixVersion.FormattedData != "")
             {
                 var fixVersions = ExtractVersions(fixVersion.FormattedData);

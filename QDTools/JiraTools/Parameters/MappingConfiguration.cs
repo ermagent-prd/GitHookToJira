@@ -18,6 +18,8 @@ namespace JiraTools.Parameters
         public string BUG_AFFECTEDBUILD_LABEL { get; set; }
         public string BUG_PROJECT_MODULE { get; set; }
 
+        public string BUG_DELIVERABLE_VERSIONS { get; set; }
+
 
         public Dictionary<string, string> DEV_STATUS_MAPPING { get; set; }
         public string DEV_STATUS_MAPPING_DEFAULT { get; set; }

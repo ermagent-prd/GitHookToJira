@@ -50,6 +50,7 @@
     "FIXED_IN_BUILD_LABEL": "FixedInBuild",
     "BUG_AFFECTEDBUILD_LABEL": "FoundInBuild",
     "BUG_PROJECT_MODULE": "Product Module",
+    "BUG_DELIVERABLE_VERSIONS" :"Deliverable Versions",
     "DEV_STATUS_MAPPING": {
       "backlog": "Backlog",
       "in Backlog": "Backlog",
@@ -197,7 +198,7 @@
     "Url": "https://prometeia.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
-    "ImportStory": false,
+    "ImportStory": true,
     "ImportTask": false,
     "ImportUat": false,
     "ImportBug": true,

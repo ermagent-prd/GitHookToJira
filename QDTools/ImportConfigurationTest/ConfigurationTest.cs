@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using JiraTools.Parameters;
 using GeminiTools.Parameters;
 using AlfrescoTools.Parameters;
-using JiraReport.Parameters.Export;
+
 
 namespace ImportConfigurationTest
 {
@@ -211,12 +211,11 @@ namespace ImportConfigurationTest
 
                     BUG_STATUS_MAPPING = new Dictionary<string, string>()
                     {
-                        { "backlog", "Backlog" },
-                        { "assigned", "Backlog" },
-                        { "in progess", "Backlog" },
-                        { "won’t fix", "Backlog" },
-                        { "not a Bug", "Backlog" },
-                        { "fixed", "Backlog" }
+                        { "assigned", "Assigned" },
+                        { "in progess", "In Progress" },
+                        { "cancelled", "Won't Fix" },
+                        { "testing", "In review" },
+                        { "fixed", "Fixed" }
                     },
 
                     BUG_PRIORITY_MAPPING = new Dictionary<string, string>()
@@ -282,6 +281,7 @@ namespace ImportConfigurationTest
 
         }
 
+        /*
         [TestMethod]
         public void SerializeExcelCOnfigurationTest()
         {
@@ -309,7 +309,7 @@ namespace ImportConfigurationTest
             File.WriteAllText(@"C:\GeminiPorting\exportconf.json", JsonConvert.SerializeObject(conf, Formatting.Indented));
 
         }
-
+        */
 
         [TestMethod]
         public void DeSerializeConfigurationTest()
