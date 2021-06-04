@@ -30,6 +30,8 @@ namespace JiraTools.Container
             Container.RegisterType<LinkEngine>();
             Container.RegisterType<IssueLinkSearchEngine>();
             Container.RegisterType<ItemListGetter>();
+            Container.RegisterType<EditCustomFieldEngine>();
+
         }
 
         #endregion
