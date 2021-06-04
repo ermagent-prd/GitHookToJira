@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SvnTools;
 using SvnToolsTest.Container;
 using Unity;
@@ -16,7 +15,9 @@ namespace SvnToolsTest
 
             var engine = container.Resolve<GetRevisionPropertiesEngine>();
 
-            var properties = engine.Execute(145107);
+            int revisionNumber = 5;
+
+            var properties = engine.Execute(revisionNumber);
 
             Assert.IsNotNull(properties);
         }
