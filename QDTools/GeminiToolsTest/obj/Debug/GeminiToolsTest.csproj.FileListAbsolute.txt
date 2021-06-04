@@ -67,3 +67,9 @@ C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTes
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.csproj.CopyComplete
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.dll
 C:\GeminiPorting\processesTools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.pdb
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToolsTest\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToolsTest\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToolsTest\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToolsTest\Debug\GeminiToolsTest.dll.config
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToolsTest\Debug\GeminiToolsTest.dll
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToolsTest\Debug\GeminiToolsTest.pdb

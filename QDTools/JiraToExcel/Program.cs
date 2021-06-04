@@ -11,6 +11,11 @@ namespace JiraToExcel
     {
         static void Main(string[] args)
         {
+            var repositoryPath = args[0];
+
+            var svnCommit = args[1];
+
+
             var engine = new Main();
 
             engine.Execute();

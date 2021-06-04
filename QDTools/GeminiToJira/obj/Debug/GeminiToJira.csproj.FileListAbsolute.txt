@@ -20,3 +20,4 @@ C:\GeminiPorting\processesTools\Bin\QDTools\GeminiToJira\Debug\GeminiToJira.exe.
 C:\GeminiPorting\processesTools\Bin\QDTools\GeminiToJira\Debug\GeminiToJira.exe
 C:\GeminiPorting\processesTools\Bin\QDTools\GeminiToJira\Debug\GeminiToJira.pdb
 C:\GeminiPorting\processesTools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.CopyComplete
+C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.CopyComplete

@@ -49,3 +49,9 @@ C:\GeminiPorting\processesTools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.cs
 C:\GeminiPorting\processesTools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.CopyComplete
 C:\GeminiPorting\processesTools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.dll
 C:\GeminiPorting\processesTools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.pdb
+C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.dll.config
+C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.dll
+C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.pdb
