@@ -363,3 +363,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+QDTools/.vs/QDTools/v16/.suo
+QDTools/.vs/QDTools/v16/TestStore/0/testlog.manifest
