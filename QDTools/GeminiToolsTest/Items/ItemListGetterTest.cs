@@ -202,9 +202,6 @@ namespace GeminiToolsTest.Items
                 //"Other" 
             };
 
-            string DEVELOPMENT_RELEASE_KEY = "Release Version";
-            string DEVELOPMENT_LINE_KEY = "DVL";
-
             var filter = new IssuesFilter
             {
                 IncludeClosed = true,

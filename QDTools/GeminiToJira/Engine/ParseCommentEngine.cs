@@ -1,13 +1,9 @@
-﻿using GeminiToJira.Parameters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
-using System.Net;
-using System.Linq;
 using JiraTools.Model;
 
 namespace GeminiToJira.Engine

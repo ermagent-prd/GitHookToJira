@@ -77,7 +77,6 @@ namespace AlfrescoTools.Engine
 
         private IFolder GetChildren(IFolder root, string storyFolder)
         {
-            IItemEnumerable<ICmisObject> children = null;
             IFolder parentForlder = null;
 
             //Find sub directory if exist
