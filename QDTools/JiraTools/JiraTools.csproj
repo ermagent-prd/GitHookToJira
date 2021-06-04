@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\JiraToolsContainerExtension.cs" />
+    <Compile Include="Engine\EditCustomFieldEngine.cs" />
     <Compile Include="Engine\AddAttachmentEngine.cs" />
     <Compile Include="Engine\AddWorklogEngine.cs" />
     <Compile Include="Engine\CreateIssueEngine.cs" />
