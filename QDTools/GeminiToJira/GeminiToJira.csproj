@@ -76,8 +76,9 @@
   <ItemGroup>
     <Compile Include="Container\ContainerFactory.cs" />
     <Compile Include="Engine\ImportBugEngine.cs" />
+    <Compile Include="Engine\ImportTaskEngine.cs" />
     <Compile Include="Engine\ImportUatEngine.cs" />
-    <Compile Include="Engine\ImportDevelopmentEngine.cs" />
+    <Compile Include="Engine\ImportStoryEngine.cs" />
     <Compile Include="Engine\JiraAccountIdEngine.cs" />
     <Compile Include="Engine\ParseCommentEngine.cs" />
     <Compile Include="Engine\TimeLogEngine.cs" />
@@ -88,20 +89,18 @@
     <Compile Include="GeminiFilter\FilterType.cs" />
     <Compile Include="Mapper\CommentMapper.cs" />
     <Compile Include="Mapper\BugIssueMapper.cs" />
+    <Compile Include="Mapper\TaskIssueMapper.cs" />
     <Compile Include="Mapper\UatIssueMapper.cs" />
-    <Compile Include="Mapper\DevelopmentIssueMapper.cs" />
+    <Compile Include="Mapper\StoryIssueMapper.cs" />
     <Compile Include="Parameters\Alfresco\AlfrescoConstants.cs" />
     <Compile Include="Parameters\Alfresco\AlfrescoParamContainer.cs" />
     <Compile Include="Parameters\Gemini\GeminiConstants.cs" />
     <Compile Include="Parameters\Gemini\GeminiParamContainer.cs" />
     <Compile Include="Parameters\Import\ConfigurationManager.cs" />
-    <Compile Include="Parameters\Import\Configuration\AlfrescoConfiguration.cs" />
-    <Compile Include="Parameters\Import\Configuration\GeminiConfiguration.cs" />
     <Compile Include="Parameters\Import\Configuration\ImportConfiguration.cs" />
     <Compile Include="Parameters\Import\Configuration\FilterConfiguration.cs" />
-    <Compile Include="Parameters\Import\Configuration\JiraConfiguration.cs" />
     <Compile Include="Parameters\Import\EmbeddedCfgLoader.cs" />
-    <Compile Include="Parameters\Import\ImportType.cs" />
+    <Compile Include="Parameters\Import\ImportCfgType.cs" />
     <Compile Include="Parameters\Jira\JiraConstants.cs" />
     <Compile Include="Parameters\Jira\JiraParamContainer.cs" />
     <Compile Include="Program.cs" />
@@ -110,7 +109,11 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Parameters\Import\CfgFiles\EIB.json" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\Test.json" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\ERM.json" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\SSSP.json" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\RMS5.json" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\ERMPAT.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AlfrescoTools\AlfrescoTools.csproj">

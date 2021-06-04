@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Atlassian.Jira;
 using Atlassian.Jira.Remote;
+using GeminiToJira.Engine;
 using JiraTools.Engine;
 using JiraTools.Parameters;
 using JiraToolsTest.Container;
@@ -77,7 +78,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-5946");   //ER-5892 is a subtask of ER-5885
+            var issues = engine.Execute("MOD-98", QuerableType.ByCode, "MOD");   //ER-5892 is a subtask of ER-5885
 
             var list = new List<Issue>();
 
@@ -103,6 +104,34 @@ namespace JiraToolsTest
             Assert.IsTrue(list.Any());
         }
 
+        //ar linkItems = issueLinkearchEngine.Execute(issue);
+        [TestMethod]
+        public void Linq_Execute_GetLinkedissue()
+        {
+
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("MOD-13", QuerableType.ByCode, "MOD");   //ER-5892 is a subtask of ER-5885
+
+            var list = new List<Issue>();
+
+            var issueLinkearchEngine = container.Resolve<IssueLinkSearchEngine>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            var linkItems = issueLinkearchEngine.Execute(list[0]).ToList();
+
+            var i = list[0];
+            var remote = i.GetRemoteLinksAsync();
+            Assert.IsNotNull(linkItems);
+
+        }
+
         [TestMethod]
         public void Linq_Execute_GetUatIssues()
         {
@@ -110,7 +139,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6518", QuerableType.ByCode, "ER");
+            var issues = engine.Execute("RMS5-194", QuerableType.ByCode, "RMS5");
 
             var list = new List<Issue>();
 
@@ -255,7 +284,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6464", QuerableType.ByCode, "ER");
+            var issues = engine.Execute("EOIB-10990", QuerableType.ByCode, "EOIB");
 
             var list = new List<Issue>();
 
@@ -269,6 +298,27 @@ namespace JiraToolsTest
             foreach (var comment in comments.Result)
                 Console.WriteLine(comment.Body);
             
+            Assert.IsTrue(list.Any());
+        }
+
+        [TestMethod]
+        public void Linq_Execute_GetItemAddWatchers()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var engine = container.Resolve<ItemListGetter>();
+
+            var issues = engine.Execute("EOIB-10990", QuerableType.ByCode, "EOIB");
+
+            var list = new List<Issue>();
+
+            foreach (var issue in issues)
+            {
+                list.Add(issue);
+            }
+
+            list[0].AddWatcherAsync("70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2");
+
             Assert.IsTrue(list.Any());
         }
 
@@ -317,7 +367,7 @@ namespace JiraToolsTest
 
             var engine = container.Resolve<ItemListGetter>();
 
-            var issues = engine.Execute("ER-6476", QuerableType.ByCode, "ER");
+            var issues = engine.Execute("MOD-140", QuerableType.ByCode, "MOD");
 
             var list = new List<Issue>();
 
@@ -389,5 +439,6 @@ namespace JiraToolsTest
 
             Assert.IsTrue(list.Any());
         }
+
     }
 }

@@ -1,6 +1,8 @@
-﻿using JiraTools.Engine;
+﻿using Atlassian.Jira;
+using JiraTools.Engine;
 using JiraToolsTest.Container;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using Unity;
 
 namespace JiraToolsTest
@@ -29,7 +31,7 @@ namespace JiraToolsTest
         }
 
         [TestMethod]
-        public void GetUsers()
+        public void GetUsersByRole()
         {
             var container = ContainerForTest.DefaultInstance.Value;
             
@@ -40,6 +42,23 @@ namespace JiraToolsTest
             foreach (var user in users)
                 Assert.IsNotNull(user);
 
+        }
+
+        [TestMethod]
+        public void GetJirasUsers()
+        {
+            var container = ContainerForTest.DefaultInstance.Value;
+
+            var userEngine = container.Resolve<UserListGetter>();
+
+            var users = userEngine.Execute();
+
+            var list = new List<JiraUser>();
+
+            foreach (var user in users)
+                list.Add(user);
+
+            Assert.IsNotNull(list);
         }
     }
 }

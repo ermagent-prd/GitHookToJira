@@ -1,0 +1,226 @@
+{
+  "JiraProjectCode": "MOD",
+  "ComponentsForDevelopment": [
+    "ILIAS",
+    "ILIAS-STA",
+    "BSM",
+    "Other"
+  ],
+  "Filter": {
+    "STORY_PROJECT_ID": "|36|",
+    "STORY_TYPES": "|Developer|Task|",
+    "STORY_RELEASES": [
+      "ERMAS",
+      "ERMAS 5.24.0",
+      "ERMAS 5.24.1",
+      "ERMAS 5.25.0",
+      "ERMAS 5.26.0",
+      "ERMAS 5.27.0",
+      "ERMAS 5.28.0",
+      "ERMAS 5.29.0"
+    ],
+    "STORY_LINES": [
+      "BSM",
+      "ILIAS",
+      "ILIAS-STA"
+    ],
+    "STORY_RELEASE_KEY": "Release Version",
+    "STORY_LINE_KEY": "DVL",
+    "STORY_INCLUDED_CLOSED": true,
+    "TASK_PROJECT_ID": "|36|",
+    "TASK_TYPES": "|Developer|Task|",
+    "TASK_RELEASES": [
+      "0.0.0.0"
+    ],
+    "TASK_LINES": [
+      "Other"
+    ],
+    "TASK_RELEASE_KEY": "Release Version",
+    "TASK_LINE_KEY": "DVL",
+    "TASK_INCLUDED_CLOSED": true,
+    "UAT_PROJECT_ID": "|37|",
+    "UAT_CREATED_FROM": "12/03/2020",
+    "UAT_GROUP_DEPENDENCIES": true,
+    "UAT_INCLUDED_CLOSED": true,
+    "UAT_FUNCTIONALITY": [
+      "PYTHO"
+    ],
+    "ERMBUG_PROJECT_ID": "38",
+    "ERMBUG_INCLUDED_CLOSED": true
+  },
+
+  "Mapping": {
+    "AFFECTEDBUILD_LABEL": "AffectedBuild",
+    "RELEASE_KEY_LABEL": "Release Version",
+    "LINE_KEY_LABEL": "DVL",
+    "FUNCTIONALITY_LABEL": "Functionality",
+    "RELATED_DEVELOPMENT_LABEL": "Development",
+    "ISSUE_TYPE_LABEL": "IssueType",
+    "FIXED_IN_BUILD_LABEL": "FixedInBuild",
+    "BUG_AFFECTEDBUILD_LABEL": "FoundInBuild",
+    "BUG_PROJECT_MODULE": "Product Module",
+    "DEV_STATUS_MAPPING": {
+      "backlog": "Backlog",
+      "in Backlog": "Backlog",
+      "assigned": "Select for development",
+      "analysis": "In Progress",
+      "development": "In progress",
+      "waiting for test": "In progress",
+      "testing": "In progress",
+      "cancelled": "Done",
+      "done": "Done",
+      "in progress": "In progress"
+    },
+    "DEV_STATUS_MAPPING_DEFAULT": "Backlog",
+    "DEV_ESTIMATE_TYPE_MAPPING": {
+      "planned": "Planned",
+      "cr-mkt": "Internal change request",
+      "cr-int": "Market change request",
+      "overbudget": "Overbudget"
+    },
+    "DEV_ESTIMATE_TYPE_MAPPING_DEFAULT": "Planned",
+    "TASK_TYPE_MAPPING": {
+      "analysis": "Analysis",
+      "development": "Development",
+      "test": "Test",
+      "documentation": "Documentation"
+    },
+    "TASK_TYPE_MAPPING_DEFAULT": "Other",
+    "UAT_STATUS_MAPPING": {
+      "assigned": "To Do",
+      "in progress": "In progress",
+      "fixed": "Ready for test",
+      "testing": "Testing",
+      "closed": "Closed",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled",
+      "in Backlog": "In Backlog"
+    },
+    "UAT_STATUS_MAPPING_DEFAULT": "To Do",
+    "UAT_PRIORITY_MAPPING": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "UAT_SEVERITY_MAPPING": {
+      "low": "Trivial",
+      "medium": "Minor",
+      "high": "Major",
+      "highest": "Blocking"
+    },
+    "UAT_CATEGORY_MAPPING": {
+      "calcoli": "Functional",
+      "interfaccia": "Usability",
+      "usabilità": "Usability",
+      "efficenza": "Performance",
+      "suggerimento": "Usability",
+      "localizzazione": "Usability",
+      "messaggio di errore": "Functional",
+      "dal": "Functional"
+    },
+    "UAT_CATEGORY_MAPPING_DEFAULT": "Functional",
+    "UAT_TYPE_MAPPING": {
+      "defect": "Defect",
+      "investigation": "Investigation",
+      "enhancement": "Enhancement",
+      "enanchement": "Enhancement",
+      "regression": "Regression",
+      "setup": "Setup",
+      "change request": "Change request",
+      "new feature": "New Feature",
+      "missing functionality": "Missing Functionality"
+    },
+    "BUG_STATUS_MAPPING": {
+      "backlog": "Backlog",
+      "assigned": "Backlog",
+      "in progess": "Backlog",
+      "won’t fix": "Backlog",
+      "not a Bug": "Backlog",
+      "fixed": "Backlog"
+    },
+    "BUG_PRIORITY_MAPPING": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "BUG_TYPE_MAPPING": {
+      "Presentation": "Functional",
+      "Engine": "Functional",
+      "Sythesis": "Functional",
+      "Other": "Functional"
+    },
+    "BUG_CAUSE_TYPE_MAPPING": {
+      "development mistake": "Development mistake",
+      "analysis mistake": "Analysis mistake",
+      "sql mistake": "Development mistake",
+      "presentation mistake": "Presentation mistake",
+      "enhancement": "Enhancement",
+      "missing development": "Missing development",
+      "regression": "Regression",
+      "refactoring": "Refactoring",
+      "licensing": "Licensing",
+      "complexity": "Code complexity",
+      "db upgrade": "Datasource upgrade",
+      "devops": "Regression",
+      "duplicate code": "Development mistake",
+      "performance": "Performance"
+    },
+    "BUG_CAUSE_TYPE_DEFAULT": "Other",
+    "BUG_SUGGESTED_ACTION_TYPE_MAPPING": {
+      "more attention": "Integration test",
+      "more test": "Integration test",
+      "unit test": "Test automation",
+      "tca": "Integration test",
+      "refactoring": "Refactoring",
+      "presentation test": "Integration test",
+      "missing documentation": "Documentation",
+      "uat": "Integration test",
+      "database test": "Integration test",
+      "enancement management": "Processes improvement",
+      "performance test": "Performance test",
+      "eagle Integration": "Integration test",
+      "licence test": "Licence test",
+      "use entity framework": "Refactoring",
+      "sql test": "Integration test"
+    },
+    "BUG_SUGGESTED_ACTION_TYPE_DEFAULT": "Other"
+  },
+  "Alfresco": {
+    "ServiceUrl": "http://10.100.2.85:8080/alfresco/cmisatom",
+    "UserName": "apiuser",
+    "Password": "cmis",
+    "RootFolder": "APi Test"
+  },
+  "Gemini": {
+    "Url": "https://erm-swfactory.prometeia.com/Gemini",
+    "ErmBugProjectCode": "ERMBUG",
+    "ErmPrefix": "ERM-",
+    "UatPrefix": "UAT-",
+    "ErmBugPrefix": "ERMBUG-",
+    "ProjectUrl": "https://erm-swfactory.prometeia.com/Gemini/project/",
+    "GroupTypeCode": "Group"
+  },
+  "Jira": {
+    "User": "pierluigi.nanni@prometeia.com",
+    "Token": "GOojveJqyGUAgi6mzSAu3FAA",
+    "Url": "https://prometeia-erm.atlassian.net/",
+    "IssueApi": "rest/api/3/issue/",
+    "MaxIssuesPerRequest": 10,
+    "ImportStory": false,
+    "ImportTask": false,
+    "ImportUat": true,
+    "ImportBug": false,
+    "EpicTypeCode": "10000",
+    "StoryTypeCode": "10001",
+    "StorySubTaskTypeCode": "10017",
+    "TaskTypeCode": "10002",
+    "SubTaskTypeCode": "10003",
+    "UatTypeCode": "10014",
+    "BugTypeCode": "10004"
+  },
+  "LogDirectory": "C:\\GeminiPorting\\Log\\",
+  "AttachmentDownloadedPath": "C:\\GeminiPorting\\AttachmentDownloaded\\",
+  "GeminiParameters": null,
+  "JiraParameters": null,
+  "AlfrescoParameter": null
+}

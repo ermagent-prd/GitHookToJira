@@ -4,18 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GeminiToJira.Parameters.Import
+namespace JiraReport.Parameters.Export
 {
-    public enum ImportType
+    public enum ExportReportType
     {
         /// <summary>
         /// Test configuration
         /// </summary>
         Test = 0,
-
-        /// <summary>
-        /// EIB
-        /// </summary>
-        EIB = 1,
     }
 }

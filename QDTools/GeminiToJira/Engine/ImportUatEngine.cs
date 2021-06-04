@@ -9,12 +9,13 @@ using Atlassian.Jira;
 using JiraTools.Parameters;
 using System;
 using System.IO;
+using GeminiToJira.Parameters.Import;
 
 namespace GeminiToJira.Engine
 {
     public class ImportUatEngine
     {
-        private readonly UatIssueMapper geminiToJiraMapper;
+        private readonly BugIssueMapper geminiToJiraMapper;
         private readonly GeminiTools.Items.ItemListGetter geminiItemsEngine;
         private readonly JiraTools.Engine.ItemListGetter jiraItemsEngine;
         private readonly CreateIssueEngine jiraSaveEngine;
@@ -22,7 +23,7 @@ namespace GeminiToJira.Engine
         private readonly LinkEngine linkEngine;
 
         public ImportUatEngine(
-            UatIssueMapper geminiToJiraMapper,
+            BugIssueMapper geminiToJiraMapper,
             GeminiTools.Items.ItemListGetter geminiItemsEngine,
             JiraTools.Engine.ItemListGetter jiraItemsEngine,
             CreateIssueEngine jiraSaveEngine,
@@ -38,46 +39,48 @@ namespace GeminiToJira.Engine
 
         }
 
-        public void Execute(string projectCode)
+        public void Execute(GeminiToJiraParameters configurationSetup)
         {
-            var uatLogFile = "UatLog_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+            var projectCode = configurationSetup.JiraProjectCode;
+
+            var uatLogFile = "UatLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
             //for debug only
-            //var uatImportedFile = "UatImported_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
-            //File.AppendAllText(JiraConstants.LogDirectory + uatImportedFile, "IssueKey" + ";" + "Title" + ";" + "CreatedTime" +";" + "Status" + Environment.NewLine);
+            var uatImportedFile = "UatImported_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+            File.AppendAllText(configurationSetup.LogDirectory + uatImportedFile, "IssueKey" + ";" + "Title" + ";" + "CreatedTime" +";" + "Status" + Environment.NewLine);
 
-
-            var filter = Filter.GetFilter(FilterType.UAT);
-            var dateFrom = Convert.ToDateTime(UatConstants.UAT_CREATED_FROM);
-            filter.IncludeClosed = true;
-
-            //date until make the import from dateFrom
-            DateTime dateTo = Convert.ToDateTime("31/12/2020");
+            Countersoft.Gemini.Commons.Entity.IssuesFilter filter = GetUatFilter(configurationSetup);
+            List<String> functionalityList = configurationSetup.Filter.UAT_FUNCTIONALITY;
+                        
+            //initial date from when we start the import
+            var dateFrom = Convert.ToDateTime(configurationSetup.Filter.UAT_CREATED_FROM);
+            //date until we make the import from dateFrom
+            DateTime dateTo = DateTime.Now;
 
             while (dateFrom <= dateTo)
             {
                 filter.CreatedAfter = dateFrom.ToString("MM/dd/yyyy");
                 filter.CreatedBefore = dateFrom.ToString("MM/dd/yyyy");
 
-                var geminiUatIssueList = filterGeminiIssueList(geminiItemsEngine, filter);
+                var geminiUatIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter, functionalityList);
 
                 foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.CreatedTime).ThenBy(f => f.Id).ToList())
                 {
                     //for debug only
-                    //File.AppendAllText(JiraConstants.LogDirectory + uatImportedFile, 
-                    //    geminiIssue.IssueKey + ";" + 
-                    //    geminiIssue.Title + ";" + 
-                    //    geminiIssue.CreatedTime + ";" + 
-                    //    geminiIssue.Status + 
-                    //    Environment.NewLine);
+                    File.AppendAllText(configurationSetup.LogDirectory + uatImportedFile, 
+                        geminiIssue.IssueKey + ";" + 
+                        geminiIssue.Title + ";" + 
+                        geminiIssue.CreatedTime + ";" + 
+                        geminiIssue.Status + 
+                        Environment.NewLine);
 
                     try
                     {
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
                     
-                        var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.UatType, projectCode);
+                        var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode, configurationSetup.Gemini.UatPrefix);
                     
-                        var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
+                        var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                         SetAndSaveReporter(jiraIssue, geminiIssue);
                     
                         if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")
@@ -94,17 +97,13 @@ namespace GeminiToJira.Engine
                                 foreach (var v in relatedDev.FixVersions)
                                     jiraIssue.FixVersions.Add(v);
                     
-                                var owner = jiraIssue.CustomFields.FirstOrDefault(c => c.Name == "Owner");
-                                if (owner == null)
-                                    jiraIssue.CustomFields.Add("Owner", relatedDev.CustomFields.First(c => c.Name == "Owner").Values);
-                    
                                 jiraIssue.SaveChanges();
                             }
                         }
                     }
                     catch
                     {
-                        File.AppendAllText(JiraConstants.LogDirectory + uatLogFile, geminiIssue.IssueKey + Environment.NewLine);
+                        File.AppendAllText(configurationSetup.LogDirectory + uatLogFile, geminiIssue.IssueKey + Environment.NewLine);
                     }
                 }
                 dateFrom = dateFrom.AddDays(1);
@@ -112,12 +111,40 @@ namespace GeminiToJira.Engine
         }
 
         #region Private 
-        private IEnumerable<IssueDto> filterGeminiIssueList(
+        private Countersoft.Gemini.Commons.Entity.IssuesFilter GetUatFilter(GeminiToJiraParameters configurationSetup)
+        {
+            return new Countersoft.Gemini.Commons.Entity.IssuesFilter()
+            {
+                IncludeClosed = configurationSetup.Filter.UAT_INCLUDED_CLOSED,
+                GroupDependencies = configurationSetup.Filter.UAT_GROUP_DEPENDENCIES,
+                Projects = configurationSetup.Filter.UAT_PROJECT_ID,
+            };
+        }
+
+        private IEnumerable<IssueDto> GetFilteredGeminiIssueList(
             GeminiTools.Items.ItemListGetter geminiItemsEngine,
-            Countersoft.Gemini.Commons.Entity.IssuesFilter filter)
+            Countersoft.Gemini.Commons.Entity.IssuesFilter filter,
+            List<string> functionalityList)
         {
             var geminiIssueList = geminiItemsEngine.Execute(filter);
-            return geminiIssueList;
+            if (functionalityList != null && functionalityList.Count > 0)
+                return FilterByFunctionality(geminiIssueList, functionalityList);
+            else
+                return geminiIssueList;
+        }
+
+        private IEnumerable<IssueDto> FilterByFunctionality(IEnumerable<IssueDto> geminiIssueList, List<string> functionalityList)
+        {
+            List<IssueDto> result = new List<IssueDto>();
+
+            foreach(var issue in geminiIssueList)
+            {
+                var functionality = issue.CustomFields.FirstOrDefault(i => i.Name == "Functionality");
+                if (functionality != null && functionalityList.Contains(functionality.FormattedData))
+                    result.Add(issue);
+            }
+
+            return result;
         }
 
         private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue)
@@ -151,7 +178,7 @@ namespace GeminiToJira.Engine
             return jiraDev;
         }
 
-        private static string RemoveSpecialChar(JiraTools.Model.CreateIssueInfo jiraIssueInfo)
+        private string RemoveSpecialChar(JiraTools.Model.CreateIssueInfo jiraIssueInfo)
         {
             var search = jiraIssueInfo.RelatedDevelopment.Replace("\"", "");
             search = search.Replace("+", "");
@@ -160,11 +187,11 @@ namespace GeminiToJira.Engine
             return search;
         }
 
-        private static Issue SearchRelatedDevelopment(JiraTools.Model.CreateIssueInfo jiraIssueInfo, Issue jiraDev, IEnumerable<Issue> jiraDevList)
+        private Issue SearchRelatedDevelopment(JiraTools.Model.CreateIssueInfo jiraIssueInfo, Issue jiraDev, IEnumerable<Issue> jiraDevList)
         {
             foreach (var curr in jiraDevList)
             {
-                var geminiId = curr.CustomFields.FirstOrDefault(j => j.Name == "GEMINI");
+                var geminiId = curr.CustomFields.FirstOrDefault(j => j.Name == "OriginalKey");
                 if (geminiId != null && geminiId.Values[0] == jiraIssueInfo.RelatedDevelopmentId)
                     jiraDev = curr;
             }

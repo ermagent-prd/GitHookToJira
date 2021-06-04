@@ -3,6 +3,7 @@ using Atlassian.Jira.Remote;
 using Countersoft.Gemini.Commons.Dto;
 using Countersoft.Gemini.Commons.Entity;
 using GeminiToJira.Engine;
+using GeminiToJira.Parameters.Import;
 using GeminiTools.Items;
 using JiraTools.Model;
 using System;
@@ -27,7 +28,7 @@ namespace GeminiToJira.Mapper
             this.parseCommentEngine = parseCommentEngine;
         }
 
-        public void Execute(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        public void Execute(GeminiToJiraParameters configurationSetup, CreateIssueInfo jiraIssue, IssueDto geminiIssue)
         {
             jiraIssue.CommentList = new List<Comment>();
 
@@ -36,21 +37,21 @@ namespace GeminiToJira.Mapper
                 var comment = geminiIssue.Comments[i];
 
                 var commentPrefix = "Comment_" + i;
-                jiraIssue.CommentList.Add(CreateComment(comment.Entity, comment.Attachments, commentPrefix));
+                jiraIssue.CommentList.Add(CreateComment(comment.Entity, comment.Attachments, commentPrefix, configurationSetup.AttachmentDownloadedPath));
                 parseCommentEngine.Execute(jiraIssue, comment.Entity.Comment, commentPrefix);
 
                 //Load Comment's attached files
-                attachmentGetter.Execute(jiraIssue, comment.Attachments);
+                attachmentGetter.Execute(jiraIssue, comment.Attachments, configurationSetup.Gemini.ProjectUrl, configurationSetup.AttachmentDownloadedPath);
             }
         }
 
-        private Comment CreateComment(IssueComment geminiComment, List<IssueAttachmentDto> attachments, string commentPrefix)
+        private Comment CreateComment(IssueComment geminiComment, List<IssueAttachmentDto> attachments, string commentPrefix, string attachmentPath)
         {
             //linka al commento il file allegato nella issue originale
             string commentAttachment = GetAttachmentBody(attachments);
 
             var author = accountEngine.Execute(geminiComment.Fullname);
-            var body = "[~accountId:" + author.AccountId + "]\n" + commentAttachment + parseCommentEngine.Execute(geminiComment.Comment, commentPrefix, null);
+            var body = "[~accountId:" + author.AccountId + "]\n" + commentAttachment + parseCommentEngine.Execute(geminiComment.Comment, commentPrefix, null, attachmentPath);
 
             var remoteComment = new RemoteComment();
             remoteComment.author = author.AccountId;

@@ -14,9 +14,15 @@ namespace GeminiToJira.Engine
         private readonly List<string> userGroups = new List<string>() { "Administrators" };
         private readonly Lazy<Dictionary<string, JiraUser>> userListDictionary;
 
-        public JiraAccountIdEngine(UserListGetter userListGetter, ServiceManagerContainer requestFactory)
+        public JiraAccountIdEngine(UserListGetter userListGetter)
         {
             this.userListDictionary = new Lazy<Dictionary<string, JiraUser>> (() => GetUsersDictionary(userListGetter));
+        }
+
+        //for test purpose
+        public Dictionary<string, JiraUser> Execute()
+        {
+            return userListDictionary.Value;
         }
 
         public JiraUser Execute(string fullname)
@@ -37,7 +43,10 @@ namespace GeminiToJira.Engine
             {
                 var userList = userListGetter.Execute();      //returns all active users
                 foreach (var user in userList)
-                    result.Add(user.DisplayName, user);
+                {
+                    if(!result.TryGetValue(user.DisplayName, out JiraUser founded))
+                        result.Add(user.DisplayName, user);
+                }
             }
 
             return result;

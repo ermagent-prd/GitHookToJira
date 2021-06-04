@@ -5,9 +5,5 @@ namespace GeminiTools.Parameters
     {
         string ServerUrl { get; }
 
-        string GEMINI_PATH { get; }
-
-        string SAVING_PATH { get; }
-
     }
 }

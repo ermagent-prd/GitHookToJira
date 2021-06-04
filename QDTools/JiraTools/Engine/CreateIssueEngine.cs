@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Atlassian.Jira;
 using JiraTools.Model;
+using JiraTools.Parameters;
 using JiraTools.Service;
 
 namespace JiraTools.Engine
 {
     public class CreateIssueEngine
     {
-        private Dictionary<string, string> RESOLUTION_DICTIONARY = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> RESOLUTION_DICTIONARY = new Dictionary<string, string>()
         {
             { "Done",           "10000" },
             { "Won't Do",       "10001" },
@@ -18,17 +19,13 @@ namespace JiraTools.Engine
         };
 
         //TODO to map
-        private Dictionary<string, string> RESOLUTION_MAPPING = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> RESOLUTION_MAPPING = new Dictionary<string, string>()
         {
             { "Completed",   "Done" },
             { "Unresolved",   "Won't Do" },
             { "Duplicate",  "Duplicate" },        };
 
-
-        private readonly string SubTaskType = "10003";
-
         private readonly ServiceManagerContainer requestFactory;
-
         private readonly AddWorklogEngine worklogEngine;
         private readonly AddCommentEngine commentEngine;
         private readonly AddAttachmentEngine attachmentEngine;
@@ -46,9 +43,9 @@ namespace JiraTools.Engine
             this.attachmentEngine = attachmentEngineEngine;
         }
 
-        public Issue Execute(CreateIssueInfo issueFields)
+        public Issue Execute(CreateIssueInfo issueFields, JiraConfiguration jiraConfiguration, string attachmentPath)
         {
-            var task = addIssue(issueFields);
+            var task = addIssue(issueFields, jiraConfiguration, attachmentPath);
 
             task.Wait();
 
@@ -57,17 +54,21 @@ namespace JiraTools.Engine
 
         #region Private methods
 
-        private async Task<Issue> addIssue(CreateIssueInfo fieldsInfo)
+        private async Task<Issue> addIssue(CreateIssueInfo fieldsInfo, JiraConfiguration jiraConfiguration, string attachmentPath)
         {
+            IssueTimeTrackingData timeTrackingData = null;
+
+            if (fieldsInfo.Type.Id != jiraConfiguration.UatTypeCode && fieldsInfo.Type.Id != jiraConfiguration.BugTypeCode)
+                timeTrackingData = new IssueTimeTrackingData(
+                    fieldsInfo.OriginalEstimate,
+                    fieldsInfo.RemainingEstimate);
+
             var fields = new CreateIssueFields(fieldsInfo.ProjectKey)
             {
-                TimeTrackingData = new IssueTimeTrackingData(
-                    fieldsInfo.OriginalEstimate,
-                    fieldsInfo.RemainingEstimate),
-                    
+                    TimeTrackingData = timeTrackingData
             };
 
-            if (fieldsInfo.Type.Id == SubTaskType)
+            if (fieldsInfo.Type.Id == jiraConfiguration.SubTaskTypeCode)
                 fields.ParentIssueKey = fieldsInfo.ParentIssueKey;
 
             var newIssue = new Issue(this.requestFactory.Service, fields);
@@ -100,8 +101,8 @@ namespace JiraTools.Engine
             foreach (var c in fieldsInfo.CustomFields)
                 newIssue.CustomFields.Add(c.Name, c.Value);
 
-            foreach (var comp in fieldsInfo.Components)
-                newIssue.Components.Add(comp);
+//            foreach (var comp in fieldsInfo.Components)
+//                newIssue.Components.Add(comp);
 
             newIssue.Assignee = fieldsInfo.Assignee;
 
@@ -111,9 +112,18 @@ namespace JiraTools.Engine
 
             commentEngine.Execute(issue, fieldsInfo.CommentList);
 
-            attachmentEngine.Execute(issue, fieldsInfo.Attachments);
+            attachmentEngine.Execute(issue, fieldsInfo.Attachments, attachmentPath);
+
+            if (fieldsInfo.Resources != null && fieldsInfo.Resources.Count > 0)
+                AddResourcesAsWatchers(issue, fieldsInfo.Resources);
 
             return issue;
+        }
+
+        private static void AddResourcesAsWatchers(Issue issue, List<string> resources)
+        {
+            foreach (var resource in resources)
+                issue.AddWatcherAsync(resource);
         }
 
         private static void SetAffectVersions(CreateIssueInfo fieldsInfo, Issue newIssue)

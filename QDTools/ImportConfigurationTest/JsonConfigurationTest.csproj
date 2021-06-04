@@ -26,7 +26,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Bin\QDTools\JiraConfigurationTest\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,7 +34,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Bin\QDTools\JiraConfigurationTest\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -61,9 +61,21 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AlfrescoTools\AlfrescoTools.csproj">
+      <Project>{48BCEB5B-0243-49F4-84C5-F469E2D2658E}</Project>
+      <Name>AlfrescoTools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeminiToJira\GeminiToJira.csproj">
       <Project>{99561e17-f740-4ae1-a9bd-a30bff1f6649}</Project>
       <Name>GeminiToJira</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeminiTools\GeminiTools.csproj">
+      <Project>{E0C684EB-4D0F-4B6B-985F-F6264BC47C6E}</Project>
+      <Name>GeminiTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JiraTools\JiraTools.csproj">
+      <Project>{D089F776-B54C-4E4C-A1A1-642FFEBC9DA0}</Project>
+      <Name>JiraTools</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

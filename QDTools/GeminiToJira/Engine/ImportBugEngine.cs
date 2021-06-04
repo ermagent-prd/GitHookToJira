@@ -9,6 +9,7 @@ using JiraTools.Parameters;
 using System;
 using Atlassian.Jira;
 using System.IO;
+using GeminiToJira.Parameters.Import;
 
 namespace GeminiToJira.Engine
 {
@@ -38,38 +39,62 @@ namespace GeminiToJira.Engine
 
         }
 
-        public void Execute(string projectCode)
+        public void Execute(GeminiToJiraParameters configurationSetup)
         {
-            var geminiBugIssueList = filterGeminiIssueList(geminiItemsEngine);
-            var bugLogFile = "BugLog_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+            var projectCode = configurationSetup.JiraProjectCode;
 
+            Countersoft.Gemini.Commons.Entity.IssuesFilter filter = GetBugFilter(configurationSetup);
 
+            var bugIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter);
+
+            var geminiBugIssueList = getFiltered(configurationSetup,bugIssueList);
+
+            var bugLogFile = "BugLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+            
             foreach (var geminiIssue in geminiBugIssueList.OrderBy(f => f.Id).ToList())
             {
                 try
                 {
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
-
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(currentIssue, JiraConstants.BugType, projectCode);
-
-                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo);
+            
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode, configurationSetup.Gemini.ErmBugPrefix);
+            
+                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                     SetAndSaveReporter(jiraIssue, geminiIssue);
                 }
                 catch
                 {
-                    File.AppendAllText(JiraConstants.LogDirectory + bugLogFile, geminiIssue.IssueKey + Environment.NewLine);
+                    File.AppendAllText(configurationSetup.LogDirectory + bugLogFile, geminiIssue.IssueKey + Environment.NewLine);
                 }
-
+            
             }
         }
 
-        #region Private 
-        
-
-        private IEnumerable<IssueDto> filterGeminiIssueList(
-            GeminiTools.Items.ItemListGetter geminiItemsEngine)
+        private IEnumerable<IssueDto> getFiltered(GeminiToJiraParameters configurationSetup, IEnumerable<IssueDto> bugIssueList)
         {
-            return geminiItemsEngine.Execute(Filter.GetFilter(FilterType.ERMBUG));
+            if (String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_PRODUCT))
+              return bugIssueList;
+
+            return bugIssueList.Where(i => i.CustomFields[11].FormattedData.Equals(configurationSetup.Filter.BUG_PRODUCT));
+        }
+
+        #region Private 
+
+        private Countersoft.Gemini.Commons.Entity.IssuesFilter GetBugFilter(GeminiToJiraParameters configurationSetup)
+        {
+            return new Countersoft.Gemini.Commons.Entity.IssuesFilter()
+            {
+                IncludeClosed = configurationSetup.Filter.ERMBUG_INCLUDED_CLOSED,
+                Projects = configurationSetup.Filter.ERMBUG_PROJECT_ID,
+            };
+        }
+
+
+        private IEnumerable<IssueDto> GetFilteredGeminiIssueList(
+            GeminiTools.Items.ItemListGetter geminiItemsEngine,
+            Countersoft.Gemini.Commons.Entity.IssuesFilter filter)
+        {
+            return geminiItemsEngine.Execute(filter);
         }
 
         private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue)

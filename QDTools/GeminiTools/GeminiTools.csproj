@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Bin\QDTools\GeminiTools\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -90,6 +90,7 @@
     <Compile Include="Items\ItemGetter.cs" />
     <Compile Include="Items\ItemListGetter.cs" />
     <Compile Include="Items\LinkItem.cs" />
+    <Compile Include="Parameters\GeminiConfiguration.cs" />
     <Compile Include="Parameters\IGeminiToolsParameters.cs" />
     <Compile Include="Projects\ProjectGetter.cs" />
     <Compile Include="Projects\ProjectFinder.cs" />

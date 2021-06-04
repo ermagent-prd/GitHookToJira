@@ -1,0 +1,19 @@
+{
+  "JsqlQuery": "project = RMS5 AND type = Sub-task and ( status = Backlog or status = \"In Progress\") ORDER BY id ASC",
+  "ExcelFileName": "export",
+  "ExcelTemplateFileName": "MaterTemplate",
+  "ReportSheetName": "sheetName",
+  "PivotSheetName": "Pivot1",
+  "ExcelFilePath": "C:\\Users\\lucap\\Desktop\\Sviluppi\\GeminiToJira\\",
+  "ExcelTemplateFilePath": "C:\\Users\\lucap\\Desktop\\Sviluppi\\GeminiToJira\\Template\\",
+  "FieldNames": [
+    "IssueCode",
+    "Summary",
+    "OriginalKey",
+    "Status",
+    "OriginalEstimate",
+    "DueDate",
+    "JDECode",
+    "IssueParentCode"
+  ]
+}

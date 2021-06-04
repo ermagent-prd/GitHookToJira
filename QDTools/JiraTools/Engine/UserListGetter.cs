@@ -13,19 +13,14 @@ namespace JiraTools.Engine
 
         private readonly ServiceManagerContainer requestFactory;
 
-        private readonly IJiraToolsParameters parameters;
-
         #endregion
 
         #region Constructor
 
         public UserListGetter(
-            ServiceManagerContainer requestFactory,
-            IJiraToolsParameters parameters)
+            ServiceManagerContainer requestFactory)
         {
             this.requestFactory = requestFactory;
-
-            this.parameters = parameters;
         }
 
         #endregion
@@ -66,9 +61,22 @@ namespace JiraTools.Engine
         {
             var jira = requestFactory.Service;
 
-            var users = await jira.Users.SearchUsersAsync("%", JiraUserStatus.Active);
+            List<JiraUser> result = new List<JiraUser>();
 
-            return from u in users select u;
+            int startIndex = 0;
+
+            while(true)
+            {
+                var users = await jira.Users.SearchUsersAsync("%", JiraUserStatus.Active, 50, startIndex);
+
+                if (!users.Any())
+                    break;
+
+                result.AddRange(users);
+                startIndex += 50;
+            }
+            
+            return from u in result select u;
         }
 
         public async Task<JiraUser> getMyself()

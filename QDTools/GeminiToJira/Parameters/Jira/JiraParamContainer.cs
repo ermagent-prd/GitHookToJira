@@ -1,6 +1,4 @@
-﻿
-
-using JiraTools.Parameters;
+﻿using JiraTools.Parameters;
 
 namespace GeminiToJira.Parameters
 {
@@ -15,7 +13,5 @@ namespace GeminiToJira.Parameters
         public string IssueApi => JiraConstants.IssueApi;
 
         public int MaxIssuesPerRequest => JiraConstants.MaxIssuesPerRequest;
-
-        public string AttachmentPath => JiraConstants.AttachmentPath;
     }
 }

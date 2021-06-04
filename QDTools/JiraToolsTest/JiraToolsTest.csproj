@@ -25,7 +25,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Bin\QDTools\JiraToolsTest\</OutputPath>
+    <OutputPath>..\..\Bin\QDTools\JiraToolsTest\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,7 +33,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\QDTools\JiraToolsTest\</OutputPath>
+    <OutputPath>..\..\Bin\QDTools\JiraToolsTest\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -91,6 +91,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeminiToJira\GeminiToJira.csproj">
+      <Project>{99561E17-F740-4AE1-A9BD-A30BFF1F6649}</Project>
+      <Name>GeminiToJira</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JiraTools\JiraTools.csproj">
       <Project>{d089f776-b54c-4e4c-a1a1-642ffebc9da0}</Project>
       <Name>JiraTools</Name>

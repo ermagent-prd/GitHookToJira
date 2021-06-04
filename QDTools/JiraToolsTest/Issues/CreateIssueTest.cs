@@ -86,7 +86,9 @@ namespace JiraToolsTest
                 "1d",
                 "Logging worklog test: author paololuca"));
 
-            var issue = engine.Execute(issueInfo);
+            var jira = createJiraConfiguration();
+
+            var issue = engine.Execute(issueInfo, jira, JiraTestConstants.AttachmentPath);
 
 
             //issue.Assignee = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
@@ -99,6 +101,8 @@ namespace JiraToolsTest
 
             Assert.IsNotNull(issue);
         }
+
+        
 
         [TestMethod]
         public void AddSingleIssue_WithSpecificCommentUser()
@@ -142,8 +146,9 @@ namespace JiraToolsTest
                 "1d",
                 "Logging worklog test: author pierluigi"));
 
+            var jira = createJiraConfiguration();
 
-            var issue = engine.Execute(issueInfo);
+            var issue = engine.Execute(issueInfo, jira, JiraTestConstants.AttachmentPath);
             
             issue.Reporter = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             issue.SaveChanges();
@@ -180,7 +185,9 @@ namespace JiraToolsTest
             remoteWrkLog.startDate = DateTime.Now;
             remoteWrkLog.timeSpent = "1d";
 
-            var issue = engine.Execute(issueInfo);
+            var jira = createJiraConfiguration();
+
+            var issue = engine.Execute(issueInfo, jira, JiraTestConstants.AttachmentPath);
 
             issue.Reporter = "70121:c13ce356-ec00-4ffd-b615-a45a86aa99e2";
             issue.SaveChanges();
@@ -198,10 +205,9 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "ER",
-                Summary = "Attachments Test PL attachment (Atlassian SDK)",
+                Summary = "Attachments Test PL attachment refactoring (Atlassian SDK)",
                 Description = "This is a (PL attachment) test " + DateTime.Now.ToString(),
-                Priority = "Medium",
-                Type = "Story",
+                Type = "StoryD",
                 OriginalEstimate = "1w",
                 RemainingEstimate = "1d",
                 DueDate = new DateTime(2021, 12, 31),
@@ -228,11 +234,12 @@ namespace JiraToolsTest
                 "1d",
                 "Logging attachment test"));
 
+            var jira = createJiraConfiguration();
 
-            var issue = engine.Execute(issueInfo);
+            var issue = engine.Execute(issueInfo, jira, JiraTestConstants.AttachmentPath);
 
-            var byteArray = System.IO.File.ReadAllBytes(JiraTestConstants.AttachmentPath + "PD_AKBANK_PD_SML10_BAD20201031.xlsx");
-            var uAttachmentInfo = new UploadAttachmentInfo("PD_AKBANK_PD_SML10_BAD20201031.xlsx", byteArray);
+            var byteArray = System.IO.File.ReadAllBytes(JiraTestConstants.AttachmentPath + "prova.docx");
+            var uAttachmentInfo = new UploadAttachmentInfo("prova.docx.xlsx", byteArray);
             issue.AddAttachment(uAttachmentInfo);
 
             byteArray = System.IO.File.ReadAllBytes(JiraTestConstants.AttachmentPath + "prova.txt");
@@ -254,7 +261,7 @@ namespace JiraToolsTest
             var issueInfo = new CreateIssueInfo
             {
                 ProjectKey = "ER",
-                Summary = "create Test PL UAT (Atlassian SDK)",
+                Summary = "create Test PL with watcher (Atlassian SDK)",
                 Description = "This is a (PL UAT) test " + DateTime.Now.ToString(),
                 Type = "UAT",
                 OriginalEstimate = "1w",
@@ -270,12 +277,35 @@ namespace JiraToolsTest
             comment.Body = "Body Comment";
             issueInfo.CommentList.Add(comment);
 
+            var jira = createJiraConfiguration();
 
-            var issue = engine.Execute(issueInfo);
-
-            
+            var issue = engine.Execute(issueInfo, jira, JiraTestConstants.AttachmentPath);
 
             Assert.IsNotNull(issue);
         }
+
+
+        #region Private
+        private JiraConfiguration createJiraConfiguration()
+        {
+            return new JiraConfiguration()
+            {
+
+                User = "pierluigi.nanni@prometeia.com", //"paolo.luca@prometeia.com";
+                Token = "GOojveJqyGUAgi6mzSAu3FAA", //"1l9yaa74u6wqg4lbhitOE7C7";
+                Url = "https://prometeia-erm.atlassian.net/",
+                IssueApi = "rest/api/3/issue/",
+                MaxIssuesPerRequest = 10, //Max 100 ??
+
+                EpicTypeCode = "10000",
+                StoryTypeCode = "10001",
+                StorySubTaskTypeCode = "10017",
+                TaskTypeCode = "10002",
+                SubTaskTypeCode = "10003",
+                UatTypeCode = "10014",
+                BugTypeCode = "10004",
+            };
         }
+        #endregion
+    }
 }

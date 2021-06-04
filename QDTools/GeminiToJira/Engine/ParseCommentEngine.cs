@@ -1,13 +1,9 @@
-﻿using GeminiToJira.Parameters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
-using System.Net;
-using System.Linq;
 using JiraTools.Model;
 
 namespace GeminiToJira.Engine
@@ -24,10 +20,9 @@ namespace GeminiToJira.Engine
 
         }        
 
-        public string Execute(string comment, string commentPrefix, List<string> descAttachments)
+        public string Execute(string comment, string commentPrefix, List<string> descAttachments, string attachmentPath)
         {
-            comment = SaveAndReferAttachmentImages(comment, commentPrefix, descAttachments);
-
+            comment = SaveAndReferAttachmentImages(comment, commentPrefix, descAttachments, attachmentPath);
             
             var text = Regex.Replace(CleanFromImageTag(comment), HTML_TAG_PATTERN, string.Empty);
 
@@ -67,7 +62,7 @@ namespace GeminiToJira.Engine
         }
 
        
-        private static string SaveAndReferAttachmentImages(string comment, string commentPrefix, List<string> descAttachments)
+        private static string SaveAndReferAttachmentImages(string comment, string commentPrefix, List<string> descAttachments, string attachmentPath)
         {
             HtmlNodeCollection nodes = GetNodes(comment);
             if (nodes != null)
@@ -80,7 +75,7 @@ namespace GeminiToJira.Engine
                     {
                         byte[] imageBytes = Convert.FromBase64String(att.Value.Substring(att.Value.IndexOf(',') + 1));
                         var fileName = commentPrefix + "_CommentAttachedImage" + i + ".png";
-                        File.WriteAllBytes(GeminiConstants.SAVING_PATH + fileName, imageBytes);
+                        File.WriteAllBytes(attachmentPath + fileName, imageBytes);
                         comment = comment.Replace(att.Value, "[^" + fileName + "]\n\n");
 
                         //for image's description only

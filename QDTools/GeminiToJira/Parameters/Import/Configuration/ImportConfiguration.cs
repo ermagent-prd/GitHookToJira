@@ -13,17 +13,18 @@ namespace GeminiToJira.Parameters.Import
     {
         public string JiraProjectCode { get; set; }
         //for developmentImportEngine
-        public List<String> ComponentsforDevelopment { get; set; }
+        public List<String> ComponentsForDevelopment { get; set; }
 
         public FilterConfiguration Filter { get; set; }
 
         public AlfrescoConfiguration Alfresco { get; set; }
         public GeminiConfiguration Gemini { get; set; }
         public JiraConfiguration Jira { get; set; }
+        public MappingConfiguration Mapping { get; set; }
 
         //local path
         public string LogDirectory { get; set; }
-        public string AttachmenDownloadedtPath { get; set; }
+        public string AttachmentDownloadedPath { get; set; }
 
 
         public IGeminiToolsParameters GeminiParameters { get; set; }

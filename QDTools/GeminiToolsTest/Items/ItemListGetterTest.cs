@@ -68,7 +68,9 @@ namespace GeminiToolsTest.Items
                 commentAttach.Entity.ProjectId,
                 commentAttach.Entity.IssueId,
                 commentAttach.Entity.Id,
-                commentAttach.Entity.Name);
+                commentAttach.Entity.Name,
+                GeminiToolsTestConstants.GeminiUrl,
+                GeminiToolsTestConstants.SAVING_PATH);
 
             Assert.IsTrue(File.Exists(GeminiToolsTestConstants.SAVING_PATH + commentAttach.Entity.Name));
         }
@@ -92,7 +94,9 @@ namespace GeminiToolsTest.Items
                     commentAttach.Entity.ProjectId,
                     commentAttach.Entity.IssueId,
                     commentAttach.Entity.Id,
-                    commentAttach.Entity.Name);
+                    commentAttach.Entity.Name,
+                    GeminiToolsTestConstants.GeminiUrl,
+                    GeminiToolsTestConstants.SAVING_PATH);
 
             Assert.IsTrue(File.Exists(GeminiToolsTestConstants.SAVING_PATH + commentAttach.Entity.Name));
         }
@@ -112,7 +116,7 @@ namespace GeminiToolsTest.Items
 
             var changesDoc = issue.CustomFields.FirstOrDefault(c => c.Name == "EDEVChangesDoc");
 
-            attachmentGetter.Save(linkItemEngine.Execute(changesDoc.FormattedData));
+            attachmentGetter.Save(linkItemEngine.Execute(changesDoc.FormattedData), GeminiToolsTestConstants.SAVING_PATH);
             
             Assert.IsTrue(true);
         }
@@ -197,9 +201,6 @@ namespace GeminiToolsTest.Items
                 "ILIAS-STA"
                 //"Other" 
             };
-
-            string DEVELOPMENT_RELEASE_KEY = "Release Version";
-            string DEVELOPMENT_LINE_KEY = "DVL";
 
             var filter = new IssuesFilter
             {
