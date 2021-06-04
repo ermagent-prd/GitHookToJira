@@ -26,7 +26,9 @@ try {
     
         #Write to the file.
         $stream.WriteLine($string)
-    }    
+    } 
+    
+    Write-Host "Output file: $outputFilePath"
 }
 finally {
     $stream.Close()    
