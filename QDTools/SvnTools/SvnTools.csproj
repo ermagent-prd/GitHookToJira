@@ -61,8 +61,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\SvnToolsContainerExtension.cs" />
-    <Compile Include="Engine\GetRevisionPropertiesEngine.cs" />
+    <Compile Include="Engine\RevisionPropertiesEngine.cs" />
+    <Compile Include="Engine\TrackingIssueGetter.cs" />
+    <Compile Include="Model\RevisionProperties.cs" />
     <Compile Include="Parameters\ISvnToolsParameters.cs" />
+    <Compile Include="Parameters\SvnToolsParameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

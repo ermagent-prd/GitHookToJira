@@ -4,14 +4,22 @@ namespace SvnToJira.Parameters
 {
     public class JiraParamContainer : IJiraToolsParameters
     {
-        public string ServerUrl => JiraConstants.JiraUrl;
+        private JiraToolConfiguration parameters;
 
-        public string User => JiraConstants.User;
+        public JiraParamContainer(JiraToolConfiguration parameters)
+        {
+            this.parameters = parameters;
+        }
 
-        public string Token => JiraConstants.Token;
+        public string ServerUrl => parameters.Url;
 
-        public string IssueApi => JiraConstants.IssueApi;
+        public string User => parameters.User;
 
-        public int MaxIssuesPerRequest => JiraConstants.MaxIssuesPerRequest;
+        public string Token => parameters.Token;
+
+        public string IssueApi => parameters.IssueApi;
+
+        public int MaxIssuesPerRequest => parameters.MaxIssuesPerRequest;
+
     }
 }

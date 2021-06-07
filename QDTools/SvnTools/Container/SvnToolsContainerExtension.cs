@@ -1,4 +1,5 @@
-﻿using Unity;
+﻿using SvnTools.Engine;
+using Unity;
 using Unity.Extension;
 
 namespace SvnTools.Container
@@ -17,7 +18,8 @@ namespace SvnTools.Container
 
         protected override void Initialize()
         {
-            Container.RegisterType<GetRevisionPropertiesEngine>();
+            Container.RegisterType<RevisionPropertiesEngine>();
+            Container.RegisterType<TrackingIssueGetter>();
 
 
         }

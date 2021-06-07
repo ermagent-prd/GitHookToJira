@@ -14,7 +14,7 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\QDTools\SvnToJira\Release\</OutputPath>
@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -56,19 +59,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\ContainerFactory.cs" />
-    <Compile Include="Parameters\Jira\JiraConstants.cs" />
+    <Compile Include="Engine\ConfigurationLoader.cs" />
+    <Compile Include="Engine\PropertiesToCommentEngine.cs" />
     <Compile Include="Parameters\Jira\JiraParamContainer.cs" />
+    <Compile Include="Parameters\SvnToJiraParameters.cs" />
+    <Compile Include="Parameters\Svn\SvnParamContainer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="SvnToJira.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JiraTools\JiraTools.csproj">
       <Project>{d089f776-b54c-4e4c-a1a1-642ffebc9da0}</Project>
       <Name>JiraTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SvnTools\SvnTools.csproj">
+      <Project>{f05990c0-a6d7-4f7b-9d1e-e82ebf308973}</Project>
+      <Name>SvnTools</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

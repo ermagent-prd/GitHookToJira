@@ -71,6 +71,7 @@
     <Compile Include="Container\ContainerForTest.cs" />
     <Compile Include="Container\SvnContainer.cs" />
     <Compile Include="Container\SvnContainerFactory.cs" />
+    <Compile Include="Test\TrackingIssueGetterTest.cs" />
     <Compile Include="Test\GetRevisionPropertiesTest.cs" />
     <Compile Include="Parameters\SvnTestConstants.cs" />
     <Compile Include="Parameters\ParamContainer.cs" />

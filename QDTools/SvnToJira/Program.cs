@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JiraTools.Engine;
+using System.IO;
+using Newtonsoft.Json;
 using SvnToJira.Container;
+using SvnToJira.Engine;
+using SvnToJira.Parameters;
 using Unity;
 
 namespace SvnToJira
@@ -13,22 +12,49 @@ namespace SvnToJira
     {
         static void Main(string[] args)
         {
-            var repoPath = args[0];
 
-            var svnCommit = args[1];
 
-            var unityContainer = ContainerFactory.Execute();
+            if (args.Length != 1)
+            {
+                Console.WriteLine("Invalid args");
+                return;
+            }
 
-            var commentEngine = unityContainer.Resolve<AddCommentEngine>();
+            var svnCommit = args[0];
 
-/*
-svn log http://erm-codever-p01.prometeia.lan/svn/ErmasNet/trunk -r 145106
-------------------------------------------------------------------------
-r145106 | gianquintog | 2021-06-04 17:51:08 +0200 (ven, 04 giu 2021) | 1 line
+            var cfgLoader = new ConfigurationLoader();
 
-(I/E): UAT-71593
-------------------------------------------------------------------------
-*/
+            var cfg = cfgLoader.Execute();
+
+            var unityContainer = ContainerFactory.Execute(cfg);
+
+            var engine = unityContainer.Resolve<PropertiesToCommentEngine>();
+
+            engine.Execute(Convert.ToInt32(svnCommit));
+
+        }
+
+        private void CreateJson(IUnityContainer unityContainer)
+        {
+            var obj = new SvnToJiraParameters();
+            obj.JiraParameters = new JiraTools.Parameters.JiraToolConfiguration();
+            obj.SvnParameters = new SvnTools.Parameters.SvnToolsParameters();
+
+            var jiraParameters = unityContainer.Resolve<JiraParamContainer>();
+            var svnParameters = unityContainer.Resolve<SvnParamContainer>();
+
+            obj.JiraParameters.User = jiraParameters.User;
+            obj.JiraParameters.IssueApi = jiraParameters.IssueApi;
+            obj.JiraParameters.Token = jiraParameters.Token;
+            obj.JiraParameters.Url = jiraParameters.ServerUrl;
+            obj.JiraParameters.MaxIssuesPerRequest = jiraParameters.MaxIssuesPerRequest;
+
+            obj.SvnParameters.ServerUrl = svnParameters.ServerUrl;
+            obj.SvnParameters.TrackingIssuePattern = svnParameters.TrackingIssuePattern;
+
+            var json = JsonConvert.SerializeObject(obj);
+
+            File.WriteAllText(@"c:\tmp\movie.json", json);
 
         }
     }

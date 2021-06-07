@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\JiraToolsContainerExtension.cs" />
+    <Compile Include="Engine\PublicAddCommentEngine.cs" />
     <Compile Include="Engine\EditCustomFieldEngine.cs" />
     <Compile Include="Engine\AddAttachmentEngine.cs" />
     <Compile Include="Engine\AddWorklogEngine.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Model\JiraErmIssue.cs" />
     <Compile Include="Model\WorkLogInfo.cs" />
     <Compile Include="Parameters\IJiraToolsParameters.cs" />
+    <Compile Include="Parameters\JiraToolsConfiguration.cs" />
     <Compile Include="Parameters\JiraConfiguration.cs" />
     <Compile Include="Parameters\MappingConfiguration.cs" />
     <Compile Include="Parameters\QuerableType.cs" />

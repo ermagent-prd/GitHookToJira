@@ -13,11 +13,12 @@ namespace SvnToolsTest
         {
             var container = ContainerForTest.DefaultInstance.Value;
 
-            var engine = container.Resolve<GetRevisionPropertiesEngine>();
+            var engine = container.Resolve<RevisionPropertiesEngine>();
 
             int revisionNumber = 5;
 
-            var properties = engine.Execute(revisionNumber);
+            var properties = engine.Execute(
+                revisionNumber);
 
             Assert.IsNotNull(properties);
         }
