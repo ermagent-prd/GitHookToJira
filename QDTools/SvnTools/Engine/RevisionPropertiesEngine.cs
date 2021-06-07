@@ -68,6 +68,7 @@ namespace SvnTools
                     log,
                     date,
                     author,
+                    svnRepoPath,
                     trackingInfo);
             }
         }

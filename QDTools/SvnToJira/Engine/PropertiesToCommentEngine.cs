@@ -38,10 +38,11 @@ namespace SvnToJira.Engine
             if (properties.TrackingIssues == null || !properties.TrackingIssues.Any())
                 return;
 
-            string body = string.Format("Commit {0} from {1}: {2}",
+            string body = string.Format("SVN Commit \n Revision {0} from {1}: \n {2} Repository: {3}",
                 properties.Revision.ToString(),
                 properties.Author,
-                properties.Log);
+                properties.Log,
+                properties.Repo);
 
             foreach(var issue in properties.TrackingIssues)
             {

@@ -16,18 +16,27 @@ namespace SvnTools.Model
 
         public String Author { get; }
 
+        public string Repo { get; }
+
         public IEnumerable<String> TrackingIssues { get; }
 
         #endregion
 
         #region Constructor
 
-        public RevisionProperties(int revision, string log, string date, string author, IEnumerable<String> trackingIssues)
+        public RevisionProperties(
+            int revision, 
+            string log, 
+            string date, 
+            string author, 
+            string repo,
+            IEnumerable<String> trackingIssues)
         {
             this.Revision = revision;
             Log = log;
             Date = date;
             Author = author;
+            this.Repo = repo;
             this.TrackingIssues = trackingIssues;
         }
 
