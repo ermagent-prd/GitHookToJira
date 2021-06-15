@@ -14,16 +14,6 @@ namespace JiraTools.Parameters
 
         public int MaxIssuesPerRequest { get; set; }
 
-
-        /// <summary>
-        /// "EpicTypeCode": "10000",
-        /// "StoryTypeCode": "10001",
-        /// "StorySubTaskTypeCode": "10017",
-        /// "TaskTypeCode": "10002",
-        /// "SubTaskTypeCode": "10003",
-        /// "UatTypeCode": "10014",
-        /// "BugTypeCode": "10004"
-        /// </summary>
         public bool ImportStory { get; set; }
         public bool ImportTask { get; set; }
         public bool ImportUat { get; set; }
@@ -35,6 +25,8 @@ namespace JiraTools.Parameters
         public string SubTaskTypeCode { get; set; }
         public string UatTypeCode { get; set; }
         public string BugTypeCode { get; set; }
-        
+
+        public string DefaultAccount { get; set; }
+
     }
 }

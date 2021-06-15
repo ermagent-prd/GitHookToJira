@@ -63,7 +63,7 @@ namespace GeminiToJira.Mapper
             //Assignee
             var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
             if (owner != null && owner.FormattedData != "")
-                jiraIssue.Assignee = accountEngine.Execute(owner.FormattedData).AccountId;
+                jiraIssue.Assignee = accountEngine.Execute(owner.FormattedData, configurationSetup.Jira.DefaultAccount).AccountId;
 
             //Load all issue's attachment
             jiraIssue.Attachments = descAttachments;
@@ -114,7 +114,7 @@ namespace GeminiToJira.Mapper
                     jiraIssue.RemainingEstimate = "0m";
 
                 //worklog: only for sybtask issues
-                jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
+                jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries, configurationSetup.Jira.DefaultAccount);
             }
         }
 

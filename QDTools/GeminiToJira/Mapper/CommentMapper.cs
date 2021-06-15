@@ -37,7 +37,7 @@ namespace GeminiToJira.Mapper
                 var comment = geminiIssue.Comments[i];
 
                 var commentPrefix = "Comment_" + i;
-                jiraIssue.CommentList.Add(CreateComment(comment.Entity, comment.Attachments, commentPrefix, configurationSetup.AttachmentDownloadedPath));
+                jiraIssue.CommentList.Add(CreateComment(comment.Entity, comment.Attachments, commentPrefix, configurationSetup.AttachmentDownloadedPath,configurationSetup.Jira.DefaultAccount));
                 parseCommentEngine.Execute(jiraIssue, comment.Entity.Comment, commentPrefix);
 
                 //Load Comment's attached files
@@ -45,12 +45,12 @@ namespace GeminiToJira.Mapper
             }
         }
 
-        private Comment CreateComment(IssueComment geminiComment, List<IssueAttachmentDto> attachments, string commentPrefix, string attachmentPath)
+        private Comment CreateComment(IssueComment geminiComment, List<IssueAttachmentDto> attachments, string commentPrefix, string attachmentPath,string accountDefault)
         {
             //linka al commento il file allegato nella issue originale
             string commentAttachment = GetAttachmentBody(attachments);
 
-            var author = accountEngine.Execute(geminiComment.Fullname);
+            var author = accountEngine.Execute(geminiComment.Fullname, accountDefault);
             var body = "[~accountId:" + author.AccountId + "]\n" + commentAttachment + parseCommentEngine.Execute(geminiComment.Comment, commentPrefix, null, attachmentPath);
 
             var remoteComment = new RemoteComment();

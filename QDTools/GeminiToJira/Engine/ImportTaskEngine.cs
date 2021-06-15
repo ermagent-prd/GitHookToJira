@@ -135,7 +135,7 @@ namespace GeminiToJira.Engine
                 jiraSavedDictionary.Add(geminiIssue.Id, jiraIssue);
 
             //save reporter
-            SetAndSaveReporter(jiraIssue, geminiIssue);
+            SetAndSaveReporter(jiraIssue, geminiIssue, configurationSetup.Jira.DefaultAccount);
             return jiraIssue;
         }
 
@@ -159,7 +159,7 @@ namespace GeminiToJira.Engine
                 if (!jiraSavedDictionary.TryGetValue(currentSubIssue.Id, out Issue existing))
                     jiraSavedDictionary.Add(currentSubIssue.Id, subIssue);
 
-                SetAndSaveReporter(subIssue, currentSubIssue);
+                SetAndSaveReporter(subIssue, currentSubIssue, configurationSetup.Jira.DefaultAccount);
             }
         }
 
@@ -213,11 +213,11 @@ namespace GeminiToJira.Engine
             };
         }
 
-        private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue)
+        private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue, string defaultAccount)
         {
             if (geminiIssue.Reporter != "")
             {
-                jiraIssue.Reporter = accountEngine.Execute(geminiIssue.Reporter).AccountId;
+                jiraIssue.Reporter = accountEngine.Execute(geminiIssue.Reporter, defaultAccount).AccountId;
                 jiraIssue.SaveChanges();
             }
         }

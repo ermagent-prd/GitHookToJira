@@ -25,13 +25,16 @@ namespace GeminiToJira.Engine
             return userListDictionary.Value;
         }
 
-        public JiraUser Execute(string fullname)
+        public JiraUser Execute(string fullname, string defaultAccountname)
         {
             JiraUser userAccount;
             if (userListDictionary.Value.TryGetValue(fullname, out userAccount))
                 return userAccount;
-            else
-                return userListDictionary.Value.First().Value;    //TODO è il deafault, da eliminare
+
+            if (userListDictionary.Value.TryGetValue(defaultAccountname, out userAccount))
+                return userAccount;
+
+            return null;
         }
 
 

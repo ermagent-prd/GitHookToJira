@@ -15,7 +15,7 @@ namespace GeminiToJira
         {
             var unityContainer = ContainerFactory.Execute();
 
-            var cfgKey = ImportCfgType.ERMPAT;
+            var cfgKey = ImportCfgType.ILIASBSM;
             GeminiToJiraParameters configurationSetup = Readconfiguration(cfgKey);
 
             Stopwatch timer = new Stopwatch();

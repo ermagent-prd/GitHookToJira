@@ -21,13 +21,13 @@ namespace GeminiToJira.Engine
             this.parseCommentEngine = parseCommentEngine;
         }
 
-        public List<WorkLogInfo> Execute(List<IssueTimeTrackingDto> timeEntries)
+        public List<WorkLogInfo> Execute(List<IssueTimeTrackingDto> timeEntries,string defaultAccountname)
         {
             List<WorkLogInfo> result = new List<WorkLogInfo>();
 
             foreach (var timeEntry in timeEntries)
             {
-                var author = accountEngine.Execute(timeEntry.Fullname);
+                var author = accountEngine.Execute(timeEntry.Fullname,defaultAccountname);
                 var comment = "[~accountId:" + author.AccountId + "]\n" + parseCommentEngine.Execute(timeEntry.Entity.Comment);
                 var timeSpent = timeEntry.Entity.Hours + "h " + timeEntry.Entity.Minutes + "m";
 

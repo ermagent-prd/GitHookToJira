@@ -31,6 +31,11 @@ namespace GeminiToJira.Parameters.Import
         /// <summary>
         /// PAT System
         /// </summary>
-        ERMPAT = 4
+        ERMPAT = 4,
+
+        /// <summary>
+        /// Ermas5 ILIAS-BSM
+        /// </summary>
+        ILIASBSM = 5
     }
 }

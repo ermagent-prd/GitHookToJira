@@ -65,7 +65,9 @@ namespace GeminiToJira.Engine
 
             var storyLogFile = "DevelopmentLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
-            foreach (var geminiIssue in geminiDevelopmentIssueList.Where(l => l.Type == "Development").OrderBy(f => f.Id).ToList())
+            var filteredDevelopments = geminiDevelopmentIssueList.Where(l => l.Type == "Development" && l.IssueKey == "ERM-62754").OrderBy(f => f.Id).ToList();
+
+            foreach (var geminiIssue in filteredDevelopments)
             {
                 try
                 {
@@ -82,11 +84,20 @@ namespace GeminiToJira.Engine
                     //Story-SubTask
                     foreach (var sub in hierarchy)
                     {
-                        if (sub.Value.Type == "Task")
+                        if (sub.Value.Type == "Task" )
                         {
+                            //Esclude figli di development (i dev sono censiti come story non in dipendenza
+                            if (sub.Value.ParentIssueId.HasValue && sub.Value.ParentIssueId.Value != currentIssue.Id)
+                            {
+                                var subParentIssue = geminiItemsEngine.Execute(sub.Value.ParentIssueId.Value);
+
+                                if (subParentIssue.Type == "Development")
+                                    continue;
+                            }
+
                             var currentSubIssue = geminiItemsEngine.Execute(sub.Value.Id);
 
-                            SaveAndSetStorySubTask(configurationSetup, jiraIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder);
+                            SaveAndSetStorySubTask(configurationSetup, jiraIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder,checkRelease:false);
                         }
                     }
                 }
@@ -117,7 +128,7 @@ namespace GeminiToJira.Engine
                             storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
                           
                             //and become a subtask of myself
-                            SaveAndSetStorySubTask(configurationSetup, jiraIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder);
+                            SaveAndSetStorySubTask(configurationSetup, jiraIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder,checkRelease:true);
 
                         }
                         else
@@ -129,7 +140,7 @@ namespace GeminiToJira.Engine
                             {
                                 storyFolderDictionary.TryGetValue(jiraFatherIssue.JiraIdentifier, out string storyFolder);
 
-                                SaveAndSetStorySubTask(configurationSetup, jiraFatherIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder);
+                                SaveAndSetStorySubTask(configurationSetup, jiraFatherIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder, checkRelease: true);
                             }
                         }
                     }
@@ -157,7 +168,7 @@ namespace GeminiToJira.Engine
                 jiraSavedDictionary.Add(geminiIssue.Id, jiraIssue);
 
             //save reporter
-            SetAndSaveReporter(jiraIssue, geminiIssue);
+            SetAndSaveReporter(jiraIssue, geminiIssue, configurationSetup.Jira.DefaultAccount);
             return jiraIssue;
         }
 
@@ -167,24 +178,24 @@ namespace GeminiToJira.Engine
             IssueDto currentSubIssue,
             Dictionary<int, Issue> jiraSavedDictionary,
             string storySubTaskType,
-            string rooStoryFolder)
+            string rooStoryFolder,
+            bool checkRelease)
         {
-            if (CheckIfValidItem(currentSubIssue, configurationSetup))
-            {
-                var jiraStorySubTaskInfo = geminiToJiraMapper.Execute(configurationSetup, currentSubIssue, storySubTaskType, configurationSetup.JiraProjectCode);
+            if (checkRelease && !CheckIfValidItem(currentSubIssue, configurationSetup))
+                return;
 
-                jiraStorySubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
+            var jiraStorySubTaskInfo = geminiToJiraMapper.Execute(configurationSetup, currentSubIssue, storySubTaskType, configurationSetup.JiraProjectCode);
 
-                //create subtask
-                var subIssue = jiraSaveEngine.Execute(jiraStorySubTaskInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
-                //and set as saved
-                if (!jiraSavedDictionary.TryGetValue(currentSubIssue.Id, out Issue existing))
-                    jiraSavedDictionary.Add(currentSubIssue.Id, subIssue);
+            jiraStorySubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
 
-                SetAndSaveReporter(subIssue, currentSubIssue);
-                SetAndSaveAlfrescoUrls(jiraStorySubTaskInfo, subIssue, rooStoryFolder, configurationSetup);
+            //create subtask
+            var subIssue = jiraSaveEngine.Execute(jiraStorySubTaskInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
+            //and set as saved
+            if (!jiraSavedDictionary.TryGetValue(currentSubIssue.Id, out Issue existing))
+                jiraSavedDictionary.Add(currentSubIssue.Id, subIssue);
 
-            }
+            SetAndSaveReporter(subIssue, currentSubIssue,configurationSetup.Jira.DefaultAccount);
+            SetAndSaveAlfrescoUrls(jiraStorySubTaskInfo, subIssue, rooStoryFolder, configurationSetup);
         }
 
         /// <summary>
@@ -195,15 +206,16 @@ namespace GeminiToJira.Engine
         private bool CheckIfValidItem(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
             var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Filter.STORY_RELEASE_KEY);
-            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Filter.STORY_LINE_KEY);
 
-            if (release != null && devLine != null &&
-                configurationSetup.Filter.STORY_RELEASES.Contains(release.FormattedData) &&
-                configurationSetup.Filter.STORY_LINES.Contains(devLine.FormattedData))
-                return true;
-            else
+            if (release == null || string.IsNullOrWhiteSpace(release.FormattedData) || !configurationSetup.Filter.STORY_RELEASES.Contains(release.FormattedData))
                 return false;
 
+            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Filter.STORY_LINE_KEY);
+
+            if (devLine == null && string.IsNullOrWhiteSpace(devLine.FormattedData) || !configurationSetup.Filter.STORY_LINES.Contains(devLine.FormattedData))
+                return false;
+
+            return true;
         }
 
         private IEnumerable<IssueDto> GetFilteredGeminiIssueList(
@@ -234,11 +246,11 @@ namespace GeminiToJira.Engine
             };
         }
 
-        private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue)
+        private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue,string accountdefault)
         {
             if (geminiIssue.Reporter != "")
             {
-                jiraIssue.Reporter = accountEngine.Execute(geminiIssue.Reporter).AccountId;
+                jiraIssue.Reporter = accountEngine.Execute(geminiIssue.Reporter, accountdefault).AccountId;
                 jiraIssue.SaveChanges();
             }
         }

@@ -114,6 +114,7 @@
     <EmbeddedResource Include="Parameters\Import\CfgFiles\SSSP.json" />
     <EmbeddedResource Include="Parameters\Import\CfgFiles\RMS5.json" />
     <EmbeddedResource Include="Parameters\Import\CfgFiles\ERMPAT.json" />
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\ILIAS-BSM.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AlfrescoTools\AlfrescoTools.csproj">

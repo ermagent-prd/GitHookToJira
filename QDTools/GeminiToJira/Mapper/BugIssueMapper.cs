@@ -58,7 +58,7 @@ namespace GeminiToJira.Mapper
             //Assignee
             var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
             if (owner != null && owner.FormattedData != "")
-                jiraIssue.Assignee = accountEngine.Execute(owner.FormattedData).AccountId;
+                jiraIssue.Assignee = accountEngine.Execute(owner.FormattedData,configurationSetup.Jira.DefaultAccount).AccountId;
 
             //Load all issue's attachment
             jiraIssue.Attachments = descAttachments;
@@ -74,23 +74,23 @@ namespace GeminiToJira.Mapper
             SetRelatedDevelopment(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix, configurationSetup.Mapping);
 
             //worklog
-            jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries);
+            jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries,configurationSetup.Jira.DefaultAccount);
 
-            SetResources(jiraIssue, geminiIssue);
+            SetResources(jiraIssue, geminiIssue, configurationSetup.Jira.DefaultAccount);
 
             return jiraIssue;
         }
 
         #region Private        
 
-        private void SetResources(CreateIssueInfo jiraIssue, IssueDto geminiIssue)
+        private void SetResources(CreateIssueInfo jiraIssue, IssueDto geminiIssue,string defaultAccount)
         {
             if (geminiIssue.Resources != null && geminiIssue.Resources.Count > 0)
             {
                 jiraIssue.Resources = new List<string>();
 
                 foreach (var resource in geminiIssue.Resources)
-                    jiraIssue.Resources.Add(accountEngine.Execute(resource.User.Fullname).AccountId);
+                    jiraIssue.Resources.Add(accountEngine.Execute(resource.User.Fullname, defaultAccount).AccountId);
             }
         }
 

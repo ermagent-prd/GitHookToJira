@@ -60,7 +60,7 @@ namespace GeminiToJira.Engine
                     var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode, configurationSetup.Gemini.ErmBugPrefix);
             
                     var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
-                    SetAndSaveReporter(jiraIssue, geminiIssue);
+                    SetAndSaveReporter(jiraIssue, geminiIssue,configurationSetup.Jira.DefaultAccount);
                 }
                 catch
                 {
@@ -97,11 +97,11 @@ namespace GeminiToJira.Engine
             return geminiItemsEngine.Execute(filter);
         }
 
-        private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue)
+        private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue,string defaultAccount)
         {
             if (geminiIssue.Reporter != "")
             {
-                jiraIssue.Reporter = accountEngine.Execute(geminiIssue.Reporter).AccountId;
+                jiraIssue.Reporter = accountEngine.Execute(geminiIssue.Reporter, defaultAccount).AccountId;
                 jiraIssue.SaveChanges();
             }
         }
