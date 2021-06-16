@@ -7,6 +7,7 @@ using GeminiTools.Parameters;
 using GeminiToolsTest.Container;
 using GeminiToolsTest.Parameters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -64,7 +65,7 @@ namespace GeminiToolsTest.Items
 
             var attachmentGetter = container.Resolve<AttachmentGetter>();
 
-            attachmentGetter.Save(
+            attachmentGetter.FileDownload(
                 commentAttach.Entity.ProjectId,
                 commentAttach.Entity.IssueId,
                 commentAttach.Entity.Id,
@@ -90,7 +91,7 @@ namespace GeminiToolsTest.Items
             var attachmentGetter = container.Resolve<AttachmentGetter>();
 
             if (commentAttach != null)
-                attachmentGetter.Save(
+                attachmentGetter.FileDownload(
                     commentAttach.Entity.ProjectId,
                     commentAttach.Entity.IssueId,
                     commentAttach.Entity.Id,
@@ -104,7 +105,7 @@ namespace GeminiToolsTest.Items
         //59844
         [TestMethod]
         public void Execute_LoadAnalysisDocumentUrl()
-        { 
+        {
             var container = ContainerForTest.DefaultInstance.Value;
 
             var getter = container.Resolve<ItemGetter>();
@@ -117,7 +118,7 @@ namespace GeminiToolsTest.Items
             var changesDoc = issue.CustomFields.FirstOrDefault(c => c.Name == "EDEVChangesDoc");
 
             attachmentGetter.Save(linkItemEngine.Execute(changesDoc.FormattedData), GeminiToolsTestConstants.SAVING_PATH);
-            
+
             Assert.IsTrue(true);
         }
 
@@ -168,7 +169,7 @@ namespace GeminiToolsTest.Items
                 var release = l.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_RELEASE_KEY);
                 var devLine = l.CustomFields.FirstOrDefault(x => x.Name == DEVELOPMENT_LINE_KEY);
 
-                if (release != null && devLine != null && 
+                if (release != null && devLine != null &&
                     DEVELOPMENT_RELEASES.Contains(release.FormattedData) &&
                     DEVELOPMENT_LINES.Contains(devLine.FormattedData))
                     filteredList.Add(l);
@@ -181,32 +182,16 @@ namespace GeminiToolsTest.Items
         [TestMethod]
         public void Execute_LoadUatIssue()
         {
-            string DEVELOPMENT_PROJECT_ID = "37";
-            string DEVELOPMENT_TYPES = "|Developer|Task|";
-            List<string> DEVELOPMENT_RELEASES = new List<string> {
-                "ERMAS",
-                "ERMAS 5.24.0",
-                "ERMAS 5.24.1",
-                "ERMAS 5.25.0",
-                "ERMAS 5.26.0",
-                "ERMAS 5.27.0",
-                "ERMAS 5.28.0",
-                "ERMAS 5.29.0",
-                "0.0.0.0"
-            };
+            string UAT_PROJECT_ID = "|37|";
 
-            List<string> DEVELOPMENT_LINES = new List<string> {
-                //"BSM",
-                //"ILIAS",
-                "ILIAS-STA"
-                //"Other" 
-            };
+            string dateFormat = "yyyy/MM/dd";
 
             var filter = new IssuesFilter
             {
                 IncludeClosed = true,
-                Projects = DEVELOPMENT_PROJECT_ID,
-                Types = DEVELOPMENT_TYPES,
+                Projects = UAT_PROJECT_ID,
+                CreatedAfter = DateTime.Today.AddDays(-7).ToString(dateFormat)
+                //CreatedBefore = DateTime.Today.ToString(dateFormat)
             };
 
             var container = GeminiContainerFactory.Execute();
@@ -219,6 +204,5 @@ namespace GeminiToolsTest.Items
 
         }
 
-
     }
-}
+    }

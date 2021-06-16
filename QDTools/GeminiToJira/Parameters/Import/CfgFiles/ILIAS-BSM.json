@@ -32,7 +32,7 @@
     "TASK_LINE_KEY": "DVL",
     "TASK_INCLUDED_CLOSED": true,
     "UAT_PROJECT_ID": "|37|",
-    "UAT_CREATED_FROM": "27/08/2020",
+    "UAT_CREATED_FROM": "09/06/2021",
     "UAT_GROUP_DEPENDENCIES": true,
     "UAT_INCLUDED_CLOSED": true,
     "UAT_FUNCTIONALITY": [
@@ -62,9 +62,9 @@
     "Url": "https://prometeia-erm.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
-    "ImportStory": true,
+    "ImportStory": false,
     "ImportTask": false,
-    "ImportUat": false,
+    "ImportUat": true,
     "ImportBug": false,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
@@ -149,6 +149,7 @@
       "dal": "Functional"
     },
     "UAT_CATEGORY_MAPPING_DEFAULT": "Functional",
+    "UAT_SEVERITY_MAPPING_DEFAULT": "Minor",
     "UAT_TYPE_MAPPING": {
       "defect": "Defect",
       "investigation": "Investigation",
@@ -215,8 +216,8 @@
     },
     "BUG_SUGGESTED_ACTION_TYPE_DEFAULT": "Other"
   },
-  "LogDirectory": "C:\\GeminiPorting\\Log\\",
-  "AttachmentDownloadedPath": "C:\\GeminiPorting\\AttachmentDownloaded\\",
+  "LogDirectory": "C:\\TMP\\FromGeminiImport\\Log\\",
+  "AttachmentDownloadedPath": "C:\\TMP\\FromGeminiImport\\AttachmentDownloaded\\",
   "GeminiParameters": null,
   "JiraParameters": null,
   "AlfrescoParameter": null

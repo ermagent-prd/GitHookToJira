@@ -42,7 +42,7 @@ namespace GeminiTools.Items
             {
                 if (!AttachementToExlude.Contains(attachment.Entity.Name))
                 {
-                    Save(
+                    FileDownload(
                         attachment.Entity.ProjectId,
                         attachment.Entity.IssueId,
                         attachment.Entity.Id,
@@ -55,7 +55,7 @@ namespace GeminiTools.Items
             }
         }
 
-        public bool Save(int projectId, int issueId, int attachmentId, string attachmentName, string projectUrl, string attachmentPath)
+        public bool FileDownload(int projectId, int issueId, int attachmentId, string attachmentName, string projectUrl, string attachmentPath)
         {
             try
             {

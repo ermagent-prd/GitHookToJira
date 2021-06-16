@@ -33,6 +33,9 @@ namespace JiraTools.Parameters
         public Dictionary<string, string> UAT_SEVERITY_MAPPING { get; set; }
         public Dictionary<string, string> UAT_CATEGORY_MAPPING { get; set; }
         public string UAT_CATEGORY_MAPPING_DEFAULT { get; set; }
+
+        public string UAT_SEVERITY_MAPPING_DEFAULT { get; set; }
+
         public Dictionary<string, string> UAT_TYPE_MAPPING { get; set; }
         public Dictionary<string, string> BUG_STATUS_MAPPING { get; set; }
         public Dictionary<string, string> BUG_PRIORITY_MAPPING { get; set; }

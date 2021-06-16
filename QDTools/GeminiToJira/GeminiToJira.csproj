@@ -75,6 +75,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\ContainerFactory.cs" />
+    <Compile Include="Engine\FilteredGeminiIssueListGetter.cs" />
+    <Compile Include="Engine\GeminiIssueChecker.cs" />
     <Compile Include="Engine\ImportBugEngine.cs" />
     <Compile Include="Engine\ImportTaskEngine.cs" />
     <Compile Include="Engine\ImportUatEngine.cs" />

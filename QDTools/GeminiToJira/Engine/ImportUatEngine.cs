@@ -36,7 +36,6 @@ namespace GeminiToJira.Engine
             this.jiraSaveEngine = jiraSaveEngine;
             this.accountEngine = accountEngine;
             this.linkEngine = linkEngine;
-
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -47,68 +46,98 @@ namespace GeminiToJira.Engine
 
             //for debug only
             var uatImportedFile = "UatImported_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
-            File.AppendAllText(configurationSetup.LogDirectory + uatImportedFile, "IssueKey" + ";" + "Title" + ";" + "CreatedTime" +";" + "Status" + Environment.NewLine);
+            File.AppendAllText(configurationSetup.LogDirectory + uatImportedFile, "IssueKey" + ";" + "Title" + ";" + "CreatedTime" + ";" + "Status" + Environment.NewLine);
 
             Countersoft.Gemini.Commons.Entity.IssuesFilter filter = GetUatFilter(configurationSetup);
             List<String> functionalityList = configurationSetup.Filter.UAT_FUNCTIONALITY;
-                        
+
             //initial date from when we start the import
             var dateFrom = Convert.ToDateTime(configurationSetup.Filter.UAT_CREATED_FROM);
-            //date until we make the import from dateFrom
-            DateTime dateTo = DateTime.Now;
+            int daysInterval = 1;
+            var dateTo = dateFrom.AddDays(daysInterval);
 
             //filtro in base a related development/release !!!
 
-            while (dateFrom <= dateTo)
-            {
-                filter.CreatedAfter = dateFrom.ToString("MM/dd/yyyy");
-                filter.CreatedBefore = dateFrom.ToString("MM/dd/yyyy");
+            string dateFormat = "yyyy/MM/dd";
+
+            while (dateFrom <= DateTime.Now)
+            { 
+
+                filter.CreatedAfter = dateFrom.AddDays(-1).ToString(dateFormat);
+                filter.CreatedBefore = dateTo.ToString(dateFormat);
 
                 var geminiUatIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter, functionalityList);
+
+                var lastFilteredIssues = geminiUatIssueList.Where(uat => uat.IssueKey == "UAT-71049");
 
                 foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.CreatedTime).ThenBy(f => f.Id).ToList())
                 {
                     //for debug only
-                    File.AppendAllText(configurationSetup.LogDirectory + uatImportedFile, 
-                        geminiIssue.IssueKey + ";" + 
-                        geminiIssue.Title + ";" + 
-                        geminiIssue.CreatedTime + ";" + 
-                        geminiIssue.Status + 
+                    File.AppendAllText(configurationSetup.LogDirectory + uatImportedFile,
+                        geminiIssue.IssueKey + ";" +
+                        geminiIssue.Title + ";" +
+                        geminiIssue.CreatedTime + ";" +
+                        geminiIssue.Status +
                         Environment.NewLine);
 
                     try
                     {
+
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
-                    
-                        var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode, configurationSetup.Gemini.UatPrefix);
-                    
-                        var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
+
+                        var jiraIssueInfo = geminiToJiraMapper.Execute(
+                            configurationSetup,
+                            currentIssue,
+                            configurationSetup.Jira.BugTypeCode,
+                            projectCode,
+                            configurationSetup.Gemini.UatPrefix);
+
+                        if (string.IsNullOrWhiteSpace(jiraIssueInfo.RelatedDevelopment))
+                            continue;
+
+                        Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo, projectCode);
+
+                        if (relatedDev == null)
+                            continue;
+
+                        if (!relatedDev.FixVersions.Select(f => f.Name).Intersect(configurationSetup.Filter.STORY_RELEASES).Any())
+                            continue;
+
+                        foreach (var v in relatedDev.FixVersions)
+                            configurationSetup.Filter.STORY_RELEASES.Contains(v.Name);
+
+                        var jiraIssue = jiraSaveEngine.Execute(
+                            jiraIssueInfo,
+                            configurationSetup.Jira,
+                            configurationSetup.AttachmentDownloadedPath);
+
                         SetAndSaveReporter(jiraIssue, geminiIssue, configurationSetup.Jira.DefaultAccount);
-                    
-                        if (jiraIssueInfo.RelatedDevelopment != null && jiraIssueInfo.RelatedDevelopment != "")
-                        {
-                            Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo, projectCode);
-                    
-                            if (relatedDev != null)
-                            {
-                                linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
-                    
-                                foreach (var c in relatedDev.Components)
-                                    jiraIssue.Components.Add(c);
-                    
-                                foreach (var v in relatedDev.FixVersions)
-                                    jiraIssue.FixVersions.Add(v);
-                    
-                                jiraIssue.SaveChanges();
-                            }
-                        }
+
+
+                        //Add Link to development
+
+                        linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
+
+                        foreach (var c in relatedDev.Components)
+                            jiraIssue.Components.Add(c);
+
+                        foreach (var v in relatedDev.FixVersions)
+                            jiraIssue.FixVersions.Add(v);
+
+                        jiraIssue.SaveChanges();
+
                     }
                     catch
                     {
                         File.AppendAllText(configurationSetup.LogDirectory + uatLogFile, geminiIssue.IssueKey + Environment.NewLine);
                     }
                 }
-                dateFrom = dateFrom.AddDays(1);
+
+                if (dateTo > DateTime.Now)
+                    break;
+
+                dateFrom = dateTo;
+                dateTo = dateTo.AddDays(daysInterval);
             }
         }
 

@@ -34,6 +34,7 @@ namespace GeminiToJira.Mapper
             this.timeLogEngine = timeLogEngine;
         }
 
+        #region Public methods
 
         public CreateIssueInfo Execute(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, string projectCode, string ermPrefix)
         {
@@ -41,7 +42,7 @@ namespace GeminiToJira.Mapper
 
             var jiraIssue = new CreateIssueInfo
             {
-                ProjectKey = projectCode,   
+                ProjectKey = projectCode,
                 Summary = geminiIssue.Title.TrimEnd() == "" ? geminiIssue.IssueKey : geminiIssue.Title.TrimEnd(), //for bug without title
                 Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments, configurationSetup.AttachmentDownloadedPath),
                 Type = type,
@@ -58,28 +59,43 @@ namespace GeminiToJira.Mapper
             //Assignee
             var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
             if (owner != null && owner.FormattedData != "")
-                jiraIssue.Assignee = accountEngine.Execute(owner.FormattedData,configurationSetup.Jira.DefaultAccount).AccountId;
+                jiraIssue.Assignee = accountEngine.Execute(owner.FormattedData, configurationSetup.Jira.DefaultAccount).AccountId;
 
             //Load all issue's attachment
             jiraIssue.Attachments = descAttachments;
             attachmentGetter.Execute(jiraIssue, geminiIssue.Attachments, configurationSetup.Gemini.ProjectUrl, configurationSetup.AttachmentDownloadedPath);
-            
+
             //Load and map all gemini comments
             commentMapper.Execute(configurationSetup, jiraIssue, geminiIssue);
-            
+
             //Load custom fields
             LoadCustomFields(jiraIssue, geminiIssue, ermPrefix, configurationSetup);
-            
+
             //For components use
             SetRelatedDevelopment(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix, configurationSetup.Mapping);
 
             //worklog
-            jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries,configurationSetup.Jira.DefaultAccount);
+            jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries, configurationSetup.Jira.DefaultAccount);
 
             SetResources(jiraIssue, geminiIssue, configurationSetup.Jira.DefaultAccount);
 
             return jiraIssue;
         }
+
+        public string GetGeminiRelatedDevelopmentKey(IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
+        {
+            //Related Development Build
+            var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.BUG_PROJECT_MODULE);
+
+            if (relatedDev != null)
+                return ermPrefix + relatedDev.Entity.Data;
+
+            return null;
+        }
+
+        #endregion
+
+
 
         #region Private        
 
@@ -97,7 +113,8 @@ namespace GeminiToJira.Mapper
         private void SetRelatedDevelopment(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
         {
             //Related Development Build
-            var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.BUG_PROJECT_MODULE);
+            var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.RELATED_DEVELOPMENT_LABEL);
+
             if (relatedDev != null)
             {
                 jiraIssue.RelatedDevelopment = relatedDev.FormattedData;
@@ -122,10 +139,14 @@ namespace GeminiToJira.Mapper
             if (bugType != null && bugType.FormattedData != "" && mapping.BUG_TYPE_MAPPING.TryGetValue(bugType.FormattedData, out jiraBugType))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Type", jiraBugType));
 
-            //Bug Severity
-            if (!string.IsNullOrWhiteSpace(geminiIssue.Severity))
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Severity", ParseSeverity(geminiIssue)));
 
+            //Bug Severity
+            string severityValue = string.IsNullOrWhiteSpace(geminiIssue.Severity) ?
+                configurationSetup.Mapping.UAT_SEVERITY_MAPPING_DEFAULT :
+                ParseSeverity(geminiIssue);
+
+            if (mapping.UAT_SEVERITY_MAPPING.TryGetValue(severityValue.ToLower(), out string mappedSeverity))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Severity", mappedSeverity));
 
 
             //Fixing Date
