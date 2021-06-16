@@ -68,8 +68,6 @@ namespace GeminiToJira.Engine
 
                 var geminiUatIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter, functionalityList);
 
-                var lastFilteredIssues = geminiUatIssueList.Where(uat => uat.IssueKey == "UAT-71049");
-
                 foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.CreatedTime).ThenBy(f => f.Id).ToList())
                 {
                     //for debug only

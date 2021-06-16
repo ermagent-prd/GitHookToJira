@@ -71,10 +71,8 @@ namespace GeminiToJira.Engine
 
             var filteredDevelopments = geminiDevelopmentIssueList.Where(l => l.Type == "Development").OrderBy(f => f.Id).ToList();
 
-            var toImportdevelopments = filteredDevelopments.Where(d => d.IssueKey == "ERM-62751");
 
-
-            foreach (var geminiIssue in toImportdevelopments)
+            foreach (var geminiIssue in filteredDevelopments)
             {
                 try
                 {
