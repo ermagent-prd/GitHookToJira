@@ -57,6 +57,8 @@ namespace GeminiToJira.Engine
             //date until we make the import from dateFrom
             DateTime dateTo = DateTime.Now;
 
+            //filtro in base a related development/release !!!
+
             while (dateFrom <= dateTo)
             {
                 filter.CreatedAfter = dateFrom.ToString("MM/dd/yyyy");

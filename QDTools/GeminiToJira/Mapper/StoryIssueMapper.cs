@@ -86,8 +86,11 @@ namespace GeminiToJira.Mapper
                 if (release != null && release.FormattedData != "")
                     jiraIssue.FixVersions.Add(release.FormattedData);
 
-                //Component
-                SetComponents(geminiIssue, jiraIssue, configurationSetup.ComponentsForDevelopment, configurationSetup.Mapping);
+                //Development Line
+                SetDevLine(geminiIssue, jiraIssue, configurationSetup.Mapping.DEV_LINE_MAPPING, configurationSetup.Mapping);
+
+                
+
             }
             else
                 LoadStorySubTaskCustomFields(jiraIssue, geminiIssue, configurationSetup.Mapping);
@@ -145,16 +148,17 @@ namespace GeminiToJira.Mapper
             return minuteSpent;
         }
     
-        private static void SetComponents(IssueDto geminiIssue, CreateIssueInfo jiraIssue, List<string> components, JiraTools.Parameters.MappingConfiguration mapping)
+        private static void SetDevLine(IssueDto geminiIssue, CreateIssueInfo jiraIssue, Dictionary<string,string> devLinesDict, JiraTools.Parameters.MappingConfiguration mapping)
         {
+            if (devLinesDict == null || !devLinesDict.Any())
+                return;
+
             var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.LINE_KEY_LABEL);
             if (devLine != null && devLine.Entity.Data != "")
             {
-                foreach (var component in components)
-                {
-                    if (devLine.Entity.Data.Contains(component))
-                        jiraIssue.Components.Add(devLine.Entity.Data);
-                }
+                string devLineValue;
+                if (devLinesDict.TryGetValue(devLine.Entity.Data, out devLineValue))
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Development Line", devLineValue));
             }
         }
 

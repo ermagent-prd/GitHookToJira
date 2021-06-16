@@ -110,6 +110,11 @@
       "test": "Test",
       "documentation": "Documentation"
     },
+    "DEV_LINE_MAPPING": {
+      "ILIAS-STA": "ILIAS STATICO",
+      "ILIAS": "ILIAS DINAMICO",
+      "BSM": "BSM"
+    },
     "TASK_TYPE_MAPPING_DEFAULT": "Other",
     "UAT_STATUS_MAPPING": {
       "assigned": "To Do",
