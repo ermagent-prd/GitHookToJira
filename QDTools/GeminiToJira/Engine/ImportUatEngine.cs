@@ -88,7 +88,8 @@ namespace GeminiToJira.Engine
                             currentIssue,
                             configurationSetup.Jira.BugTypeCode,
                             projectCode,
-                            configurationSetup.Gemini.UatPrefix);
+                            configurationSetup.Gemini.UatPrefix,
+                            null);
 
                         if (string.IsNullOrWhiteSpace(jiraIssueInfo.RelatedDevelopment))
                             continue;

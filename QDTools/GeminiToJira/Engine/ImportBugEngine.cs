@@ -53,11 +53,20 @@ namespace GeminiToJira.Engine
             
             foreach (var geminiIssue in geminiBugIssueList.OrderBy(f => f.Id).ToList())
             {
+                if (geminiIssue.IssueKey != "ERMBUG-71602")
+                    continue;
+
                 try
                 {
                     var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
             
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, configurationSetup.Jira.BugTypeCode, projectCode, configurationSetup.Gemini.ErmBugPrefix);
+                    var jiraIssueInfo = geminiToJiraMapper.Execute(
+                        configurationSetup, 
+                        currentIssue, 
+                        configurationSetup.Jira.BugTypeCode, 
+                        projectCode, 
+                        configurationSetup.Gemini.ErmBugPrefix,
+                        configurationSetup.Mapping.BUG_EPICLINK);
             
                     var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                     SetAndSaveReporter(jiraIssue, geminiIssue,configurationSetup.Jira.DefaultAccount);

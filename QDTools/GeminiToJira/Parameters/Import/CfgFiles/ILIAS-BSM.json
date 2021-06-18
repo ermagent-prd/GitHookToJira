@@ -64,8 +64,8 @@
     "MaxIssuesPerRequest": 10,
     "ImportStory": false,
     "ImportTask": false,
-    "ImportUat": true,
-    "ImportBug": false,
+    "ImportUat": false,
+    "ImportBug": true,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
     "TaskTypeCode": "10023",
@@ -150,6 +150,7 @@
     },
     "UAT_CATEGORY_MAPPING_DEFAULT": "Functional",
     "UAT_SEVERITY_MAPPING_DEFAULT": "Minor",
+    
     "UAT_TYPE_MAPPING": {
       "defect": "Defect",
       "investigation": "Investigation",
@@ -197,6 +198,7 @@
       "performance": "Performance"
     },
     "BUG_CAUSE_TYPE_DEFAULT": "Other",
+    "BUG_EPICLINK": "ESOA-1",
     "BUG_SUGGESTED_ACTION_TYPE_MAPPING": {
       "more attention": "Integration test",
       "more test": "Integration test",

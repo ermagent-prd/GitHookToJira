@@ -36,7 +36,13 @@ namespace GeminiToJira.Mapper
 
         #region Public methods
 
-        public CreateIssueInfo Execute(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, string projectCode, string ermPrefix)
+        public CreateIssueInfo Execute(
+            GeminiToJiraParameters configurationSetup, 
+            IssueDto geminiIssue, 
+            string type, 
+            string projectCode, 
+            string ermPrefix,
+            string epicLink)
         {
             var descAttachments = new List<string>();
 
@@ -70,6 +76,9 @@ namespace GeminiToJira.Mapper
 
             //Load custom fields
             LoadCustomFields(jiraIssue, geminiIssue, ermPrefix, configurationSetup);
+
+            //Epic Link
+            SetEpicLink(jiraIssue, epicLink);
 
             //For components use
             SetRelatedDevelopment(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix, configurationSetup.Mapping);
@@ -120,6 +129,14 @@ namespace GeminiToJira.Mapper
                 jiraIssue.RelatedDevelopment = relatedDev.FormattedData;
                 jiraIssue.RelatedDevelopmentId = ermPrefix + relatedDev.Entity.Data;
             }
+        }
+
+        private void SetEpicLink(CreateIssueInfo jiraIssue, string epicLink)
+        {
+            if (string.IsNullOrWhiteSpace(epicLink))
+                return;
+
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("Epic Link", epicLink));
         }
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix, GeminiToJiraParameters configurationSetup)
