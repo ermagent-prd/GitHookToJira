@@ -5,11 +5,11 @@ Use SecureString.ps1 to create token secure string file
 
 param (
     [string]$Username = "pierluigi.nanni@prometeia.com",
-    [string]$TokenFilePath = "C:\Projects\Others\Processtools\JiraExport\ExportedPassword.txt",
-    [string]$Jql = "project = Ermas5 and issuetype = Bug and ""Epic Link"" = OA-28 and status = Fixed",
-    [string]$server = "https://prometeia-erm.atlassian.net/",
-    [string]$ExcelFilePath = "C:\Tmp\jIRA\JiraBugs.xlsx",
-    [string]$sheetName = "Jira Issues"
+    [string]$TokenFilePath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\JiraToken.txt",
+    [string]$Jql = "project = MRM and issuetype = Bug and ""Epic Link"" = ESOA-1",
+    [string]$server = "https://prometeia.atlassian.net/",
+    [string]$ExcelFilePath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\MRMBugs.xlsx",
+    [string]$sheetName = "Bugs"
 ) 
 
 Import-Module PSExcel
@@ -32,12 +32,12 @@ try {
     New-JiraSession -Credential $cred 
 
     $list = Get-JiraIssue `
-    -Fields "project, key, customfield_10052, status, summary"  `
+    -Fields "project, key, status, summary"  `
     -Query $Jql | `
-    Select-Object project, key, customfield_10052, status, summary
+    Select-Object project, key,  status, summary
 
     $list | Export-XLSX -WorksheetName $sheetName -Path $ExcelFilePath -Table -Force -Autofit `
-        -Header project, ID,  BugFixing, Status, Summary
+        -Header project, ID, Status, Summary
 
 }
 Catch {
