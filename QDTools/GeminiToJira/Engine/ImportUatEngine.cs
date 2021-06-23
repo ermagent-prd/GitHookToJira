@@ -76,8 +76,10 @@ namespace GeminiToJira.Engine
 
                 foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.CreatedTime).ThenBy(f => f.Id).ToList())
                 {
+                    /*
                     if (geminiIssue.IssueKey != "UAT-72359")
                         continue;
+                    */
 
                     //for debug only
                     File.AppendAllText(configurationSetup.LogDirectory + uatImportedFile,
