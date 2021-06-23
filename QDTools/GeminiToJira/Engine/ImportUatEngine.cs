@@ -21,6 +21,7 @@ namespace GeminiToJira.Engine
         private readonly CreateIssueEngine jiraSaveEngine;
         private readonly JiraAccountIdEngine accountEngine;
         private readonly LinkEngine linkEngine;
+        private readonly AddWatchersEngine watcherEngine;
 
         public ImportUatEngine(
             BugIssueMapper geminiToJiraMapper,
@@ -28,7 +29,8 @@ namespace GeminiToJira.Engine
             JiraTools.Engine.ItemListGetter jiraItemsEngine,
             CreateIssueEngine jiraSaveEngine,
             JiraAccountIdEngine accountEngine,
-            LinkEngine linkEngine)
+            LinkEngine linkEngine,
+            AddWatchersEngine watcherEngine)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -36,6 +38,7 @@ namespace GeminiToJira.Engine
             this.jiraSaveEngine = jiraSaveEngine;
             this.accountEngine = accountEngine;
             this.linkEngine = linkEngine;
+            this.watcherEngine = watcherEngine;
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -70,6 +73,9 @@ namespace GeminiToJira.Engine
 
                 foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.CreatedTime).ThenBy(f => f.Id).ToList())
                 {
+                    if (geminiIssue.IssueKey != "UAT-72359")
+                        continue;
+
                     //for debug only
                     File.AppendAllText(configurationSetup.LogDirectory + uatImportedFile,
                         geminiIssue.IssueKey + ";" +
@@ -112,6 +118,8 @@ namespace GeminiToJira.Engine
 
                         SetAndSaveReporter(jiraIssue, geminiIssue, configurationSetup.Jira.DefaultAccount);
 
+                        //Save watchers
+                        //this.watcherEngine.Execute(jiraIssue, geminiIssue);
 
                         //Add Link to development
 
@@ -122,6 +130,7 @@ namespace GeminiToJira.Engine
 
                         foreach (var v in relatedDev.FixVersions)
                             jiraIssue.FixVersions.Add(v);
+
 
                         jiraIssue.SaveChanges();
 
@@ -182,7 +191,7 @@ namespace GeminiToJira.Engine
             if (geminiIssue.Reporter != "")
             {
                 jiraIssue.Reporter = accountEngine.Execute(geminiIssue.Reporter, defaultAccount).AccountId;
-                jiraIssue.SaveChanges();
+                //jiraIssue.SaveChanges();
             }
         }
 

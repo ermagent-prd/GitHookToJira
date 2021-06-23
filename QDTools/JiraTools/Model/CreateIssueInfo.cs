@@ -54,7 +54,7 @@ namespace JiraTools.Model
         public List<Comment> CommentList { get; set; }
 
         public List<string> Attachments { get; set; }
-        public List<string> Resources { get; set; }
+        public List<string> Watchers { get; set; }
 
         public String Resolution { get; set; }
 

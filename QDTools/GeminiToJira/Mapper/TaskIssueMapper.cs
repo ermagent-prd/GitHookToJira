@@ -20,6 +20,7 @@ namespace GeminiToJira.Mapper
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
         private readonly TimeLogEngine timeLogEngine;
+        private readonly AddWatchersEngine watchersEngine;
 
         public TaskIssueMapper(
             CommentMapper commentMapper, 
@@ -27,13 +28,15 @@ namespace GeminiToJira.Mapper
             JiraAccountIdEngine accountEngine,
             ParseCommentEngine parseCommentEngine,
             LinkItemEngine linkItemEngine,
-            TimeLogEngine timeLogEngine)
+            TimeLogEngine timeLogEngine,
+            AddWatchersEngine watchersEngine)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
             this.accountEngine = accountEngine;
             this.parseCommentEngine = parseCommentEngine;
             this.timeLogEngine = timeLogEngine;
+            this.watchersEngine = watchersEngine;
         }
 
         public CreateIssueInfo Execute(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, string projectCode)
@@ -81,6 +84,8 @@ namespace GeminiToJira.Mapper
             if (release != null && release.FormattedData != "")
                 jiraIssue.FixVersions.Add(release.FormattedData);
 
+            //Add watchers
+            this.watchersEngine.Execute(jiraIssue, geminiIssue);
 
             return jiraIssue;
         }

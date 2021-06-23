@@ -36,13 +36,17 @@ namespace GeminiToJira.Container
 
             container.RegisterType<FilteredGeminiIssueListGetter>();
             container.RegisterType<GeminiIssueChecker>();
+            container.RegisterType<AddWatchersEngine>();
+            
 
             container.RegisterType<ParseCommentEngine>();
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<GeminiToolsContainerExtension>();
             container.AddNewExtension<AlfrescoToolsContainerExtension>();
-
             
+
+
+
 
 
 

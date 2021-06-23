@@ -31,6 +31,9 @@ namespace GeminiToJira.Engine
             if (userListDictionary.Value.TryGetValue(fullname, out userAccount))
                 return userAccount;
 
+            if (string.IsNullOrWhiteSpace(defaultAccountname))
+                return null;
+
             if (userListDictionary.Value.TryGetValue(defaultAccountname, out userAccount))
                 return userAccount;
 

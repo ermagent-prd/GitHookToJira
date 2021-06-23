@@ -1,15 +1,10 @@
-﻿using Atlassian.Jira;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Countersoft.Gemini.Commons.Dto;
 using GeminiToJira.Engine;
-using GeminiToJira.Parameters;
 using GeminiToJira.Parameters.Import;
-using GeminiTools.Engine;
 using GeminiTools.Items;
-using GeminiTools.Parameters;
 using JiraTools.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace GeminiToJira.Mapper
 {
@@ -20,21 +15,26 @@ namespace GeminiToJira.Mapper
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
         private readonly TimeLogEngine timeLogEngine;
-        
+        private readonly AddCustomFieldEngine customeFieldEngine;
+        private readonly AddWatchersEngine watchersEngine;
+
 
         public StoryIssueMapper(
             CommentMapper commentMapper, 
             AttachmentGetter attachmentGetter,
             JiraAccountIdEngine accountEngine,
             ParseCommentEngine parseCommentEngine,
-            LinkItemEngine linkItemEngine,
-            TimeLogEngine timeLogEngine)
+            TimeLogEngine timeLogEngine,
+            AddCustomFieldEngine customeFieldEngine,
+            AddWatchersEngine watchersEngine)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
             this.accountEngine = accountEngine;
             this.parseCommentEngine = parseCommentEngine;
             this.timeLogEngine = timeLogEngine;
+            this.customeFieldEngine = customeFieldEngine;
+            this.watchersEngine = watchersEngine;
         }
 
         public CreateIssueInfo Execute(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, string projectCode)
@@ -81,6 +81,7 @@ namespace GeminiToJira.Mapper
             {
                 LoadStoryCustomFields(jiraIssue, geminiIssue, configurationSetup.Mapping);
 
+
                 //FixVersion
                 var release = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == configurationSetup.Mapping.RELEASE_KEY_LABEL);
                 if (release != null && release.FormattedData != "")
@@ -89,11 +90,12 @@ namespace GeminiToJira.Mapper
                 //Development Line
                 SetDevLine(geminiIssue, jiraIssue, configurationSetup.Mapping.DEV_LINE_MAPPING, configurationSetup.Mapping);
 
-                
-
             }
             else
                 LoadStorySubTaskCustomFields(jiraIssue, geminiIssue, configurationSetup.Mapping);
+
+            //Watchers
+            this.watchersEngine.Execute(jiraIssue, geminiIssue);
 
             //Load custom fields in common
             LoadCommonCustomFields(jiraIssue, geminiIssue, configurationSetup.Mapping, configurationSetup.Gemini.ErmPrefix);
@@ -102,7 +104,10 @@ namespace GeminiToJira.Mapper
         }
 
 
-        #region Private     
+        #region Private    
+
+
+
         private void CalculateRemainigEstimate(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, CreateIssueInfo jiraIssue)
         {
             if (type == configurationSetup.Jira.StoryTypeCode)

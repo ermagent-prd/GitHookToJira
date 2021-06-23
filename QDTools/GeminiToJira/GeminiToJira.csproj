@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\ContainerFactory.cs" />
+    <Compile Include="Engine\AddWatchersEngine.cs" />
     <Compile Include="Engine\FilteredGeminiIssueListGetter.cs" />
     <Compile Include="Engine\GeminiIssueChecker.cs" />
     <Compile Include="Engine\ImportBugEngine.cs" />
@@ -92,7 +93,6 @@
     <Compile Include="Mapper\CommentMapper.cs" />
     <Compile Include="Mapper\BugIssueMapper.cs" />
     <Compile Include="Mapper\TaskIssueMapper.cs" />
-    <Compile Include="Mapper\UatIssueMapper.cs" />
     <Compile Include="Mapper\StoryIssueMapper.cs" />
     <Compile Include="Parameters\Alfresco\AlfrescoConstants.cs" />
     <Compile Include="Parameters\Alfresco\AlfrescoParamContainer.cs" />

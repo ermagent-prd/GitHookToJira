@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="Container\JiraContainer.cs" />
     <Compile Include="Container\JiraContainerFactory.cs" />
+    <Compile Include="Issues\AddWatcherTest.cs" />
     <Compile Include="Issues\AddCommentTest.cs" />
     <Compile Include="Issues\EditCustomFieldTest.cs" />
     <Compile Include="Issues\CreateIssueTest.cs" />

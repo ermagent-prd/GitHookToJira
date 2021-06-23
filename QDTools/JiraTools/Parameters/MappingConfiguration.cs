@@ -47,5 +47,6 @@ namespace JiraTools.Parameters
         public string BUG_SUGGESTED_ACTION_TYPE_DEFAULT { get; set; }
 
         public Dictionary<string, string> DEV_LINE_MAPPING { get; set; }
+        
     }
 }

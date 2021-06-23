@@ -19,19 +19,25 @@ namespace GeminiToJira.Mapper
         private readonly JiraAccountIdEngine accountEngine;
         private readonly ParseCommentEngine parseCommentEngine;
         private readonly TimeLogEngine timeLogEngine;
+        private readonly AddCustomFieldEngine customeFieldEngine;
+        private readonly AddWatchersEngine watchersEngine;
 
         public BugIssueMapper(
             CommentMapper commentMapper, 
             AttachmentGetter attachmentGetter, 
             JiraAccountIdEngine accountEngine, 
             ParseCommentEngine parseCommentEngine,
-            TimeLogEngine timeLogEngine)
+            TimeLogEngine timeLogEngine,
+            AddCustomFieldEngine customeFieldEngine,
+            AddWatchersEngine watchersEngine)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
             this.accountEngine = accountEngine;
             this.parseCommentEngine = parseCommentEngine;
             this.timeLogEngine = timeLogEngine;
+            this.customeFieldEngine = customeFieldEngine;
+            this.watchersEngine = watchersEngine;
         }
 
         #region Public methods
@@ -63,9 +69,9 @@ namespace GeminiToJira.Mapper
             SetFixVersion(geminiIssue, jiraIssue, configurationSetup.Mapping);
 
             //Assignee
-            var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
-            if (owner != null && owner.FormattedData != "")
-                jiraIssue.Assignee = accountEngine.Execute(owner.FormattedData, configurationSetup.Jira.DefaultAccount).AccountId;
+            setAssignee(geminiIssue, jiraIssue, configurationSetup.Jira.DefaultAccount);
+
+
 
             //Load all issue's attachment
             jiraIssue.Attachments = descAttachments;
@@ -86,9 +92,20 @@ namespace GeminiToJira.Mapper
             //worklog
             jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries, configurationSetup.Jira.DefaultAccount);
 
-            SetResources(jiraIssue, geminiIssue, configurationSetup.Jira.DefaultAccount);
+            //watchers
+            this.watchersEngine.Execute(jiraIssue, geminiIssue);
 
             return jiraIssue;
+        }
+
+        private void setAssignee(IssueDto geminiIssue, CreateIssueInfo jiraIssue, string defaultAccount)
+        {
+            var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
+            if (owner != null && owner.FormattedData != "")
+                jiraIssue.Assignee = accountEngine.Execute(
+                    owner.FormattedData,
+                    defaultAccount).AccountId;
+
         }
 
         public string GetGeminiRelatedDevelopmentKey(IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
@@ -108,16 +125,6 @@ namespace GeminiToJira.Mapper
 
         #region Private        
 
-        private void SetResources(CreateIssueInfo jiraIssue, IssueDto geminiIssue,string defaultAccount)
-        {
-            if (geminiIssue.Resources != null && geminiIssue.Resources.Count > 0)
-            {
-                jiraIssue.Resources = new List<string>();
-
-                foreach (var resource in geminiIssue.Resources)
-                    jiraIssue.Resources.Add(accountEngine.Execute(resource.User.Fullname, defaultAccount).AccountId);
-            }
-        }
 
         private void SetRelatedDevelopment(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
         {
@@ -133,10 +140,7 @@ namespace GeminiToJira.Mapper
 
         private void SetEpicLink(CreateIssueInfo jiraIssue, string epicLink)
         {
-            if (string.IsNullOrWhiteSpace(epicLink))
-                return;
-
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("Epic Link", epicLink));
+            this.customeFieldEngine.Execute(jiraIssue, "Epic Link", epicLink);
         }
 
         private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix, GeminiToJiraParameters configurationSetup)

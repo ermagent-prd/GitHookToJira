@@ -114,13 +114,13 @@ namespace JiraTools.Engine
 
             attachmentEngine.Execute(issue, fieldsInfo.Attachments, attachmentPath);
 
-            if (fieldsInfo.Resources != null && fieldsInfo.Resources.Count > 0)
-                AddResourcesAsWatchers(issue, fieldsInfo.Resources);
+            if (fieldsInfo.Watchers != null && fieldsInfo.Watchers.Count > 0)
+                addWatchers(issue, fieldsInfo.Watchers);
 
             return issue;
         }
 
-        private static void AddResourcesAsWatchers(Issue issue, List<string> resources)
+        private static void addWatchers(Issue issue, List<string> resources)
         {
             foreach (var resource in resources)
                 issue.AddWatcherAsync(resource);

@@ -89,10 +89,10 @@ namespace GeminiToJira.Mapper
         {
             if (geminiIssue.Resources != null && geminiIssue.Resources.Count > 0)
             {
-                jiraIssue.Resources = new List<string>();
+                jiraIssue.Watchers = new List<string>();
 
                 foreach (var resource in geminiIssue.Resources)
-                    jiraIssue.Resources.Add(accountEngine.Execute(resource.User.Fullname, defaultAccount).AccountId);
+                    jiraIssue.Watchers.Add(accountEngine.Execute(resource.User.Fullname, defaultAccount).AccountId);
             }
         }
 

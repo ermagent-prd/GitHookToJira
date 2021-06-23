@@ -1,4 +1,5 @@
 ﻿using JiraTools.Engine;
+using JiraTools.Model;
 using JiraTools.Service;
 using Unity;
 using Unity.Extension;
@@ -32,6 +33,11 @@ namespace JiraTools.Container
             Container.RegisterType<ItemListGetter>();
             Container.RegisterType<EditCustomFieldEngine>();
             Container.RegisterType<PublicAddCommentEngine>();
+            Container.RegisterType<AddCustomFieldEngine>();
+            Container.RegisterType<AddWatcherEngine>();
+            
+
+
         }
 
         #endregion
