@@ -22,6 +22,7 @@ namespace GeminiToJira.Engine
         private readonly JiraAccountIdEngine accountEngine;
         private readonly LinkEngine linkEngine;
         private readonly AddWatchersEngine watcherEngine;
+        private readonly AffectedVersionsEngine affectedVersionEngine;
 
         public ImportUatEngine(
             BugIssueMapper geminiToJiraMapper,
@@ -30,7 +31,8 @@ namespace GeminiToJira.Engine
             CreateIssueEngine jiraSaveEngine,
             JiraAccountIdEngine accountEngine,
             LinkEngine linkEngine,
-            AddWatchersEngine watcherEngine)
+            AddWatchersEngine watcherEngine,
+            AffectedVersionsEngine affectedVersionEngine)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -39,6 +41,7 @@ namespace GeminiToJira.Engine
             this.accountEngine = accountEngine;
             this.linkEngine = linkEngine;
             this.watcherEngine = watcherEngine;
+            this.affectedVersionEngine = affectedVersionEngine;
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -111,6 +114,9 @@ namespace GeminiToJira.Engine
                         foreach (var v in relatedDev.FixVersions)
                             configurationSetup.Filter.STORY_RELEASES.Contains(v.Name);
 
+                        //Add Affected build
+                        this.affectedVersionEngine.AddFromRelatedDevelopment(relatedDev, jiraIssueInfo);
+
                         var jiraIssue = jiraSaveEngine.Execute(
                             jiraIssueInfo,
                             configurationSetup.Jira,
@@ -118,11 +124,9 @@ namespace GeminiToJira.Engine
 
                         SetAndSaveReporter(jiraIssue, geminiIssue, configurationSetup.Jira.DefaultAccount);
 
-                        //Save watchers
-                        //this.watcherEngine.Execute(jiraIssue, geminiIssue);
+
 
                         //Add Link to development
-
                         linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
 
                         foreach (var c in relatedDev.Components)

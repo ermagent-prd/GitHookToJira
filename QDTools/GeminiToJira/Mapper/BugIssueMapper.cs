@@ -21,6 +21,8 @@ namespace GeminiToJira.Mapper
         private readonly TimeLogEngine timeLogEngine;
         private readonly AddCustomFieldEngine customeFieldEngine;
         private readonly AddWatchersEngine watchersEngine;
+        private readonly AssigneeEngine assigneeEngine;
+        private readonly AffectedVersionsEngine affectedVersionEngine;
 
         public BugIssueMapper(
             CommentMapper commentMapper, 
@@ -29,7 +31,9 @@ namespace GeminiToJira.Mapper
             ParseCommentEngine parseCommentEngine,
             TimeLogEngine timeLogEngine,
             AddCustomFieldEngine customeFieldEngine,
-            AddWatchersEngine watchersEngine)
+            AddWatchersEngine watchersEngine,
+            AssigneeEngine assigneeEngine,
+            AffectedVersionsEngine affectedVersionEngine)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
@@ -38,6 +42,8 @@ namespace GeminiToJira.Mapper
             this.timeLogEngine = timeLogEngine;
             this.customeFieldEngine = customeFieldEngine;
             this.watchersEngine = watchersEngine;
+            this.assigneeEngine = assigneeEngine;
+            this.affectedVersionEngine = affectedVersionEngine;
         }
 
         #region Public methods
@@ -65,13 +71,12 @@ namespace GeminiToJira.Mapper
             if (configurationSetup.Mapping.BUG_PRIORITY_MAPPING.TryGetValue(geminiIssue.Priority.ToLower(), out string priority))
                 jiraIssue.Priority = priority;
 
-            SetAffectedVersion(geminiIssue, jiraIssue);
+            this.affectedVersionEngine.Execute(geminiIssue, jiraIssue);
+
             SetFixVersion(geminiIssue, jiraIssue, configurationSetup.Mapping);
 
             //Assignee
-            setAssignee(geminiIssue, jiraIssue, configurationSetup.Jira.DefaultAccount);
-
-
+            this.assigneeEngine.Execute(geminiIssue, jiraIssue, configurationSetup.Jira.DefaultAccount);
 
             //Load all issue's attachment
             jiraIssue.Attachments = descAttachments;
@@ -96,16 +101,6 @@ namespace GeminiToJira.Mapper
             this.watchersEngine.Execute(jiraIssue, geminiIssue);
 
             return jiraIssue;
-        }
-
-        private void setAssignee(IssueDto geminiIssue, CreateIssueInfo jiraIssue, string defaultAccount)
-        {
-            var owner = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Owner");
-            if (owner != null && owner.FormattedData != "")
-                jiraIssue.Assignee = accountEngine.Execute(
-                    owner.FormattedData,
-                    defaultAccount).AccountId;
-
         }
 
         public string GetGeminiRelatedDevelopmentKey(IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
@@ -147,8 +142,6 @@ namespace GeminiToJira.Mapper
         {
             var mapping = configurationSetup.Mapping;
 
-            //recuperare fix versions (da capire come fare)
-            
 
             if (mapping.BUG_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out string status))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
@@ -226,9 +219,6 @@ namespace GeminiToJira.Mapper
             if (notes != null && !string.IsNullOrWhiteSpace(notes.FormattedData) && !notes.FormattedData.Equals("\r\n\r\n"))  //la string può contenere anche solo \n, \r, \nr, \rn
                 jiraIssue.Description += notes.FormattedData;
 
-
-//                jiraIssue.CustomFields.Add(new CustomFieldInfo("Notes", parseCommentEngine.Execute(notes.FormattedData)));
-
             //Gemini : save the original issue's code from gemini
             jiraIssue.CustomFields.Add(new CustomFieldInfo("OriginalKey", ermPrefix + geminiIssue.Id.ToString()));
 
@@ -250,17 +240,6 @@ namespace GeminiToJira.Mapper
             
         }
 
-        private void SetAffectedVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue)
-        {
-            jiraIssue.AffectVersions = new List<string>();
-
-            if (geminiIssue.AffectedVersionNumbers != "")
-            {
-                var affectedVersions = ExtractVersions(geminiIssue.AffectedVersionNumbers);
-                foreach (var version in affectedVersions)
-                    jiraIssue.AffectVersions.Add(version);
-            }
-        }
 
         private void SetFixVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue, JiraTools.Parameters.MappingConfiguration mapping)
         {

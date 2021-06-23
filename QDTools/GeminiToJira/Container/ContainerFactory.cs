@@ -37,6 +37,8 @@ namespace GeminiToJira.Container
             container.RegisterType<FilteredGeminiIssueListGetter>();
             container.RegisterType<GeminiIssueChecker>();
             container.RegisterType<AddWatchersEngine>();
+            container.RegisterType<AssigneeEngine>();
+            container.RegisterType<AffectedVersionsEngine>();
             
 
             container.RegisterType<ParseCommentEngine>();
