@@ -37,7 +37,16 @@ namespace GeminiToJira.Mapper
                 var comment = geminiIssue.Comments[i];
 
                 var commentPrefix = "Comment_" + i;
-                jiraIssue.CommentList.Add(CreateComment(comment.Entity, comment.Attachments, commentPrefix, configurationSetup.AttachmentDownloadedPath,configurationSetup.Jira.DefaultAccount));
+
+                var commentToAdd = CreateComment(
+                    comment.Entity, 
+                    comment.Attachments, 
+                    commentPrefix, 
+                    configurationSetup.AttachmentDownloadedPath, 
+                    configurationSetup.Jira.DefaultAccount);
+
+                jiraIssue.CommentList.Add(commentToAdd);
+
                 parseCommentEngine.Execute(jiraIssue, comment.Entity.Comment, commentPrefix);
 
                 //Load Comment's attached files
@@ -51,9 +60,18 @@ namespace GeminiToJira.Mapper
             string commentAttachment = GetAttachmentBody(attachments);
 
             var author = accountEngine.Execute(geminiComment.Fullname, accountDefault);
-            var body = "[~accountId:" + author.AccountId + "]\n" + commentAttachment + parseCommentEngine.Execute(geminiComment.Comment, commentPrefix, null, attachmentPath);
+
+            var parsedComment = parseCommentEngine.Execute(geminiComment.Comment, commentPrefix, null, attachmentPath);
+
+            //var body = "[~accountId:" + author.AccountId + "]\n" + commentAttachment + parseCommentEngine.Execute(geminiComment.Comment, commentPrefix, null, attachmentPath);
+
+            var body = string.Format("[{0}]\n{1}{2}",
+                geminiComment.Fullname,
+                commentAttachment,
+                parsedComment);
 
             var remoteComment = new RemoteComment();
+            remoteComment.authorUser = author;
             remoteComment.author = author.AccountId;
             remoteComment.updateAuthor = author.AccountId;
             remoteComment.updateAuthorUser = author;

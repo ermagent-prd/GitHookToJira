@@ -56,7 +56,8 @@ namespace GeminiToJira
 
         private static GeminiToJiraParameters Readconfiguration(ImportCfgType cfgKey)
         {
-            var cfgManager = new ConfigurationManager();
+            //var cfgManager = new ConfigurationManager();
+            var cfgManager = new FileConfigurationManager();
             var configurationSetup = cfgManager.Execute(cfgKey);
             return configurationSetup;
         }

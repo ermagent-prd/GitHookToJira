@@ -52,7 +52,7 @@ namespace GeminiToJira.Engine
             {
                 IncludeClosed = configurationSetup.Filter.STORY_INCLUDED_CLOSED,
                 Projects = configurationSetup.Filter.STORY_PROJECT_ID,
-                Types = configurationSetup.Filter.STORY_TYPES,
+                Types = configurationSetup.Filter.STORY_TYPES
             };
         }
 

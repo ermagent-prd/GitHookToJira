@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GeminiToJira.Parameters.Import
 {
-    internal class ConfigurationManager
+    internal class ConfigurationManager 
     {
         #region private property
 
@@ -63,9 +63,9 @@ namespace GeminiToJira.Parameters.Import
         {
             var cfgList = new Dictionary<ImportCfgType, string>();
 
-            cfgList.Add(ImportCfgType.Test, string.Concat(resourceNameSpace, "Test.json"));      
-            cfgList.Add(ImportCfgType.ERM, string.Concat(resourceNameSpace, "ERM.json"));      
-            cfgList.Add(ImportCfgType.SSSP, string.Concat(resourceNameSpace, "SSSP.json"));      
+            cfgList.Add(ImportCfgType.Test, string.Concat(resourceNameSpace, "Test.json"));
+            cfgList.Add(ImportCfgType.ERM, string.Concat(resourceNameSpace, "ERM.json"));
+            cfgList.Add(ImportCfgType.SSSP, string.Concat(resourceNameSpace, "SSSP.json"));
             cfgList.Add(ImportCfgType.RMS5, string.Concat(resourceNameSpace, "RMS5.json"));
             cfgList.Add(ImportCfgType.ERMPAT, string.Concat(resourceNameSpace, "ERMPAT.json"));
             cfgList.Add(ImportCfgType.ILIASBSM, string.Concat(resourceNameSpace, "ILIAS-BSM.json"));
@@ -73,7 +73,7 @@ namespace GeminiToJira.Parameters.Import
             return cfgList;
         }
         #endregion
-        
+
 
     }
 }
