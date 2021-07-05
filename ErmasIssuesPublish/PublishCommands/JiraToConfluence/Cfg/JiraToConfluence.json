@@ -1,0 +1,21 @@
+{
+    "jira": 
+    {
+        "username": "pierluigi.nanni@prometeia.com",
+        "tokenFilePath" :"C:\\Projects\\Others\\Processtools\\Bin\\BugExport\\FromJira\\JiraToken.txt",
+        "server": "https://prometeia.atlassian.net/"
+    },
+    "confluence" : {
+
+        "url": "https://intranet.prometeia.it/rest/api/content/",
+        "pswdPath" : "C:\\Projects\\Others\\Processtools\\Bin\\BugExport\\FromJira\\ConfluencePassword2.txt"
+
+
+    },
+
+    "engine" : {
+        "publishScript" : "C:\\Projects\\Others\\Processtools\\ErmasIssuesPublish\\PublishCommands\\JiraToConfluence\\Engine\\JiraToConfluenceBugUpload.ps1"
+
+
+    }
+}

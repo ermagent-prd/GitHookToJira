@@ -55,3 +55,4 @@ C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Microsoft.Visual
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.dll.config
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.dll
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.pdb
+C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Parameters\Import\CfgFiles\ILIAS-BSM.json

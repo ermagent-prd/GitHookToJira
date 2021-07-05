@@ -65,7 +65,8 @@ namespace GeminiToJira.Mapper
 
             //var body = "[~accountId:" + author.AccountId + "]\n" + commentAttachment + parseCommentEngine.Execute(geminiComment.Comment, commentPrefix, null, attachmentPath);
 
-            var body = string.Format("[{0}]\n{1}{2}",
+            var body = string.Format("[{0} - {1}]\n{2}{3}",
+                geminiComment.Created.ToString("dd/MM/yyyy HH:mm:ss"),
                 geminiComment.Fullname,
                 commentAttachment,
                 parsedComment);
@@ -73,8 +74,8 @@ namespace GeminiToJira.Mapper
             var remoteComment = new RemoteComment();
             remoteComment.authorUser = author;
             remoteComment.author = author.AccountId;
-            remoteComment.updateAuthor = author.AccountId;
-            remoteComment.updateAuthorUser = author;
+            //remoteComment.updateAuthor = author.AccountId;
+            //remoteComment.updateAuthorUser = author;
             remoteComment.body = body;
             
             var comment = new Comment(remoteComment);

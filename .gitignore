@@ -365,3 +365,4 @@ MigrationBackup/
 FodyWeavers.xsd
 QDTools/.vs/QDTools/v16/.suo
 QDTools/.vs/QDTools/v16/TestStore/0/testlog.manifest
+QDTools/GeminiToJira/obj/Debug/GeminiToJira.csprojAssemblyReference.cache

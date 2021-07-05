@@ -1,7 +1,7 @@
 param (
     [string]$Username = "pierluigi.nanni@prometeia.com",
     [string]$TokenFilePath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\JiraToken.txt",
-    [string]$Jql = "project = MRM and issuetype = Bug and ""Epic Link"" = ESOA-1",
+    [string]$Jql = "project = MRM and issuetype = Bug and ""Epic Link"" = ESOA-1 and status = Fixed",
     [string]$server = "https://prometeia.atlassian.net/",
     [string]$ExcelFilePath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\MRMBugs.xlsx",
     [string]$sheetName = "Bugs",
@@ -11,8 +11,7 @@ param (
     [string]$ConfluencepswdPath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\ConfluencePassword2.txt",
     [string]$logFilePath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\MRMBugs.log",
     [string]$newDataFile = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\MRMbugs.csv",
-    [string]$oldDataFile = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\MRMbugsOld.csv",
-    [string]$FieldList = "project, key,  status, summary"
+    [string]$oldDataFile = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\MRMbugsOld.csv"
  )
     try {
 
@@ -20,10 +19,10 @@ param (
 
         # Jira plugin install
         if (Get-Module -ListAvailable -Name "JiraPS") {
-            Write-Host "JiraPS Module exists"
+            Write-Host "JiraPS Module  exists"
         } 
         else {
-            Install-Module JiraPS -Scope CurrentUser
+            Install-Module JiraPS -Scope CurrentUser 
         }
 
         # Delete log files
@@ -45,10 +44,43 @@ param (
         $Fields | Export-Csv "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\CustomFields.csv"
 #>
     
-        $Data = Get-JiraIssue `
-        -Fields "project, key, customfield_10125, status, summary, fixVersions, description"  `
+        $jiraData = Get-JiraIssue `
+        -Fields "project, key, customfield_10125, status, summary, fixVersions, customfield_10124, description"  `
         -Query $Jql | `
-        Select-Object project, key, customfield_10125, status, summary, fixVersions, description
+        Select-Object project, key, customfield_10125, status, summary, fixVersions, customfield_10124, description
+
+
+        $Data = New-Object Collections.Generic.List[PSCustomObject]
+
+        foreach ($jiraItem in $jiraData)
+        {
+            $Object = New-Object PSObject -Property @{
+                project       = $jiraItem.project
+                key             = $jiraItem.key
+                bugFixing = $jiraItem.customfield_10125
+                status = $jiraItem.Status 
+                summary = $jiraItem.Summary
+                fixVersions = If($null -eq $jiraItem.fixVersions) {""} Else 
+                    {
+
+                        if($jiraItem.fixVersions.Length -gt 1)
+                        {
+                            $jiraItem.fixVersions.ForEach('name') -join ','
+
+                        }
+                        else {
+                            $jiraItem.fixVersions.name
+                        }
+                        
+                    }
+                
+                fixedInBuild = $jiraItem.customfield_10124
+                description = $jiraItem.Description
+            }            
+
+            $Data.add($Object)
+        }
+
 
         $Data | Export-Csv $newDataFile
 
@@ -59,10 +91,9 @@ param (
         if ($ToCheck)
         {
             Try {
+                $Data | Select-Object Project, key, BugFixing, Status, summary, fixVersions, fixedInBuild, description | Export-XLSX -WorksheetName $sheetName -Path $ExcelFilePath -Table -Force -Autofit `
+                -Header Project, ID, BugFixing, Status, summary, fixVersions, FixedInBuild, description
 
-                $Data | Export-XLSX -WorksheetName $sheetName -Path $ExcelFilePath -Table -Force -Autofit `
-                -Header project, ID, BugFixing, Status, Summary, FixVersions, Description
-                
                 & "$PSScriptRoot\UpdateConfluenceFile.ps1" -ConfluenceURL $ConfluenceURL -pageId $pageId -fName $fName -fPath $ExcelFilePath -pswdPath $ConfluencepswdPath
         
                 $Data | Export-Csv $oldDataFile -Force
@@ -85,6 +116,12 @@ param (
             
 
     }
+    Catch {
+    
+        Write-Host ("File update -- > failure " + $_.Exception.Message )
+
+        exit 1
+    }        
     finally {
 
         Stop-Transcript
