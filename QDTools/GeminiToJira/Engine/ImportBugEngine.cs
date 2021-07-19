@@ -10,6 +10,7 @@ using System;
 using Atlassian.Jira;
 using System.IO;
 using GeminiToJira.Parameters.Import;
+using GeminiToJira.Log;
 
 namespace GeminiToJira.Engine
 {
@@ -21,6 +22,7 @@ namespace GeminiToJira.Engine
         private readonly CreateIssueEngine jiraSaveEngine;
         private readonly JiraAccountIdEngine accountEngine;
         private readonly LinkEngine linkEngine;
+        private readonly LogManager logManager;
 
         public ImportBugEngine(
             BugIssueMapper geminiToJiraMapper,
@@ -28,7 +30,8 @@ namespace GeminiToJira.Engine
             JiraTools.Engine.ItemListGetter jiraItemsEngine,
             CreateIssueEngine jiraSaveEngine,
             JiraAccountIdEngine accountEngine,
-            LinkEngine linkEngine)
+            LinkEngine linkEngine,
+            LogManager logManager)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -36,6 +39,7 @@ namespace GeminiToJira.Engine
             this.jiraSaveEngine = jiraSaveEngine;
             this.accountEngine = accountEngine;
             this.linkEngine = linkEngine;
+            this.logManager = logManager;
 
         }
 
@@ -50,7 +54,10 @@ namespace GeminiToJira.Engine
             var geminiBugIssueList = getFiltered(configurationSetup,bugIssueList);
 
             var bugLogFile = "BugLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
-            
+
+            this.logManager.SetLogFile(configurationSetup.LogDirectory + bugLogFile);
+
+
             foreach (var geminiIssue in geminiBugIssueList.OrderBy(f => f.Id).ToList())
             {
                 if (geminiIssue.IssueKey != "ERMBUG-71602")
@@ -71,9 +78,10 @@ namespace GeminiToJira.Engine
                     var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                     SetAndSaveReporter(jiraIssue, geminiIssue,configurationSetup.Jira.DefaultAccount);
                 }
-                catch
+                catch(Exception e)
                 {
-                    File.AppendAllText(configurationSetup.LogDirectory + bugLogFile, geminiIssue.IssueKey + Environment.NewLine);
+                    this.logManager.Execute(geminiIssue.IssueKey + e.Message);
+                    //File.AppendAllText(configurationSetup.LogDirectory + bugLogFile, geminiIssue.IssueKey + Environment.NewLine);
                 }
             
             }

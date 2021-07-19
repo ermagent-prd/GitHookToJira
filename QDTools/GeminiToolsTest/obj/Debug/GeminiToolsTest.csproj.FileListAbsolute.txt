@@ -13,7 +13,6 @@ C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\GeminiTools.pd
 C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\GeminiTools.dll.config
 C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
 C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
-C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.csprojAssemblyReference.cache
 C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.csproj.CoreCompileInputs.cache
 C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.csproj.CopyComplete
 C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.dll
@@ -73,3 +72,4 @@ C:\Projects\Others\Processtools\Bin\QDTools\GeminiToolsTest\Debug\Microsoft.Visu
 C:\Projects\Others\Processtools\Bin\QDTools\GeminiToolsTest\Debug\GeminiToolsTest.dll.config
 C:\Projects\Others\Processtools\Bin\QDTools\GeminiToolsTest\Debug\GeminiToolsTest.dll
 C:\Projects\Others\Processtools\Bin\QDTools\GeminiToolsTest\Debug\GeminiToolsTest.pdb
+C:\Projects\Others\Processtools\QDTools\GeminiToolsTest\obj\Debug\GeminiToolsTest.csproj.AssemblyReference.cache

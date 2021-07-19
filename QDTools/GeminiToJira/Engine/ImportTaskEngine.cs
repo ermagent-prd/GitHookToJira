@@ -13,6 +13,7 @@ using AlfrescoTools.Engine;
 using DotCMIS.Client;
 using GeminiToJira.Parameters.Import;
 using JiraTools.Parameters;
+using GeminiToJira.Log;
 
 namespace GeminiToJira.Engine
 {
@@ -23,6 +24,7 @@ namespace GeminiToJira.Engine
         private readonly GeminiTools.Items.ItemListGetter geminiItemsEngine;
         private readonly CreateIssueEngine jiraSaveEngine;
         private readonly JiraAccountIdEngine accountEngine;
+        private readonly LogManager logManager;
 
 
         public ImportTaskEngine(
@@ -30,14 +32,15 @@ namespace GeminiToJira.Engine
             StoryIssueMapper geminiToJiraSubTaskMapper,
             GeminiTools.Items.ItemListGetter geminiItemsEngine,
             CreateIssueEngine jiraSaveEngine,
-            JiraAccountIdEngine accountEngine
-            )
+            JiraAccountIdEngine accountEngine,
+            LogManager logManager)
         {
             this.geminiToJiraTaskMapper = geminiToJiraTaskMapper;
             this.geminiToJiraSubTaskMapper = geminiToJiraSubTaskMapper;
             this.geminiItemsEngine = geminiItemsEngine;
             this.jiraSaveEngine = jiraSaveEngine;
             this.accountEngine = accountEngine;
+            this.logManager = logManager;
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -53,6 +56,8 @@ namespace GeminiToJira.Engine
             var geminiTaskIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter, configurationSetup);
 
             var taskLogFile = "TaskLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+
+            this.logManager.SetLogFile(configurationSetup.LogDirectory + taskLogFile);
 
             foreach (var geminiIssue in geminiTaskIssueList.Where(l => l.Type == "Development").OrderBy(f => f.Id).ToList())
             {
@@ -79,9 +84,7 @@ namespace GeminiToJira.Engine
                 }
                 catch (Exception ex)
                 {
-                    File.AppendAllText(
-                        configurationSetup.LogDirectory + taskLogFile,
-                        "[Task] - " + geminiIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
+                    this.logManager.Execute("[Task] - " + geminiIssue.IssueKey + " - " + ex.Message);
                 }
             }
 
@@ -116,9 +119,7 @@ namespace GeminiToJira.Engine
                     }
                     catch (Exception ex)
                     {
-                        File.AppendAllText(
-                            configurationSetup.LogDirectory + taskLogFile,
-                            "[SubTask] - " + currentSubIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
+                        this.logManager.Execute("[SubTask] - " + currentSubIssue.IssueKey + " - " + ex.Message);
                     }
                 }
             }

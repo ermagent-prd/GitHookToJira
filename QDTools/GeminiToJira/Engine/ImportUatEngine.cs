@@ -10,6 +10,7 @@ using JiraTools.Parameters;
 using System;
 using System.IO;
 using GeminiToJira.Parameters.Import;
+using GeminiToJira.Log;
 
 namespace GeminiToJira.Engine
 {
@@ -23,6 +24,8 @@ namespace GeminiToJira.Engine
         private readonly LinkEngine linkEngine;
         private readonly AddWatchersEngine watcherEngine;
         private readonly AffectedVersionsEngine affectedVersionEngine;
+        private readonly LogManager logManager;
+        private readonly DebugLogManager dbgLogManager;
 
         public ImportUatEngine(
             BugIssueMapper geminiToJiraMapper,
@@ -32,7 +35,9 @@ namespace GeminiToJira.Engine
             JiraAccountIdEngine accountEngine,
             LinkEngine linkEngine,
             AddWatchersEngine watcherEngine,
-            AffectedVersionsEngine affectedVersionEngine)
+            AffectedVersionsEngine affectedVersionEngine,
+            LogManager logManager,
+            DebugLogManager dbgLogManager)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -42,6 +47,8 @@ namespace GeminiToJira.Engine
             this.linkEngine = linkEngine;
             this.watcherEngine = watcherEngine;
             this.affectedVersionEngine = affectedVersionEngine;
+            this.logManager = logManager;
+            this.dbgLogManager = dbgLogManager;
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -50,9 +57,14 @@ namespace GeminiToJira.Engine
 
             var uatLogFile = "UatLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
+            this.logManager.SetLogFile(configurationSetup.LogDirectory + uatLogFile);
+
             //for debug only
             var uatImportedFile = "UatImported_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
-            File.AppendAllText(configurationSetup.LogDirectory + uatImportedFile, "IssueKey" + ";" + "Title" + ";" + "CreatedTime" + ";" + "Status" + Environment.NewLine);
+
+            this.dbgLogManager.SetLogFile(configurationSetup.LogDirectory + uatImportedFile);
+
+            this.dbgLogManager.Execute("IssueKey" + ";" + "Title" + ";" + "CreatedTime" + ";" + "Status");
 
             Countersoft.Gemini.Commons.Entity.IssuesFilter filter = GetUatFilter(configurationSetup);
             List<String> functionalityList = configurationSetup.Filter.UAT_FUNCTIONALITY;
@@ -82,12 +94,11 @@ namespace GeminiToJira.Engine
                     */
 
                     //for debug only
-                    File.AppendAllText(configurationSetup.LogDirectory + uatImportedFile,
-                        geminiIssue.IssueKey + ";" +
+
+                    this.dbgLogManager.Execute(geminiIssue.IssueKey + ";" +
                         geminiIssue.Title + ";" +
                         geminiIssue.CreatedTime + ";" +
-                        geminiIssue.Status +
-                        Environment.NewLine);
+                        geminiIssue.Status);
 
                     try
                     {
@@ -141,9 +152,9 @@ namespace GeminiToJira.Engine
                         jiraIssue.SaveChanges();
 
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        File.AppendAllText(configurationSetup.LogDirectory + uatLogFile, geminiIssue.IssueKey + Environment.NewLine);
+                        this.logManager.Execute(geminiIssue.IssueKey + " "+ ex.Message);
                     }
                 }
 

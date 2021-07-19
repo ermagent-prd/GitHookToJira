@@ -13,6 +13,7 @@ using AlfrescoTools.Engine;
 using DotCMIS.Client;
 using GeminiToJira.Parameters.Import;
 using JiraTools.Parameters;
+using GeminiToJira.Log;
 
 namespace GeminiToJira.Engine
 {
@@ -30,6 +31,8 @@ namespace GeminiToJira.Engine
         private readonly FilteredGeminiIssueListGetter issueGetter;
         private readonly GeminiIssueChecker issueChecker;
 
+        private readonly LogManager logManager;
+
 
         public ImportStoryEngine(
             StoryIssueMapper geminiToJiraMapper,
@@ -41,7 +44,8 @@ namespace GeminiToJira.Engine
             FolderCreateEngine folderEngine,
             UploadDocumentEngine uploadAlfrescoEngine,
             FilteredGeminiIssueListGetter issueGetter,
-            GeminiIssueChecker issueChecker)
+            GeminiIssueChecker issueChecker,
+            LogManager logManager)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -53,6 +57,7 @@ namespace GeminiToJira.Engine
             this.uploadAlfrescoEngine = uploadAlfrescoEngine;
             this.issueGetter = issueGetter;
             this.issueChecker = issueChecker;
+            this.logManager = logManager;
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -67,9 +72,10 @@ namespace GeminiToJira.Engine
 
             var geminiDevelopmentIssueList = this.issueGetter.Execute(configurationSetup);
 
+            
             var storyLogFile = "DevelopmentLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
-
+            this.logManager.SetLogFile(configurationSetup.LogDirectory + storyLogFile);
 
             var filteredDevelopments = 
                 geminiDevelopmentIssueList.Where(l => l.Type == "Development" || l.Type == "Enhancement")
@@ -78,48 +84,61 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in filteredDevelopments)
             {
-                try
-                {
-                    var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, storyType, projectCode);
-
-                    //Create Story
-                    Issue jiraIssue = SaveAndSetStory(jiraSavedDictionary, geminiIssue, jiraIssueInfo, configurationSetup);
-                    var storyFolder = SetAndSaveAlfrescoUrls(jiraIssueInfo, jiraIssue, "", configurationSetup);
-                    storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
-
-                    var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != configurationSetup.Gemini.GroupTypeCode && i.Value.Id != currentIssue.Id);
-
-                    //Story-SubTask
-                    foreach (var sub in hierarchy)
-                    {
-                        if (sub.Value.Type == "Task")
-                        {
-                            //Esclude figli di development (i dev sono censiti come story non in dipendenza
-                            if (sub.Value.ParentIssueId.HasValue && sub.Value.ParentIssueId.Value != currentIssue.Id)
-                            {
-                                var devParentIssue = filteredDevelopments.FirstOrDefault(d => d.Id == sub.Value.ParentIssueId.Value);
-
-                                if (devParentIssue != null)
-                                    continue;
-                            }
-
-                            var currentSubIssue = geminiItemsEngine.Execute(sub.Value.Id);
-
-                            SaveAndSetStorySubTask(configurationSetup, jiraIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder, checkRelease: false);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    File.AppendAllText(
-                        configurationSetup.LogDirectory + storyLogFile,
-                        "[Story] - " + geminiIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
-                }
+                importStory(
+                    configurationSetup, 
+                    projectCode, 
+                    jiraSavedDictionary, 
+                    storyFolderDictionary, 
+                    storyType, 
+                    storySubTaskType, 
+                    filteredDevelopments, geminiIssue);
             }
 
             //orphansManagement(configurationSetup, projectCode, jiraSavedDictionary, storyFolderDictionary, storyType, storySubTaskType, geminiDevelopmentIssueList, storyLogFile);
         }
+
+        private void importStory(GeminiToJiraParameters configurationSetup, string projectCode, Dictionary<int, Issue> jiraSavedDictionary, Dictionary<string, string> storyFolderDictionary, string storyType, string storySubTaskType, List<IssueDto> filteredDevelopments, IssueDto geminiIssue)
+        {
+            try
+            {
+                var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
+                var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, storyType, projectCode);
+
+                //Create Story
+                Issue jiraIssue = SaveAndSetStory(jiraSavedDictionary, geminiIssue, jiraIssueInfo, configurationSetup);
+                var storyFolder = SetAndSaveAlfrescoUrls(jiraIssueInfo, jiraIssue, "", configurationSetup);
+                storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
+
+                var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != configurationSetup.Gemini.GroupTypeCode && i.Value.Id != currentIssue.Id);
+
+                //Story-SubTask
+                foreach (var sub in hierarchy)
+                {
+                    if (sub.Value.Type == "Task")
+                    {
+                        //Esclude figli di development (i dev sono censiti come story non in dipendenza
+                        if (sub.Value.ParentIssueId.HasValue && sub.Value.ParentIssueId.Value != currentIssue.Id)
+                        {
+                            var devParentIssue = filteredDevelopments.FirstOrDefault(d => d.Id == sub.Value.ParentIssueId.Value);
+
+                            if (devParentIssue != null)
+                                continue;
+                        }
+
+                        var currentSubIssue = geminiItemsEngine.Execute(sub.Value.Id);
+
+                        SaveAndSetStorySubTask(configurationSetup, jiraIssue, currentSubIssue, jiraSavedDictionary, storySubTaskType, storyFolder, checkRelease: false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this.logManager.Execute(
+                    "[Story] - " + geminiIssue.IssueKey + " - " + ex.Message);
+            }
+        }
+
+
 
 
 
@@ -164,9 +183,7 @@ namespace GeminiToJira.Engine
                     }
                     catch (Exception ex)
                     {
-                        File.AppendAllText(
-                            configurationSetup.LogDirectory + storyLogFile,
-                            "[SubStory] - " + currentSubIssue.IssueKey + " - " + ex.Message + Environment.NewLine);
+                        this.logManager.Execute("[SubStory] - " + currentSubIssue.IssueKey + " - " + ex.Message);
                     }
                 }
             }

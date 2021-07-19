@@ -92,6 +92,9 @@
     <Compile Include="GeminiFilter\DevelopmentConstants.cs" />
     <Compile Include="GeminiFilter\Filter.cs" />
     <Compile Include="GeminiFilter\FilterType.cs" />
+    <Compile Include="Log\BaseLogManager.cs" />
+    <Compile Include="Log\DebugLogManager.cs" />
+    <Compile Include="Log\LogManager.cs" />
     <Compile Include="Mapper\CommentMapper.cs" />
     <Compile Include="Mapper\BugIssueMapper.cs" />
     <Compile Include="Mapper\TaskIssueMapper.cs" />
