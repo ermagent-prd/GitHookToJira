@@ -14,6 +14,8 @@ using DotCMIS.Client;
 using GeminiToJira.Parameters.Import;
 using JiraTools.Parameters;
 using GeminiToJira.Log;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace GeminiToJira.Engine
 {
@@ -81,7 +83,6 @@ namespace GeminiToJira.Engine
                 geminiDevelopmentIssueList.Where(l => l.Type == "Development" || l.Type == "Enhancement")
                 .OrderBy(f => f.Id).ToList();
 
-
             foreach (var geminiIssue in filteredDevelopments)
             {
                 importStory(
@@ -91,13 +92,37 @@ namespace GeminiToJira.Engine
                     storyFolderDictionary, 
                     storyType, 
                     storySubTaskType, 
-                    filteredDevelopments, geminiIssue);
+                    filteredDevelopments, 
+                    geminiIssue);
             }
+
+            /*
+            Parallel.ForEach(filteredDevelopments, geminiIssue =>
+            {
+                importStory(
+                     configurationSetup,
+                     projectCode,
+                     jiraSavedDictionary,
+                     storyFolderDictionary,
+                     storyType,
+                     storySubTaskType,
+                     filteredDevelopments,
+                     geminiIssue);
+            });
+            */
 
             //orphansManagement(configurationSetup, projectCode, jiraSavedDictionary, storyFolderDictionary, storyType, storySubTaskType, geminiDevelopmentIssueList, storyLogFile);
         }
 
-        private void importStory(GeminiToJiraParameters configurationSetup, string projectCode, Dictionary<int, Issue> jiraSavedDictionary, Dictionary<string, string> storyFolderDictionary, string storyType, string storySubTaskType, List<IssueDto> filteredDevelopments, IssueDto geminiIssue)
+        private void importStory(
+            GeminiToJiraParameters configurationSetup, 
+            string projectCode,
+            Dictionary<int, Issue> jiraSavedDictionary, 
+            Dictionary<string, string> storyFolderDictionary, 
+            string storyType, 
+            string storySubTaskType, 
+            List<IssueDto> filteredDevelopments, 
+            IssueDto geminiIssue)
         {
             try
             {

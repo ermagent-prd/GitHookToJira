@@ -18,7 +18,7 @@ namespace GeminiToJira
             var cfgKey = ImportCfgType.ILIASBSM;
             GeminiToJiraParameters configurationSetup = Readconfiguration(cfgKey);
 
-            var storyLogFile = configurationSetup.LogDirectory + "ImportLog_" + configurationSetup.JiraProjectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+            var storyLogFile = configurationSetup.LogDirectory + "ImportLog_" + configurationSetup.JiraProjectCode + "_" + DateTime.Now.ToString("yyyyMMdd-hh_mm") + ".log";
 
             Trace.AutoFlush = true;
             Trace.Listeners.Add(new TextWriterTraceListener(storyLogFile, "myListener"));
@@ -67,8 +67,8 @@ namespace GeminiToJira
             Console.WriteLine(endLog);
           
 
-            Console.WriteLine("Press a key to close");
-            Console.ReadLine();
+            //Console.WriteLine("Press a key to close");
+            //Console.ReadLine();
         }
 
         private static GeminiToJiraParameters Readconfiguration(ImportCfgType cfgKey)
@@ -101,7 +101,7 @@ namespace GeminiToJira
             var endMsg = "[" + DateTime.Now + "] Development imported in " + timer.Elapsed;
 
             Console.WriteLine(endMsg);
-            Trace.TraceInformation(startMsg);
+            Trace.TraceInformation(endMsg);
             
         }
 
