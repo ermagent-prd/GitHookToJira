@@ -39,8 +39,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Atlassian.Jira, Version=12.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Atlassian.SDK.12.3.0\lib\net452\Atlassian.Jira.dll</HintPath>
+    <Reference Include="Atlassian.Jira, Version=12.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Atlassian.SDK.12.4.0\lib\net452\Atlassian.Jira.dll</HintPath>
     </Reference>
     <Reference Include="Countersoft.Gemini.Commons">
       <HintPath>..\GeminiTools\libs\Countersoft.Gemini.Commons.dll</HintPath>

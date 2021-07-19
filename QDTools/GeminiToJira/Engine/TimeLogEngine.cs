@@ -28,7 +28,14 @@ namespace GeminiToJira.Engine
             foreach (var timeEntry in timeEntries)
             {
                 var author = accountEngine.Execute(timeEntry.Fullname,defaultAccountname);
-                var comment = "[~accountId:" + author.AccountId + "]\n" + parseCommentEngine.Execute(timeEntry.Entity.Comment);
+                //var comment = "[~accountId:" + author.AccountId + "]\n" + parseCommentEngine.Execute(timeEntry.Entity.Comment);
+
+                var authorName = author?.DisplayName != null ?
+                    author.DisplayName :
+                    "";
+
+                var comment = "[" + authorName + "]\n" + parseCommentEngine.Execute(timeEntry.Entity.Comment);
+
                 var timeSpent = timeEntry.Entity.Hours + "h " + timeEntry.Entity.Minutes + "m";
 
                 result.Add(new WorkLogInfo(author.AccountId, timeEntry.Entity.EntryDate, timeSpent, comment));

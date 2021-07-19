@@ -10,7 +10,6 @@ C:\Projects\Others\Processtools\Bin\QDTools\GeminiToJira\Debug\GeminiToJira.pdb
 C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.CoreCompileInputs.cache
 C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.exe
 C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.pdb
-C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csprojAssemblyReference.cache
 C:\GeminiPorting\processesTools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csprojAssemblyReference.cache
 C:\GeminiPorting\processesTools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.exe.config
 C:\GeminiPorting\processesTools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.CoreCompileInputs.cache
@@ -21,3 +20,5 @@ C:\GeminiPorting\processesTools\Bin\QDTools\GeminiToJira\Debug\GeminiToJira.exe
 C:\GeminiPorting\processesTools\Bin\QDTools\GeminiToJira\Debug\GeminiToJira.pdb
 C:\GeminiPorting\processesTools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.CopyComplete
 C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.CopyComplete
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToJira\Debug\Parameters\Import\CfgFiles\ILIAS-BSM.json
+C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.AssemblyReference.cache

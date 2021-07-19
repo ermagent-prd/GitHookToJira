@@ -366,3 +366,10 @@ FodyWeavers.xsd
 QDTools/.vs/QDTools/v16/.suo
 QDTools/.vs/QDTools/v16/TestStore/0/testlog.manifest
 QDTools/GeminiToJira/obj/Debug/GeminiToJira.csprojAssemblyReference.cache
+QDTools/GeminiToJira/obj/Debug/GeminiToJira.csproj.FileListAbsolute.txt
+*.exe
+*.pdb
+*.dll
+QDTools/.vs/QDTools/v16/.suo
+*.manifest
+*.cache

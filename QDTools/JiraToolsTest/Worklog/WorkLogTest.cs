@@ -22,7 +22,7 @@ namespace JiraToolsTest
 
             var userEngine = container.Resolve<UserListGetter>();
 
-            string issueKey = "ESIBT-274";
+            string issueKey = "ESIBT-510";
 
             string author = "Gaetano Gianquinto";
 
@@ -36,7 +36,12 @@ namespace JiraToolsTest
             userDict.TryGetValue(author, out user);
 
             if (user != null)
-                workLogengine.Execute(issueKey, user.AccountId, "1d",DateTime.Now,"test"); //non funziona l'attribuzione dello user. Viene settato di defualt lo user corrente
+                workLogengine.Execute(
+                    issueKey, 
+                    user.AccountId, 
+                    "1d",
+                    DateTime.Now,
+                    "test"); //non funziona l'attribuzione dello user. Viene settato di default lo user corrente
 
 
 

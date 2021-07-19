@@ -32,7 +32,6 @@ C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Microsoft.VisualStudio
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\JiraToolsTest.dll
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\JiraToolsTest.pdb
-C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csprojAssemblyReference.cache
 C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.CoreCompileInputs.cache
 C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.CopyComplete
 C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.dll
@@ -56,3 +55,4 @@ C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.dl
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.dll
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.pdb
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Parameters\Import\CfgFiles\ILIAS-BSM.json
+C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.AssemblyReference.cache
