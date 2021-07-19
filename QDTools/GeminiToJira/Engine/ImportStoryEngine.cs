@@ -69,7 +69,11 @@ namespace GeminiToJira.Engine
 
             var storyLogFile = "DevelopmentLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
-            var filteredDevelopments = geminiDevelopmentIssueList.Where(l => l.Type == "Development").OrderBy(f => f.Id).ToList();
+
+
+            var filteredDevelopments = 
+                geminiDevelopmentIssueList.Where(l => l.Type == "Development" || l.Type == "Enhancement")
+                .OrderBy(f => f.Id).ToList();
 
 
             foreach (var geminiIssue in filteredDevelopments)

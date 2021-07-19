@@ -8,9 +8,9 @@
   ],
   "Filter": {
     "STORY_PROJECT_ID": "|36|",
-    "STORY_TYPES": "|Developer|Task|",
+    "STORY_TYPES": "|Developer|Task|Enhancement|",
     "STORY_RELEASES": [
-      "ERMAS 5.25.2"
+      "ERMAS 5.25.3"
     ],
     "STORY_LINES": [
       "BSM",
@@ -64,7 +64,7 @@
     "MaxIssuesPerRequest": 10,
     "ImportStory": true,
     "ImportTask": false,
-    "ImportUat": true,
+    "ImportUat": false,
     "ImportBug": false,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
