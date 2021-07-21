@@ -73,7 +73,8 @@ namespace GeminiToJira.Engine
                         configurationSetup.Jira.BugTypeCode, 
                         projectCode, 
                         configurationSetup.Gemini.ErmBugPrefix,
-                        configurationSetup.Mapping.BUG_EPICLINK);
+                        configurationSetup.Mapping.BUG_EPICLINK,
+                        relatedDev:null);
             
                     var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                     SetAndSaveReporter(jiraIssue, geminiIssue,configurationSetup.Jira.DefaultAccount);

@@ -16,6 +16,9 @@ namespace JiraTools.Parameters
         public string ISSUE_TYPE_LABEL { get; set; }
         public string FIXED_IN_BUILD_LABEL { get; set; }
         public string BUG_AFFECTEDBUILD_LABEL { get; set; }
+
+        public string UAT_AFFECTEDBUILD_LABEL { get; set; }
+
         public string BUG_PROJECT_MODULE { get; set; }
 
         public string BUG_DELIVERABLE_VERSIONS { get; set; }
@@ -41,6 +44,9 @@ namespace JiraTools.Parameters
         public Dictionary<string, string> BUG_STATUS_MAPPING { get; set; }
         public Dictionary<string, string> BUG_PRIORITY_MAPPING { get; set; }
         public Dictionary<string, string> BUG_TYPE_MAPPING { get; set; }
+
+        public Dictionary<string, string> UAT_BUG_TYPE_MAPPING { get; set; }
+
         public Dictionary<string, string> BUG_CAUSE_TYPE_MAPPING { get; set; }
         public string BUG_CAUSE_TYPE_DEFAULT { get; set; }
         public Dictionary<string, string> BUG_SUGGESTED_ACTION_TYPE_MAPPING { get; set; }

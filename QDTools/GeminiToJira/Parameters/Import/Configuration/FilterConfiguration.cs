@@ -27,6 +27,9 @@ namespace GeminiToJira.Parameters.Import
         public bool TASK_INCLUDED_CLOSED { get; set; }
         public string UAT_PROJECT_ID { get; set; }
         public string UAT_CREATED_FROM { get; set; }
+
+        public int UAT_DAYS_BLOCK { get; set; }
+
         public bool UAT_GROUP_DEPENDENCIES { get; set; }
         public bool UAT_INCLUDED_CLOSED { get; set; }
         public List<string> UAT_FUNCTIONALITY { get; set; }

@@ -68,6 +68,23 @@ namespace JiraTools.Engine
                        select i;
         }
 
+        public IEnumerable<Issue> GetByTypeAndVersions(string projectCode,string issueType,List<string> fixVersions)
+        {
+            var jira = requestFactory.Service;
+
+            jira.Issues.MaxIssuesPerRequest = parameters.MaxIssuesPerRequest; //Max 100 ??
+
+                // use LINQ syntax to retrieve issues
+            return from i in jira.Issues.Queryable
+                    where 
+                    //i.Type.Name == issueType && 
+                    i.Project == projectCode 
+                    //&&
+                    //fixVersions.Contains(i.FixVersions.First().Name)
+                    select i;
+        }
+
+
         #endregion
     }
 }

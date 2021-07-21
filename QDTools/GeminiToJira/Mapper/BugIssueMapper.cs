@@ -6,6 +6,7 @@ using GeminiToJira.Parameters.Import;
 using GeminiTools.Items;
 using GeminiTools.Parameters;
 using JiraTools.Model;
+using JiraTools.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +55,8 @@ namespace GeminiToJira.Mapper
             string type, 
             string projectCode, 
             string ermPrefix,
-            string epicLink)
+            string epicLink,
+            Issue relatedDev)
         {
             var descAttachments = new List<string>();
 
@@ -86,7 +88,7 @@ namespace GeminiToJira.Mapper
             commentMapper.Execute(configurationSetup, jiraIssue, geminiIssue);
 
             //Load custom fields
-            LoadCustomFields(jiraIssue, geminiIssue, ermPrefix, configurationSetup);
+            LoadCustomFields(jiraIssue, geminiIssue, ermPrefix, configurationSetup, relatedDev);
 
             //Epic Link
             SetEpicLink(jiraIssue, epicLink);
@@ -138,7 +140,12 @@ namespace GeminiToJira.Mapper
             this.customeFieldEngine.Execute(jiraIssue, "Epic Link", epicLink);
         }
 
-        private void LoadCustomFields(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix, GeminiToJiraParameters configurationSetup)
+        private void LoadCustomFields(
+            CreateIssueInfo jiraIssue, 
+            IssueDto geminiIssue, 
+            string ermPrefix, 
+            GeminiToJiraParameters configurationSetup,
+            Issue relatedDev)
         {
             var mapping = configurationSetup.Mapping;
 
@@ -152,6 +159,17 @@ namespace GeminiToJira.Mapper
             string jiraBugType;
             if (bugType != null && bugType.FormattedData != "" && mapping.BUG_TYPE_MAPPING.TryGetValue(bugType.FormattedData, out jiraBugType))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Type", jiraBugType));
+
+            var uatComponent = geminiIssue.Components.FirstOrDefault();
+            string jiraUatBugType;
+            if (uatComponent != null && !string.IsNullOrWhiteSpace(uatComponent.Entity.Name) && mapping.UAT_BUG_TYPE_MAPPING.TryGetValue(uatComponent.Entity.Name, out jiraUatBugType))
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Type", jiraUatBugType));
+
+            //JdeModule
+            setJdeModule(relatedDev, jiraIssue);
+
+            //development line
+            //setDevelopmentLine(relatedDev, jiraIssue);
 
 
             //Bug Severity
@@ -172,6 +190,11 @@ namespace GeminiToJira.Mapper
             var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.BUG_AFFECTEDBUILD_LABEL);
             if (affectedBuild != null && affectedBuild.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Affected Build", affectedBuild.FormattedData));
+
+            var uatAffectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.UAT_AFFECTEDBUILD_LABEL);
+            if (uatAffectedBuild != null && uatAffectedBuild.FormattedData != "")
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Affected Build", uatAffectedBuild.FormattedData));
+
 
             //Fixed in build
             var fixedInBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "FixedInBuild");
@@ -226,6 +249,37 @@ namespace GeminiToJira.Mapper
             if (esup != null)
                 jiraIssue.CustomFields.Add(esup);
         }
+
+        private void setJdeModule(Issue relatedDev, CreateIssueInfo jiraIssue)
+        {
+            if (relatedDev == null)
+                return;
+
+            var jdeModule = relatedDev.CustomFields.FirstOrDefault(x => x.Name == "JDE Module");
+
+            if (jdeModule == null || !jdeModule.Values.Any())
+                return;
+
+            string value = jdeModule.Values.FirstOrDefault();
+
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("JDE Module", value));
+        }
+
+        private void setDevelopmentLine(Issue relatedDev, CreateIssueInfo jiraIssue)
+        {
+            if (relatedDev == null)
+                return;
+
+            var jdeModule = relatedDev.CustomFields.FirstOrDefault(x => x.Name == "Development Line");
+
+            if (jdeModule == null || !jdeModule.Values.Any())
+                return;
+
+            string value = jdeModule.Values.FirstOrDefault();
+
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("Development Line", value));
+        }
+
 
         private CustomFieldInfo getGeminiEsup(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {

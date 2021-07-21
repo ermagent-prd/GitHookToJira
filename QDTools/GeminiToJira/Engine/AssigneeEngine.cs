@@ -68,10 +68,10 @@ namespace GeminiToJira.Engine
             if (geminiIssue.Resources.Count == 1)
                 return geminiIssue.ResourceNames;
 
+            //Prendo la prima risorsa che ha modificato lo status da assigned a altro
             var historyItem = geminiIssue.History.OrderBy(i => i.Date).FirstOrDefault(
                 h => h.Entity.FieldChanged == "Status" &&
-                h.Entity.ValueBefore == "Assigned" &&
-                h.Entity.ValueAfter == "In Progress");
+                h.Entity.ValueBefore == "Assigned");
 
             if (historyItem != null)
                 return historyItem.Author;

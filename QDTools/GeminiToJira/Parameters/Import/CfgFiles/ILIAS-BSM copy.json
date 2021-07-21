@@ -10,7 +10,7 @@
     "STORY_PROJECT_ID": "|36|",
     "STORY_TYPES": "|Developer|Task|Enhancement|",
     "STORY_RELEASES": [
-      "ERMAS 5.24.0"
+      "ERMAS 5.25.2"
     ],
     "STORY_LINES": [
       "BSM",
@@ -32,12 +32,11 @@
     "TASK_LINE_KEY": "DVL",
     "TASK_INCLUDED_CLOSED": true,
     "UAT_PROJECT_ID": "|37|",
-    "UAT_CREATED_FROM": "01/01/2020",
-    "UAT_DAYS_BLOCK": 7,
+    "UAT_CREATED_FROM": "09/06/2021",
     "UAT_GROUP_DEPENDENCIES": true,
     "UAT_INCLUDED_CLOSED": true,
     "UAT_FUNCTIONALITY": [
-      "ERMAS"
+
     ],
     "ERMBUG_PROJECT_ID": "38",
     "ERMBUG_INCLUDED_CLOSED": true
@@ -58,21 +57,21 @@
     "GroupTypeCode": "Group"
   },
   "Jira": {
-    "User": "ermagent-prd@prometeia.com",
-    "Token": "JVWOLJyBSyfRVBVF2UrH93A4",
+    "User": "pierluigi.nanni@prometeia.com",
+    "Token": "GOojveJqyGUAgi6mzSAu3FAA",
     "Url": "https://prometeia-erm.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
-    "ImportStory": false,
+    "ImportStory": true,
     "ImportTask": false,
-    "ImportUat": true,
+    "ImportUat": false,
     "ImportBug": false,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
     "TaskTypeCode": "10023",
     "SubTaskTypeCode": "10025",
     "BugTypeCode": "10001",
-    "DefaultAccount": "ermagent-prd"
+    "DefaultAccount": "Pierluigi Nanni"
     },
 
   "Mapping": {
@@ -84,7 +83,6 @@
     "ISSUE_TYPE_LABEL": "IssueType",
     "FIXED_IN_BUILD_LABEL": "FixedInBuild",
     "BUG_AFFECTEDBUILD_LABEL": "FoundInBuild",
-    "UAT_AFFECTEDBUILD_LABEL": "AffectedBuild",
     "BUG_PROJECT_MODULE": "Product Module",
     "DEV_STATUS_MAPPING": {
       "backlog": "Backlog",
@@ -182,16 +180,6 @@
       "Engine": "Functional",
       "Sythesis": "Functional",
       "Other": "Functional"
-    },
-    "UAT_BUG_TYPE_MAPPING": {
-      "Calcoli": "Functional",
-      "Localizzazione": "Functional",
-      "Messaggio d'errore": "Functional",
-      "DAL": "Functional",
-      "Efficienza": "Performance",
-      "Interfaccia": "Usability",
-      "Usabilità": "Usability"
-
     },
     "BUG_CAUSE_TYPE_MAPPING": {
       "development mistake": "Development mistake",

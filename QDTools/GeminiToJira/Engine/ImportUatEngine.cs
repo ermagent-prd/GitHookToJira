@@ -27,6 +27,8 @@ namespace GeminiToJira.Engine
         private readonly LogManager logManager;
         private readonly DebugLogManager dbgLogManager;
 
+        private readonly JqlGetter jqlgetter;
+
         public ImportUatEngine(
             BugIssueMapper geminiToJiraMapper,
             GeminiTools.Items.ItemListGetter geminiItemsEngine,
@@ -37,7 +39,8 @@ namespace GeminiToJira.Engine
             AddWatchersEngine watcherEngine,
             AffectedVersionsEngine affectedVersionEngine,
             LogManager logManager,
-            DebugLogManager dbgLogManager)
+            DebugLogManager dbgLogManager,
+            JqlGetter jqlgetter)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -49,6 +52,7 @@ namespace GeminiToJira.Engine
             this.affectedVersionEngine = affectedVersionEngine;
             this.logManager = logManager;
             this.dbgLogManager = dbgLogManager;
+            this.jqlgetter = jqlgetter;
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -69,14 +73,34 @@ namespace GeminiToJira.Engine
             Countersoft.Gemini.Commons.Entity.IssuesFilter filter = GetUatFilter(configurationSetup);
             List<String> functionalityList = configurationSetup.Filter.UAT_FUNCTIONALITY;
 
+            //Load developments
+            string jsql = $"Project = \""+projectCode+"\" and type = \"Story\"";
+
+            var jiraStories = this.jqlgetter.Execute(jsql);
+
+            /*
+            var jiraStories = this.jiraItemsEngine.GetByTypeAndVersions(
+                projectCode,
+                "Story",
+                configurationSetup.Filter.STORY_RELEASES);
+            */
+                
+            var stories = jiraStories.ToDictionary(s =>s.Summary);
+
+
             //initial date from when we start the import
             var dateFrom = Convert.ToDateTime(configurationSetup.Filter.UAT_CREATED_FROM);
-            int daysInterval = 1;
+            int daysInterval = configurationSetup.Filter.UAT_DAYS_BLOCK == 0 ? 
+                7: 
+                configurationSetup.Filter.UAT_DAYS_BLOCK;
+
             var dateTo = dateFrom.AddDays(daysInterval);
 
             //filtro in base a related development/release !!!
 
             string dateFormat = "yyyy/MM/dd";
+
+            HashSet<string> geminiCodes = new HashSet<string>();
 
             while (dateFrom <= DateTime.Now)
             { 
@@ -88,10 +112,8 @@ namespace GeminiToJira.Engine
 
                 foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.CreatedTime).ThenBy(f => f.Id).ToList())
                 {
-                    /*
-                    if (geminiIssue.IssueKey != "UAT-72359")
+                    if (geminiCodes.Contains(geminiIssue.IssueKey))
                         continue;
-                    */
 
                     //for debug only
 
@@ -102,6 +124,24 @@ namespace GeminiToJira.Engine
 
                     try
                     {
+                        #region releated developmen checks
+
+                        var relatedDevSummary = getRelatedDevelopmentSummary(
+                            geminiIssue,
+                            configurationSetup.Gemini.ErmPrefix,
+                            configurationSetup.Mapping);
+
+                        if (string.IsNullOrWhiteSpace(relatedDevSummary))
+                            continue;
+
+                        Issue relatedDev = getStoryBySummary(relatedDevSummary, stories);
+
+                        if (relatedDev == null)
+                            continue;
+
+                        if (!relatedDev.FixVersions.Select(f => f.Name).Intersect(configurationSetup.Filter.STORY_RELEASES).Any())
+                            continue;
+                        #endregion
 
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
 
@@ -111,21 +151,8 @@ namespace GeminiToJira.Engine
                             configurationSetup.Jira.BugTypeCode,
                             projectCode,
                             configurationSetup.Gemini.UatPrefix,
-                            null);
-
-                        if (string.IsNullOrWhiteSpace(jiraIssueInfo.RelatedDevelopment))
-                            continue;
-
-                        Issue relatedDev = GetRelatedDevelopment(jiraItemsEngine, jiraIssueInfo, projectCode);
-
-                        if (relatedDev == null)
-                            continue;
-
-                        if (!relatedDev.FixVersions.Select(f => f.Name).Intersect(configurationSetup.Filter.STORY_RELEASES).Any())
-                            continue;
-
-                        foreach (var v in relatedDev.FixVersions)
-                            configurationSetup.Filter.STORY_RELEASES.Contains(v.Name);
+                            null,
+                            relatedDev);
 
                         //Add Affected build
                         this.affectedVersionEngine.AddFromRelatedDevelopment(relatedDev, jiraIssueInfo);
@@ -151,6 +178,8 @@ namespace GeminiToJira.Engine
 
                         jiraIssue.SaveChanges();
 
+                        geminiCodes.Add(geminiIssue.IssueKey);
+
                     }
                     catch(Exception ex)
                     {
@@ -167,6 +196,31 @@ namespace GeminiToJira.Engine
         }
 
         #region Private 
+
+        private string getRelatedDevelopmentSummary(IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
+        {
+            //Related Development Build
+            var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.RELATED_DEVELOPMENT_LABEL);
+
+            if (relatedDev != null)
+            {
+                return relatedDev.FormattedData;
+            }
+
+            return null;
+        }
+
+
+        private Issue getStoryBySummary(string summary, Dictionary<string,Issue> stories)
+        {
+            Issue item = null;
+            if (stories.TryGetValue(summary, out item))
+                return item;
+
+            return null;
+
+        }
+
         private Countersoft.Gemini.Commons.Entity.IssuesFilter GetUatFilter(GeminiToJiraParameters configurationSetup)
         {
             return new Countersoft.Gemini.Commons.Entity.IssuesFilter()
@@ -205,11 +259,16 @@ namespace GeminiToJira.Engine
 
         private void SetAndSaveReporter(Issue jiraIssue, IssueDto geminiIssue,string defaultAccount)
         {
-            if (geminiIssue.Reporter != "")
-            {
-                jiraIssue.Reporter = accountEngine.Execute(geminiIssue.Reporter, defaultAccount).AccountId;
-                //jiraIssue.SaveChanges();
-            }
+
+            if (string.IsNullOrWhiteSpace(geminiIssue.Reporter))
+                return;
+
+            var jiraUser = accountEngine.Execute(geminiIssue.Reporter, defaultAccount);
+
+            if (jiraUser == null)
+                return;
+
+            jiraIssue.Reporter = jiraUser.AccountId;
         }
 
         private Issue GetRelatedDevelopment(JiraTools.Engine.ItemListGetter jiraItemsEngine, JiraTools.Model.CreateIssueInfo jiraIssueInfo, string projectCode)

@@ -33,11 +33,12 @@ namespace GeminiToJira.Engine
 
         public void AddFromRelatedDevelopment(Issue relatedDevelopment, CreateIssueInfo jiraIssue)
         {
+            if (relatedDevelopment == null)
+                return;
+
             if (jiraIssue.AffectVersions != null && jiraIssue.AffectVersions.Any())
                 return;
 
-            if (relatedDevelopment == null)
-                return;
 
             if (relatedDevelopment.FixVersions == null || !relatedDevelopment.FixVersions.Any())
                 return;
