@@ -170,12 +170,11 @@
       "missing functionality": "Missing Functionality"
     },
     "BUG_STATUS_MAPPING": {
-      "backlog": "Backlog",
-      "assigned": "Backlog",
-      "in progess": "Backlog",
-      "won�t fix": "Backlog",
-      "not a Bug": "Backlog",
-      "fixed": "Backlog"
+      "assigned": "Assigned",
+      "in progress": "In progress",
+      "fixed": "Fixed",
+      "testing": "In review",
+      "cancelled": "Not a bug"
     },
     "BUG_SEVERITY_MAPPING": {
       "4 -Trivial": "Trivial",
@@ -183,7 +182,7 @@
       "2 - Major": "Major",
       "1 - Blocking": "Blocking"
     },
-
+    "BUG_SEVERITY_MAPPING_DEFAULT": "Minor",
     "BUG_PRIORITY_MAPPING": {
       "low": "Low",
       "medium": "Medium",

@@ -43,64 +43,83 @@ namespace GeminiToJira.Engine
             this.linkEngine = linkEngine;
             this.logManager = logManager;
             this.affectedVEngine = affectedVEngine;
-
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
         {
-            var projectCode = configurationSetup.JiraProjectCode;
-
-            Countersoft.Gemini.Commons.Entity.IssuesFilter filter = GetBugFilter(configurationSetup);
-
-            var bugIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter);
-
-            var geminiBugIssueList = getFiltered(configurationSetup,bugIssueList);
-
-            var bugLogFile = "BugLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
-
-            this.logManager.SetLogFile(configurationSetup.LogDirectory + bugLogFile);
-
-
-            foreach (var geminiIssue in geminiBugIssueList.OrderBy(f => f.Id).ToList())
+            try
             {
-                //Check
-                if (!bugCheck(geminiIssue, configurationSetup))
-                    continue;
+                var projectCode = configurationSetup.JiraProjectCode;
 
-                try
+                Countersoft.Gemini.Commons.Entity.IssuesFilter filter = GetBugFilter(configurationSetup);
+
+                var bugIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter);
+
+                var geminiBugIssueList = getFiltered(configurationSetup,bugIssueList);
+
+                var bugLogFile = "BugLog_" + projectCode + "_" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+
+                this.logManager.SetLogFile(configurationSetup.LogDirectory + bugLogFile);
+
+
+                var geminiIssues = geminiBugIssueList.OrderBy(f => f.Id);
+
+                foreach (var geminiIssue in geminiIssues)
                 {
-                    var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
+                    //Check
+                    if (!bugCheck(geminiIssue, configurationSetup))
+                        continue;
+
+                    try
+                    {
+                        var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
             
-                    var jiraIssueInfo = geminiToJiraMapper.Execute(
-                        configurationSetup, 
-                        currentIssue, 
-                        configurationSetup.Jira.BugTypeCode, 
-                        projectCode, 
-                        configurationSetup.Gemini.ErmBugPrefix,
-                        configurationSetup.Mapping.BUG_EPICLINK);
+                        var jiraIssueInfo = geminiToJiraMapper.Execute(
+                            configurationSetup, 
+                            currentIssue, 
+                            configurationSetup.Jira.BugTypeCode, 
+                            projectCode, 
+                            configurationSetup.Gemini.ErmBugPrefix,
+                            configurationSetup.Mapping.BUG_EPICLINK);
 
             
-                    var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
-                    SetAndSaveReporter(jiraIssue, geminiIssue,configurationSetup.Jira.DefaultAccount);
-                }
-                catch(Exception e)
-                {
-                    this.logManager.Execute(geminiIssue.IssueKey + e.Message);
-                }
+                        var jiraIssue = jiraSaveEngine.Execute(
+                            jiraIssueInfo, 
+                            configurationSetup.Jira, 
+                            configurationSetup.AttachmentDownloadedPath);
+
+                        SetAndSaveReporter(jiraIssue, geminiIssue,configurationSetup.Jira.DefaultAccount);
+                    }
+                    catch(Exception e)
+                    {
+                        this.logManager.Execute(geminiIssue.IssueKey + e.Message);
+                    }
             
+                }
+
+            }
+            catch (Exception e)
+            {
+                this.logManager.Execute(e.Message);
             }
         }
 
         private bool bugCheck(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
             //Product check
-            if (geminiIssue.CustomFields[10].FormattedData != configurationSetup.Filter.BUG_PRODUCT)
+            var product = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Product");
+            if (product == null)
                 return false;
 
+            if (product.FormattedData != configurationSetup.Filter.BUG_PRODUCT)
+                return false;
+
+            /*
             //Affected versions check
             var affectedVersions = this.affectedVEngine.ExtractVersions(geminiIssue.AffectedVersionNumbers);
             if (!affectedVersions.Intersect(configurationSetup.Filter.BUG_RELEASES).Any())
                 return false;
+            */
 
             return true;
         }

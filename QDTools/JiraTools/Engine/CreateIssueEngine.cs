@@ -43,7 +43,10 @@ namespace JiraTools.Engine
             this.attachmentEngine = attachmentEngineEngine;
         }
 
-        public Issue Execute(CreateIssueInfo issueFields, JiraConfiguration jiraConfiguration, string attachmentPath)
+        public Issue Execute(
+            CreateIssueInfo issueFields, 
+            JiraConfiguration jiraConfiguration, 
+            string attachmentPath)
         {
             var task = addIssue(issueFields, jiraConfiguration, attachmentPath);
 

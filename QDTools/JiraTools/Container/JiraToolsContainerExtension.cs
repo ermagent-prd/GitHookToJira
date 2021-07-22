@@ -35,8 +35,8 @@ namespace JiraTools.Container
             Container.RegisterType<PublicAddCommentEngine>();
             Container.RegisterType<AddCustomFieldEngine>();
             Container.RegisterType<AddWatcherEngine>();
-            
-
+            Container.RegisterType<ProjectGetter>();
+            Container.RegisterType<ProjectReleasesGetter>();
 
         }
 

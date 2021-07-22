@@ -205,7 +205,10 @@ namespace GeminiToJira.Engine
         private Issue SaveAndSetStory(Dictionary<int, Issue> jiraSavedDictionary, IssueDto geminiIssue, CreateIssueInfo jiraIssueInfo, GeminiToJiraParameters configurationSetup)
         {
             //save story
-            var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
+            var jiraIssue = jiraSaveEngine.Execute(
+                jiraIssueInfo, 
+                configurationSetup.Jira, 
+                configurationSetup.AttachmentDownloadedPath);
             //and set as saved
             if (!jiraSavedDictionary.TryGetValue(geminiIssue.Id, out Issue existing))
                 jiraSavedDictionary.Add(geminiIssue.Id, jiraIssue);
@@ -232,7 +235,10 @@ namespace GeminiToJira.Engine
             jiraStorySubTaskInfo.ParentIssueKey = jiraIssue.Key.Value;
 
             //create subtask
-            var subIssue = jiraSaveEngine.Execute(jiraStorySubTaskInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
+            var subIssue = jiraSaveEngine.Execute(
+                jiraStorySubTaskInfo, 
+                configurationSetup.Jira, 
+                configurationSetup.AttachmentDownloadedPath);
             //and set as saved
             if (!jiraSavedDictionary.TryGetValue(currentSubIssue.Id, out Issue existing))
                 jiraSavedDictionary.Add(currentSubIssue.Id, subIssue);

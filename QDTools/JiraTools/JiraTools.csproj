@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="Container\JiraToolsContainerExtension.cs" />
     <Compile Include="Engine\AddWatcherEngine.cs" />
+    <Compile Include="Engine\ProjectReleasesGetter.cs" />
+    <Compile Include="Engine\ProjectGetter.cs" />
     <Compile Include="Model\AddCustomFieldEngine.cs" />
     <Compile Include="Engine\PublicAddCommentEngine.cs" />
     <Compile Include="Engine\EditCustomFieldEngine.cs" />

@@ -119,6 +119,9 @@ namespace GeminiToJira.Mapper
             if (mapping.BUG_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out string status))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
 
+            //Bug Category
+            jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Category", "Post-release"));
+
             //Bug Type    
             var bugType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "BugType");
                 string jiraBugType;
