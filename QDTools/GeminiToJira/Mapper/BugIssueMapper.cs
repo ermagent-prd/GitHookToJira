@@ -1,15 +1,11 @@
-﻿using Atlassian.Jira;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Atlassian.Jira;
 using Countersoft.Gemini.Commons.Dto;
 using GeminiToJira.Engine;
-using GeminiToJira.Parameters;
 using GeminiToJira.Parameters.Import;
 using GeminiTools.Items;
-using GeminiTools.Parameters;
 using JiraTools.Model;
-using JiraTools.Parameters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace GeminiToJira.Mapper
 {
@@ -55,8 +51,7 @@ namespace GeminiToJira.Mapper
             string type, 
             string projectCode, 
             string ermPrefix,
-            string epicLink,
-            Issue relatedDev)
+            string epicLink)
         {
             var descAttachments = new List<string>();
 
@@ -65,9 +60,7 @@ namespace GeminiToJira.Mapper
                 ProjectKey = projectCode,
                 Summary = geminiIssue.Title.TrimEnd() == "" ? geminiIssue.IssueKey : geminiIssue.Title.TrimEnd(), //for bug without title
                 Description = parseCommentEngine.Execute(geminiIssue.Description, "desc", descAttachments, configurationSetup.AttachmentDownloadedPath),
-                Type = type,
-                //OriginalEstimate = geminiIssue.EstimatedHours + "h " + geminiIssue.EstimatedMinutes + "m",
-                //RemainingEstimate = geminiIssue.RemainingTime,
+                Type = type
             };
 
             if (configurationSetup.Mapping.BUG_PRIORITY_MAPPING.TryGetValue(geminiIssue.Priority.ToLower(), out string priority))
@@ -75,7 +68,7 @@ namespace GeminiToJira.Mapper
 
             this.affectedVersionEngine.Execute(geminiIssue, jiraIssue);
 
-            SetFixVersion(geminiIssue, jiraIssue, configurationSetup.Mapping);
+            SetBugFixVersion(geminiIssue, jiraIssue, configurationSetup.Mapping);
 
             //Assignee
             this.assigneeEngine.Execute(geminiIssue, jiraIssue, configurationSetup.Jira.DefaultAccount);
@@ -88,13 +81,10 @@ namespace GeminiToJira.Mapper
             commentMapper.Execute(configurationSetup, jiraIssue, geminiIssue);
 
             //Load custom fields
-            LoadCustomFields(jiraIssue, geminiIssue, ermPrefix, configurationSetup, relatedDev);
+            LoadCustomFields(jiraIssue, geminiIssue, ermPrefix, configurationSetup);
 
             //Epic Link
             SetEpicLink(jiraIssue, epicLink);
-
-            //For components use
-            SetRelatedDevelopment(jiraIssue, geminiIssue, configurationSetup.Gemini.ErmPrefix, configurationSetup.Mapping);
 
             //worklog
             jiraIssue.Logged = timeLogEngine.Execute(geminiIssue.TimeEntries, configurationSetup.Jira.DefaultAccount);
@@ -105,35 +95,11 @@ namespace GeminiToJira.Mapper
             return jiraIssue;
         }
 
-        public string GetGeminiRelatedDevelopmentKey(IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
-        {
-            //Related Development Build
-            var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.BUG_PROJECT_MODULE);
-
-            if (relatedDev != null)
-                return ermPrefix + relatedDev.Entity.Data;
-
-            return null;
-        }
-
         #endregion
 
 
 
         #region Private        
-
-
-        private void SetRelatedDevelopment(CreateIssueInfo jiraIssue, IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
-        {
-            //Related Development Build
-            var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.RELATED_DEVELOPMENT_LABEL);
-
-            if (relatedDev != null)
-            {
-                jiraIssue.RelatedDevelopment = relatedDev.FormattedData;
-                jiraIssue.RelatedDevelopmentId = ermPrefix + relatedDev.Entity.Data;
-            }
-        }
 
         private void SetEpicLink(CreateIssueInfo jiraIssue, string epicLink)
         {
@@ -144,57 +110,44 @@ namespace GeminiToJira.Mapper
             CreateIssueInfo jiraIssue, 
             IssueDto geminiIssue, 
             string ermPrefix, 
-            GeminiToJiraParameters configurationSetup,
-            Issue relatedDev)
+            GeminiToJiraParameters configurationSetup)
         {
             var mapping = configurationSetup.Mapping;
 
 
+            //status
             if (mapping.BUG_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out string status))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
-            else if (mapping.UAT_STATUS_MAPPING.TryGetValue(geminiIssue.Status.ToLower(), out status))
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("StatusTmp", status));
 
+            //Bug Type    
             var bugType = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "BugType");
-            string jiraBugType;
+                string jiraBugType;
             if (bugType != null && bugType.FormattedData != "" && mapping.BUG_TYPE_MAPPING.TryGetValue(bugType.FormattedData, out jiraBugType))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Type", jiraBugType));
 
-            var uatComponent = geminiIssue.Components.FirstOrDefault();
-            string jiraUatBugType;
-            if (uatComponent != null && !string.IsNullOrWhiteSpace(uatComponent.Entity.Name) && mapping.UAT_BUG_TYPE_MAPPING.TryGetValue(uatComponent.Entity.Name, out jiraUatBugType))
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Type", jiraUatBugType));
-
-            //JdeModule
-            setJdeModule(relatedDev, jiraIssue);
-
-            //development line
-            //setDevelopmentLine(relatedDev, jiraIssue);
-
-
             //Bug Severity
             string severityValue = string.IsNullOrWhiteSpace(geminiIssue.Severity) ?
-                configurationSetup.Mapping.UAT_SEVERITY_MAPPING_DEFAULT :
-                ParseSeverity(geminiIssue);
+                configurationSetup.Mapping.BUG_SEVERITY_MAPPING_DEFAULT :
+                geminiIssue.Severity;
 
-            if (mapping.UAT_SEVERITY_MAPPING.TryGetValue(severityValue.ToLower(), out string mappedSeverity))
+            if (mapping.BUG_SEVERITY_MAPPING.TryGetValue(severityValue, out string mappedSeverity))
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Severity", mappedSeverity));
 
 
             //Fixing Date
             var fixingDate = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Fixing Date");
-            if(fixingDate != null && fixingDate.FormattedData != "")
+            if (fixingDate != null && fixingDate.FormattedData != "")
                 jiraIssue.CustomFields.Add(new CustomFieldInfo("Fixing Date", fixingDate.Entity.DateData.Value.ToString("yyyy-M-d")));
 
-            //Affected Build
-            var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.BUG_AFFECTEDBUILD_LABEL);
+            //AffectedBuild
+            var affectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "FoundInBuild");
             if (affectedBuild != null && affectedBuild.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Affected Build", affectedBuild.FormattedData));
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("Affected Build", affectedBuild .FormattedData));
 
-            var uatAffectedBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.UAT_AFFECTEDBUILD_LABEL);
-            if (uatAffectedBuild != null && uatAffectedBuild.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("Affected Build", uatAffectedBuild.FormattedData));
-
+            //Product module
+            var productModule = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "Product Module");
+            if (productModule != null && productModule.FormattedData != "")
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("OriginalProductModule", productModule.FormattedData));
 
             //Fixed in build
             var fixedInBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "FixedInBuild");
@@ -211,6 +164,7 @@ namespace GeminiToJira.Mapper
                     jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug Cause Type", mapping.BUG_CAUSE_TYPE_DEFAULT));
             }
 
+
             //Cause description
             var causeDesc = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "Cause");
             if (causeDesc != null && causeDesc.FormattedData != "")
@@ -225,7 +179,7 @@ namespace GeminiToJira.Mapper
             var suggestedActionsType = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "SuggestedActionsType");
             if (suggestedActionsType != null && suggestedActionsType.FormattedData != "")
             {
-                if(mapping.BUG_SUGGESTED_ACTION_TYPE_MAPPING.TryGetValue(parseCommentEngine.Execute(suggestedActionsType.FormattedData).ToLower(), out string suggestedAction))
+                if (mapping.BUG_SUGGESTED_ACTION_TYPE_MAPPING.TryGetValue(parseCommentEngine.Execute(suggestedActionsType.FormattedData).ToLower(), out string suggestedAction))
                     jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug suggested action type", suggestedAction));
                 else
                     jiraIssue.CustomFields.Add(new CustomFieldInfo("Bug suggested action type", mapping.BUG_SUGGESTED_ACTION_TYPE_DEFAULT));
@@ -250,20 +204,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.CustomFields.Add(esup);
         }
 
-        private void setJdeModule(Issue relatedDev, CreateIssueInfo jiraIssue)
-        {
-            if (relatedDev == null)
-                return;
 
-            var jdeModule = relatedDev.CustomFields.FirstOrDefault(x => x.Name == "JDE Module");
-
-            if (jdeModule == null || !jdeModule.Values.Any())
-                return;
-
-            string value = jdeModule.Values.FirstOrDefault();
-
-            jiraIssue.CustomFields.Add(new CustomFieldInfo("JDE Module", value));
-        }
 
         private void setDevelopmentLine(Issue relatedDev, CreateIssueInfo jiraIssue)
         {
@@ -295,7 +236,7 @@ namespace GeminiToJira.Mapper
         }
 
 
-        private void SetFixVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue, JiraTools.Parameters.MappingConfiguration mapping)
+        private void SetBugFixVersion(IssueDto geminiIssue, CreateIssueInfo jiraIssue, JiraTools.Parameters.MappingConfiguration mapping)
         {
             jiraIssue.FixVersions = new List<string>();
 

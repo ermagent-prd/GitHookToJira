@@ -60,7 +60,7 @@ namespace GeminiToJira.Engine
 
 
 
-        private List<string> ExtractVersions(string versionList)
+        public List<string> ExtractVersions(string versionList)
         {
             var list = versionList.Split(',');
             return list.Select(x => x.TrimEnd().TrimStart()).ToList();

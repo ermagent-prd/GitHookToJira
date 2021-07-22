@@ -23,6 +23,7 @@ namespace GeminiToJira.Engine
         private readonly JiraAccountIdEngine accountEngine;
         private readonly LinkEngine linkEngine;
         private readonly LogManager logManager;
+        private readonly AffectedVersionsEngine affectedVEngine;
 
         public ImportBugEngine(
             BugIssueMapper geminiToJiraMapper,
@@ -31,7 +32,8 @@ namespace GeminiToJira.Engine
             CreateIssueEngine jiraSaveEngine,
             JiraAccountIdEngine accountEngine,
             LinkEngine linkEngine,
-            LogManager logManager)
+            LogManager logManager,
+            AffectedVersionsEngine affectedVEngine)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -40,6 +42,7 @@ namespace GeminiToJira.Engine
             this.accountEngine = accountEngine;
             this.linkEngine = linkEngine;
             this.logManager = logManager;
+            this.affectedVEngine = affectedVEngine;
 
         }
 
@@ -60,7 +63,8 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in geminiBugIssueList.OrderBy(f => f.Id).ToList())
             {
-                if (geminiIssue.IssueKey != "ERMBUG-71602")
+                //Check
+                if (!bugCheck(geminiIssue, configurationSetup))
                     continue;
 
                 try
@@ -73,8 +77,8 @@ namespace GeminiToJira.Engine
                         configurationSetup.Jira.BugTypeCode, 
                         projectCode, 
                         configurationSetup.Gemini.ErmBugPrefix,
-                        configurationSetup.Mapping.BUG_EPICLINK,
-                        relatedDev:null);
+                        configurationSetup.Mapping.BUG_EPICLINK);
+
             
                     var jiraIssue = jiraSaveEngine.Execute(jiraIssueInfo, configurationSetup.Jira, configurationSetup.AttachmentDownloadedPath);
                     SetAndSaveReporter(jiraIssue, geminiIssue,configurationSetup.Jira.DefaultAccount);
@@ -82,10 +86,23 @@ namespace GeminiToJira.Engine
                 catch(Exception e)
                 {
                     this.logManager.Execute(geminiIssue.IssueKey + e.Message);
-                    //File.AppendAllText(configurationSetup.LogDirectory + bugLogFile, geminiIssue.IssueKey + Environment.NewLine);
                 }
             
             }
+        }
+
+        private bool bugCheck(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        {
+            //Product check
+            if (geminiIssue.CustomFields[10].FormattedData != configurationSetup.Filter.BUG_PRODUCT)
+                return false;
+
+            //Affected versions check
+            var affectedVersions = this.affectedVEngine.ExtractVersions(geminiIssue.AffectedVersionNumbers);
+            if (!affectedVersions.Intersect(configurationSetup.Filter.BUG_RELEASES).Any())
+                return false;
+
+            return true;
         }
 
         private IEnumerable<IssueDto> getFiltered(GeminiToJiraParameters configurationSetup, IEnumerable<IssueDto> bugIssueList)
@@ -93,7 +110,7 @@ namespace GeminiToJira.Engine
             if (String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_PRODUCT))
               return bugIssueList;
 
-            return bugIssueList.Where(i => i.CustomFields[11].FormattedData.Equals(configurationSetup.Filter.BUG_PRODUCT));
+            return bugIssueList.Where(i => i.CustomFields[10].FormattedData.Equals(configurationSetup.Filter.BUG_PRODUCT));
         }
 
         #region Private 

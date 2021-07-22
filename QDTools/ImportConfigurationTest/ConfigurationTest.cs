@@ -116,7 +116,7 @@ namespace ImportConfigurationTest
                     ISSUE_TYPE_LABEL = "IssueType",
                     FIXED_IN_BUILD_LABEL = "FixedInBuild",
 
-                    BUG_AFFECTEDBUILD_LABEL = "FoundInBuild",
+                    BUG_FOUNDINBUILD_LABEL = "FoundInBuild",
                     BUG_PROJECT_MODULE = "Product Module",
 
                     DEV_STATUS_MAPPING = new Dictionary<string, string>()

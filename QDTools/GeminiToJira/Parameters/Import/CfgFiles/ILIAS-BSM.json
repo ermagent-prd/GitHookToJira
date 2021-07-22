@@ -40,7 +40,11 @@
       "ERMAS"
     ],
     "ERMBUG_PROJECT_ID": "38",
-    "ERMBUG_INCLUDED_CLOSED": true
+    "ERMBUG_INCLUDED_CLOSED": true,
+    "BUG_PRODUCT": "ERMAS",
+    "BUG_RELEASES": [
+      "ERMAS 5.24.0"
+    ]
   },
   "Alfresco": {
     "ServiceUrl": "http://10.100.2.85:8080/alfresco/cmisatom",
@@ -65,8 +69,8 @@
     "MaxIssuesPerRequest": 10,
     "ImportStory": false,
     "ImportTask": false,
-    "ImportUat": true,
-    "ImportBug": false,
+    "ImportUat": false,
+    "ImportBug": true,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
     "TaskTypeCode": "10023",
@@ -83,8 +87,9 @@
     "RELATED_DEVELOPMENT_LABEL": "Development",
     "ISSUE_TYPE_LABEL": "IssueType",
     "FIXED_IN_BUILD_LABEL": "FixedInBuild",
-    "BUG_AFFECTEDBUILD_LABEL": "FoundInBuild",
+    "BUG_FOUNDINBUILD_LABEL": "FoundInBuild",
     "UAT_AFFECTEDBUILD_LABEL": "AffectedBuild",
+    "BUG_DELIVERABLE_VERSIONS": "Deliverable Versions",
     "BUG_PROJECT_MODULE": "Product Module",
     "DEV_STATUS_MAPPING": {
       "backlog": "Backlog",
@@ -135,10 +140,10 @@
       "high": "High"
     },
     "UAT_SEVERITY_MAPPING": {
-      "low": "Trivial",
-      "medium": "Minor",
-      "high": "Major",
-      "highest": "Blocking"
+      "Low": "Trivial",
+      "Medium": "Minor",
+      "High": "Major",
+      "Blocking": "Blocking"
     },
     "UAT_CATEGORY_MAPPING": {
       "calcoli": "Functional",
@@ -172,6 +177,13 @@
       "not a Bug": "Backlog",
       "fixed": "Backlog"
     },
+    "BUG_SEVERITY_MAPPING": {
+      "4 -Trivial": "Trivial",
+      "3 - Minor": "Minor",
+      "2 - Major": "Major",
+      "1 - Blocking": "Blocking"
+    },
+
     "BUG_PRIORITY_MAPPING": {
       "low": "Low",
       "medium": "Medium",

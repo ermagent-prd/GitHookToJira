@@ -37,5 +37,7 @@ namespace GeminiToJira.Parameters.Import
         public bool ERMBUG_INCLUDED_CLOSED { get; set; }
 
         public string BUG_PRODUCT { get; set; }
+
+        public List<string> BUG_RELEASES { get; set; }
     }
 }

@@ -95,6 +95,7 @@
     <Compile Include="Log\BaseLogManager.cs" />
     <Compile Include="Log\DebugLogManager.cs" />
     <Compile Include="Log\LogManager.cs" />
+    <Compile Include="Mapper\UATIssueMapper.cs" />
     <Compile Include="Mapper\CommentMapper.cs" />
     <Compile Include="Mapper\BugIssueMapper.cs" />
     <Compile Include="Mapper\TaskIssueMapper.cs" />

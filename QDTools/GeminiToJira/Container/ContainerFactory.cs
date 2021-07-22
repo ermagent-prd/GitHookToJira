@@ -31,6 +31,7 @@ namespace GeminiToJira.Container
             container.RegisterType<ImportBugEngine>();
             container.RegisterType<TimeLogEngine>();
             container.RegisterType<BugIssueMapper>();
+            container.RegisterType<UATIssueMapper>();
             container.RegisterType<TaskIssueMapper>();
 
             container.RegisterType<FolderGetterEngine>();

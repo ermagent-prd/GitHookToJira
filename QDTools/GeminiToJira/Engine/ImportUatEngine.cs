@@ -1,22 +1,18 @@
-﻿using Countersoft.Gemini.Commons.Dto;
-using GeminiToJira.GeminiFilter;
-using GeminiToJira.Mapper;
-using GeminiToJira.Parameters;
-using JiraTools.Engine;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Atlassian.Jira;
-using JiraTools.Parameters;
-using System;
-using System.IO;
-using GeminiToJira.Parameters.Import;
+using Countersoft.Gemini.Commons.Dto;
 using GeminiToJira.Log;
+using GeminiToJira.Mapper;
+using GeminiToJira.Parameters.Import;
+using JiraTools.Engine;
 
 namespace GeminiToJira.Engine
 {
     public class ImportUatEngine
     {
-        private readonly BugIssueMapper geminiToJiraMapper;
+        private readonly UATIssueMapper geminiToJiraMapper;
         private readonly GeminiTools.Items.ItemListGetter geminiItemsEngine;
         private readonly JiraTools.Engine.ItemListGetter jiraItemsEngine;
         private readonly CreateIssueEngine jiraSaveEngine;
@@ -30,7 +26,7 @@ namespace GeminiToJira.Engine
         private readonly JqlGetter jqlgetter;
 
         public ImportUatEngine(
-            BugIssueMapper geminiToJiraMapper,
+            UATIssueMapper geminiToJiraMapper,
             GeminiTools.Items.ItemListGetter geminiItemsEngine,
             JiraTools.Engine.ItemListGetter jiraItemsEngine,
             CreateIssueEngine jiraSaveEngine,
@@ -78,15 +74,7 @@ namespace GeminiToJira.Engine
 
             var jiraStories = this.jqlgetter.Execute(jsql);
 
-            /*
-            var jiraStories = this.jiraItemsEngine.GetByTypeAndVersions(
-                projectCode,
-                "Story",
-                configurationSetup.Filter.STORY_RELEASES);
-            */
-                
             var stories = jiraStories.ToDictionary(s =>s.Summary);
-
 
             //initial date from when we start the import
             var dateFrom = Convert.ToDateTime(configurationSetup.Filter.UAT_CREATED_FROM);
@@ -271,48 +259,7 @@ namespace GeminiToJira.Engine
             jiraIssue.Reporter = jiraUser.AccountId;
         }
 
-        private Issue GetRelatedDevelopment(JiraTools.Engine.ItemListGetter jiraItemsEngine, JiraTools.Model.CreateIssueInfo jiraIssueInfo, string projectCode)
-        {
-            Issue jiraDev = null;
-            var jiraDevList = jiraItemsEngine.Execute(jiraIssueInfo.RelatedDevelopment, QuerableType.BySummary, projectCode);
 
-            try
-            {
-                jiraDev = SearchRelatedDevelopment(jiraIssueInfo, jiraDev, jiraDevList);
-            }
-            catch
-            {
-                //probably the title contains special charactes, that we need to remove (i.e. +, -, "...)
-                jiraDevList = jiraItemsEngine.Execute(
-                    RemoveSpecialChar(jiraIssueInfo),
-                    QuerableType.BySummary,
-                    projectCode);
-                jiraDev = SearchRelatedDevelopment(jiraIssueInfo, jiraDev, jiraDevList);
-            }
-
-            return jiraDev;
-        }
-
-        private string RemoveSpecialChar(JiraTools.Model.CreateIssueInfo jiraIssueInfo)
-        {
-            var search = jiraIssueInfo.RelatedDevelopment.Replace("\"", "");
-            search = search.Replace("+", "");
-            search = search.Replace("-", "");
-
-            return search;
-        }
-
-        private Issue SearchRelatedDevelopment(JiraTools.Model.CreateIssueInfo jiraIssueInfo, Issue jiraDev, IEnumerable<Issue> jiraDevList)
-        {
-            foreach (var curr in jiraDevList)
-            {
-                var geminiId = curr.CustomFields.FirstOrDefault(j => j.Name == "OriginalKey");
-                if (geminiId != null && geminiId.Values[0] == jiraIssueInfo.RelatedDevelopmentId)
-                    jiraDev = curr;
-            }
-
-            return jiraDev;
-        }
         #endregion
     }
 

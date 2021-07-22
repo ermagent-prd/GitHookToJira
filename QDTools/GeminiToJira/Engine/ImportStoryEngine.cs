@@ -96,21 +96,6 @@ namespace GeminiToJira.Engine
                     geminiIssue);
             }
 
-            /*
-            Parallel.ForEach(filteredDevelopments, geminiIssue =>
-            {
-                importStory(
-                     configurationSetup,
-                     projectCode,
-                     jiraSavedDictionary,
-                     storyFolderDictionary,
-                     storyType,
-                     storySubTaskType,
-                     filteredDevelopments,
-                     geminiIssue);
-            });
-            */
-
             //orphansManagement(configurationSetup, projectCode, jiraSavedDictionary, storyFolderDictionary, storyType, storySubTaskType, geminiDevelopmentIssueList, storyLogFile);
         }
 
