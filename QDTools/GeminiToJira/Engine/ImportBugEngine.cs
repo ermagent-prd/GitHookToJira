@@ -66,10 +66,6 @@ namespace GeminiToJira.Engine
 
                 foreach (var geminiIssue in geminiIssues)
                 {
-                    //Check
-                    if (!bugCheck(geminiIssue, configurationSetup))
-                        continue;
-
                     try
                     {
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
@@ -104,7 +100,7 @@ namespace GeminiToJira.Engine
             }
         }
 
-        private bool bugCheck(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        private bool idRelevant(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
             //Product check
             var product = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Product");
@@ -114,22 +110,19 @@ namespace GeminiToJira.Engine
             if (product.FormattedData != configurationSetup.Filter.BUG_PRODUCT)
                 return false;
 
-            /*
             //Affected versions check
             var affectedVersions = this.affectedVEngine.ExtractVersions(geminiIssue.AffectedVersionNumbers);
             if (!affectedVersions.Intersect(configurationSetup.Filter.BUG_RELEASES).Any())
                 return false;
-            */
 
             return true;
         }
 
         private IEnumerable<IssueDto> getFiltered(GeminiToJiraParameters configurationSetup, IEnumerable<IssueDto> bugIssueList)
         {
-            if (String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_PRODUCT))
-              return bugIssueList;
-
-            return bugIssueList.Where(i => i.CustomFields[10].FormattedData.Equals(configurationSetup.Filter.BUG_PRODUCT));
+            return bugIssueList
+                .Where(i => idRelevant(i, configurationSetup))
+                .Select(i => i);
         }
 
         #region Private 
@@ -139,7 +132,7 @@ namespace GeminiToJira.Engine
             return new Countersoft.Gemini.Commons.Entity.IssuesFilter()
             {
                 IncludeClosed = configurationSetup.Filter.ERMBUG_INCLUDED_CLOSED,
-                Projects = configurationSetup.Filter.ERMBUG_PROJECT_ID,
+                Projects = configurationSetup.Filter.ERMBUG_PROJECT_ID
             };
         }
 
