@@ -87,6 +87,7 @@
     <Compile Include="Container\GeminiToolsContainerExtension.cs" />
     <Compile Include="Engine\LinkItemEngine.cs" />
     <Compile Include="Items\AttachmentGetter.cs" />
+    <Compile Include="Items\ProjectVersionsGetter.cs" />
     <Compile Include="Items\ItemGetter.cs" />
     <Compile Include="Items\ItemListGetter.cs" />
     <Compile Include="Items\LinkItem.cs" />

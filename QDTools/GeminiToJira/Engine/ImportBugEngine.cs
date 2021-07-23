@@ -11,6 +11,7 @@ using Atlassian.Jira;
 using System.IO;
 using GeminiToJira.Parameters.Import;
 using GeminiToJira.Log;
+using GeminiTools.Items;
 
 namespace GeminiToJira.Engine
 {
@@ -24,6 +25,7 @@ namespace GeminiToJira.Engine
         private readonly LinkEngine linkEngine;
         private readonly LogManager logManager;
         private readonly AffectedVersionsEngine affectedVEngine;
+        private readonly ProjectVersionsGetter geminiProjectVersionGetter;
 
         public ImportBugEngine(
             BugIssueMapper geminiToJiraMapper,
@@ -33,7 +35,8 @@ namespace GeminiToJira.Engine
             JiraAccountIdEngine accountEngine,
             LinkEngine linkEngine,
             LogManager logManager,
-            AffectedVersionsEngine affectedVEngine)
+            AffectedVersionsEngine affectedVEngine,
+            ProjectVersionsGetter geminiProjectVersionGetter)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -43,6 +46,7 @@ namespace GeminiToJira.Engine
             this.linkEngine = linkEngine;
             this.logManager = logManager;
             this.affectedVEngine = affectedVEngine;
+            this.geminiProjectVersionGetter = geminiProjectVersionGetter;
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -100,7 +104,7 @@ namespace GeminiToJira.Engine
             }
         }
 
-        private bool idRelevant(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        private bool isRelevant(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
             //Product check
             var product = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Product");
@@ -112,7 +116,7 @@ namespace GeminiToJira.Engine
 
             //Affected versions check
             var affectedVersions = this.affectedVEngine.ExtractVersions(geminiIssue.AffectedVersionNumbers);
-            if (!affectedVersions.Intersect(configurationSetup.Filter.BUG_RELEASES).Any())
+            if (configurationSetup.Filter.BUG_RELEASES.Any() && !affectedVersions.Intersect(configurationSetup.Filter.BUG_RELEASES).Any())
                 return false;
 
             return true;
@@ -121,7 +125,7 @@ namespace GeminiToJira.Engine
         private IEnumerable<IssueDto> getFiltered(GeminiToJiraParameters configurationSetup, IEnumerable<IssueDto> bugIssueList)
         {
             return bugIssueList
-                .Where(i => idRelevant(i, configurationSetup))
+                .Where(i => isRelevant(i, configurationSetup))
                 .Select(i => i);
         }
 
@@ -153,7 +157,16 @@ namespace GeminiToJira.Engine
             }
         }
 
-        
+        private IEnumerable<string> getGeminiVersions(GeminiToJiraParameters configurationSetup)
+        {
+            var versions = this.geminiProjectVersionGetter.Execute(Convert.ToInt32(configurationSetup.Filter.ERMBUG_PROJECT_ID));
+
+            return versions
+                .Where(v => v.Entity.Name.Contains(configurationSetup.Filter.BUG_PRODUCT))
+                .Select(v => v.Entity.Name);
+        }
+
+
         #endregion
     }
 

@@ -10,12 +10,10 @@
     "STORY_PROJECT_ID": "|36|",
     "STORY_TYPES": "|Developer|Task|Enhancement|",
     "STORY_RELEASES": [
-      "ERMAS 5.24.0"
+      "ERMAS 5.26.0"
     ],
     "STORY_LINES": [
-      "BSM",
-      "ILIAS",
-      "ILIAS-STA"
+      "Hedge Accounting"
     ],
     "STORY_RELEASE_KEY": "Release Version",
     "STORY_LINE_KEY": "DVL",
@@ -67,10 +65,10 @@
     "Url": "https://prometeia-erm.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
-    "ImportStory": false,
+    "ImportStory": true,
     "ImportTask": false,
     "ImportUat": false,
-    "ImportBug": true,
+    "ImportBug": false,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
     "TaskTypeCode": "10023",
@@ -120,7 +118,8 @@
     "DEV_LINE_MAPPING": {
       "ILIAS-STA": "ILIAS STATICO",
       "ILIAS": "ILIAS DINAMICO",
-      "BSM": "BSM"
+      "BSM": "BSM",
+      "Hedge Accounting" : "Hedge Accounting"
     },
     "TASK_TYPE_MAPPING_DEFAULT": "Other",
     "UAT_STATUS_MAPPING": {

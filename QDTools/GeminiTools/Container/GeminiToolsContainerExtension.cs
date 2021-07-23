@@ -23,7 +23,7 @@ namespace GeminiTools.Container
             Container.RegisterType<ServiceManagerContainer>();
 
             Container.RegisterType<AttachmentGetter>();
-
+            Container.RegisterType<ProjectVersionsGetter>();
         }
 
         #endregion
