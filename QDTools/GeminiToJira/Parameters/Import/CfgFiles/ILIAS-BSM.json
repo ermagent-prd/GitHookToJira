@@ -8,11 +8,12 @@
   ],
   "Filter": {
     "STORY_PROJECT_ID": "|36|",
-    "STORY_TYPES": "|Developer|Task|Enhancement|",
+    "STORY_TYPES": "|Development|Task|Enhancement|",
     "STORY_RELEASES": [
-      "ERMAS 5.26.0"
+      "ERMAS 5.25.0"
     ],
     "STORY_LINES": [
+      "ILIAS",
       "Hedge Accounting"
     ],
     "STORY_RELEASE_KEY": "Release Version",
@@ -48,7 +49,8 @@
     "ServiceUrl": "http://10.100.2.85:8080/alfresco/cmisatom",
     "UserName": "apiuser",
     "Password": "cmis",
-    "RootFolder": "APi Test"
+    "RootFolder": "APi Test",
+    "FolderLinkPrefix":"http://10.100.2.85:8080/share/page/folder-details?nodeRef="
   },
   "Gemini": {
     "Url": "https://erm-swfactory.prometeia.com/Gemini",

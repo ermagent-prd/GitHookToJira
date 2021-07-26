@@ -14,6 +14,7 @@ using DotCMIS.Client;
 using GeminiToJira.Parameters.Import;
 using JiraTools.Parameters;
 using GeminiToJira.Log;
+using static GeminiToJira.Engine.JiraAccountIdEngine;
 
 namespace GeminiToJira.Engine
 {

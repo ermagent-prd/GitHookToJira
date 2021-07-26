@@ -83,6 +83,8 @@
     <Compile Include="Engine\Common\GeminiIssueChecker.cs" />
     <Compile Include="Engine\Bug\ImportBugEngine.cs" />
     <Compile Include="Engine\Common\GeminiUserMapper.cs" />
+    <Compile Include="Engine\Common\OriginalAccountLogger.cs" />
+    <Compile Include="Engine\Common\UrlChecker.cs" />
     <Compile Include="Engine\Task\ImportTaskEngine.cs" />
     <Compile Include="Engine\Uat\ImportUatEngine.cs" />
     <Compile Include="Engine\DevStory\ImportStoryEngine.cs" />

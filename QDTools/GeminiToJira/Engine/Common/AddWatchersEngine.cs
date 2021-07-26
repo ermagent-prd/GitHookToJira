@@ -4,6 +4,7 @@ using Atlassian.Jira;
 using Countersoft.Gemini.Commons.Dto;
 using JiraTools.Engine;
 using JiraTools.Model;
+using static GeminiToJira.Engine.JiraAccountIdEngine;
 
 namespace GeminiToJira.Engine
 {

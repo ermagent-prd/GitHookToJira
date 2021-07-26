@@ -50,6 +50,11 @@ namespace GeminiToJira.Container
             container.RegisterType<ParseCommentEngine>();
             container.RegisterType<MainEngine>();
             container.RegisterType<GeminiUserMapper>();
+            container.RegisterType<OriginalAccountLogger>();
+            container.RegisterType<URLChecker>();
+            
+
+
 
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<GeminiToolsContainerExtension>();

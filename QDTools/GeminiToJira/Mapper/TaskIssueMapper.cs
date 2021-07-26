@@ -10,6 +10,7 @@ using JiraTools.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static GeminiToJira.Engine.JiraAccountIdEngine;
 
 namespace GeminiToJira.Mapper
 {

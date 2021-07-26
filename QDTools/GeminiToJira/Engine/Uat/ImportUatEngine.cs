@@ -7,6 +7,7 @@ using GeminiToJira.Log;
 using GeminiToJira.Mapper;
 using GeminiToJira.Parameters.Import;
 using JiraTools.Engine;
+using static GeminiToJira.Engine.JiraAccountIdEngine;
 
 namespace GeminiToJira.Engine
 {

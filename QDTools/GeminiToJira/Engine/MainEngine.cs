@@ -19,17 +19,21 @@ namespace GeminiToJira.Engine
 
         private readonly ImportBugEngine bugEngine;
 
+        private readonly OriginalAccountLogger accountLogger;
+
         #endregion
 
         #region Constructor
 
         public MainEngine(
             ConfigurationContainer configurationManager,
+            OriginalAccountLogger accountLogger,
             ImportUatEngine uatEngine, 
             ImportTaskEngine taskEngine, 
             ImportStoryEngine storyEngine, 
             ImportBugEngine bugEngine)
         {
+            this.accountLogger = accountLogger;
             this.configurationManager = configurationManager;
             this.uatEngine = uatEngine;
             this.taskEngine = taskEngine;
@@ -86,6 +90,8 @@ namespace GeminiToJira.Engine
                 ImportBug(configurationSetup,  timer);
 
             #endregion
+
+            this.accountLogger.SaveLog();
 
             var endLog = "[" + DateTime.Now + "] Finished";
 

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Countersoft.Gemini.Commons.Dto;
 using JiraTools.Model;
+using static GeminiToJira.Engine.JiraAccountIdEngine;
 
 namespace GeminiToJira.Engine
 {

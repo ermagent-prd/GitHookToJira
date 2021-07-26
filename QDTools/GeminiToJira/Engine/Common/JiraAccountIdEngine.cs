@@ -13,13 +13,18 @@ namespace GeminiToJira.Engine
 
         private readonly GeminiUserMapper userMapper;
 
+        private readonly OriginalAccountLogger userLogger;
+
         public JiraAccountIdEngine(
             UserListGetter userListGetter,
-            GeminiUserMapper userMapper)
+            GeminiUserMapper userMapper,
+            OriginalAccountLogger userLogger)
         {
             this.userMapper = userMapper;
 
-            this.userListDictionary = new Lazy<Dictionary<string, JiraUser>> (() => GetUsersDictionary(userListGetter));
+            this.userLogger = userLogger;
+
+            this.userListDictionary = new Lazy<Dictionary<string, JiraUser>>(() => GetUsersDictionary(userListGetter));
         }
 
         //for test purpose
@@ -28,13 +33,16 @@ namespace GeminiToJira.Engine
             return userListDictionary.Value;
         }
 
-        public JiraUser Execute(string fullname, string defaultAccountname)
+
+        public JiraUser Execute(string fullName, string defaultAccountname)
         {
-            var mappedUserName = this.userMapper.Execute(fullname);
+            var mappedUserName = this.userMapper.Execute(fullName);
 
             JiraUser userAccount;
             if (userListDictionary.Value.TryGetValue(mappedUserName, out userAccount))
                 return userAccount;
+
+            this.userLogger.AddLog(fullName);
 
             if (string.IsNullOrWhiteSpace(defaultAccountname))
                 return null;
@@ -49,13 +57,13 @@ namespace GeminiToJira.Engine
         private Dictionary<string, JiraUser> GetUsersDictionary(UserListGetter userListGetter)
         {
             Dictionary<string, JiraUser> result = new Dictionary<string, JiraUser>();
-                        
+
             foreach (var group in userGroups)
             {
                 var userList = userListGetter.Execute();      //returns all active users
                 foreach (var user in userList)
                 {
-                    if(!result.TryGetValue(user.DisplayName, out JiraUser found))
+                    if (!result.TryGetValue(user.DisplayName, out JiraUser found))
                         result.Add(user.DisplayName, user);
                 }
             }
@@ -63,6 +71,6 @@ namespace GeminiToJira.Engine
             return result;
         }
 
-        
     }
 }
+

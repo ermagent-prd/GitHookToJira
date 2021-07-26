@@ -2,9 +2,11 @@
 using System.Linq;
 using Countersoft.Gemini.Commons.Dto;
 using GeminiToJira.Engine;
+using GeminiToJira.Engine.Common;
 using GeminiToJira.Parameters.Import;
 using GeminiTools.Items;
 using JiraTools.Model;
+using static GeminiToJira.Engine.JiraAccountIdEngine;
 
 namespace GeminiToJira.Mapper
 {
@@ -17,6 +19,7 @@ namespace GeminiToJira.Mapper
         private readonly TimeLogEngine timeLogEngine;
         private readonly AddCustomFieldEngine customeFieldEngine;
         private readonly AddWatchersEngine watchersEngine;
+        private readonly URLChecker urlChecker;
 
 
         public StoryIssueMapper(
@@ -26,7 +29,8 @@ namespace GeminiToJira.Mapper
             ParseCommentEngine parseCommentEngine,
             TimeLogEngine timeLogEngine,
             AddCustomFieldEngine customeFieldEngine,
-            AddWatchersEngine watchersEngine)
+            AddWatchersEngine watchersEngine,
+            URLChecker urlChecker)
         {
             this.attachmentGetter = attachmentGetter;
             this.commentMapper = commentMapper;
@@ -35,6 +39,7 @@ namespace GeminiToJira.Mapper
             this.timeLogEngine = timeLogEngine;
             this.customeFieldEngine = customeFieldEngine;
             this.watchersEngine = watchersEngine;
+            this.urlChecker = urlChecker;
         }
 
         public CreateIssueInfo Execute(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, string projectCode)
@@ -239,8 +244,8 @@ namespace GeminiToJira.Mapper
 
             //"Analysis Links"
             var analysisUrl = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Analysis Links");
-            if (analysisUrl != null && analysisUrl.FormattedData != "" && !analysisUrl.FormattedData.Contains("\n") && !analysisUrl.FormattedData.Contains("\r"))
-                jiraIssue.AnalysisUrl = analysisUrl.FormattedData;
+            if (!string.IsNullOrWhiteSpace(analysisUrl?.FormattedData) && !analysisUrl.FormattedData.Contains("\n") && !analysisUrl.FormattedData.Contains("\r"))
+                jiraIssue.AnalysisUrl = this.urlChecker.Execute(analysisUrl.FormattedData);
         }
 
         #endregion

@@ -12,6 +12,7 @@ using System.IO;
 using GeminiToJira.Parameters.Import;
 using GeminiToJira.Log;
 using GeminiTools.Items;
+using static GeminiToJira.Engine.JiraAccountIdEngine;
 
 namespace GeminiToJira.Engine
 {

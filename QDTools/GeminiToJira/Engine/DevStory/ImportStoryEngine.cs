@@ -1,21 +1,20 @@
-﻿using Countersoft.Gemini.Commons.Dto;
-using GeminiToJira.Mapper;
-using JiraTools.Engine;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Atlassian.Jira;
-using System;
 using System.IO;
-using GeminiTools.Engine;
-using JiraTools.Model;
-using GeminiTools.Items;
+using System.Linq;
 using AlfrescoTools.Engine;
+using Atlassian.Jira;
+using Countersoft.Gemini.Commons.Dto;
 using DotCMIS.Client;
-using GeminiToJira.Parameters.Import;
-using JiraTools.Parameters;
+using GeminiToJira.Engine.Common;
 using GeminiToJira.Log;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
+using GeminiToJira.Mapper;
+using GeminiToJira.Parameters.Import;
+using GeminiTools.Engine;
+using GeminiTools.Items;
+using JiraTools.Engine;
+using JiraTools.Model;
+using static GeminiToJira.Engine.JiraAccountIdEngine;
 
 namespace GeminiToJira.Engine
 {
@@ -34,7 +33,9 @@ namespace GeminiToJira.Engine
         private readonly GeminiIssueChecker issueChecker;
 
         private readonly LogManager logManager;
+        private readonly RemoteLinkEngine remoteLinkEngine;
 
+        private readonly URLChecker urlChecker;
 
         public ImportStoryEngine(
             StoryIssueMapper geminiToJiraMapper,
@@ -47,7 +48,9 @@ namespace GeminiToJira.Engine
             UploadDocumentEngine uploadAlfrescoEngine,
             FilteredGeminiIssueListGetter issueGetter,
             GeminiIssueChecker issueChecker,
-            LogManager logManager)
+            LogManager logManager,
+            RemoteLinkEngine remoteLinkEngine,
+            URLChecker urlChecker)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -60,6 +63,8 @@ namespace GeminiToJira.Engine
             this.issueGetter = issueGetter;
             this.issueChecker = issueChecker;
             this.logManager = logManager;
+            this.remoteLinkEngine = remoteLinkEngine;
+            this.urlChecker = urlChecker;
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -85,6 +90,7 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in filteredDevelopments)
             {
+
                 importStory(
                     configurationSetup, 
                     projectCode, 
@@ -112,6 +118,7 @@ namespace GeminiToJira.Engine
             try
             {
                 var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
+
                 var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, storyType, projectCode);
 
                 //Create Story
@@ -263,17 +270,22 @@ namespace GeminiToJira.Engine
             string rooStoryFolder, 
             GeminiToJiraParameters configurationSetup)
         {
-            LinkItem analysisLink = null;
+            //Set Analysis links
+            if (!string.IsNullOrWhiteSpace(jiraIssueInfo.AnalysisUrl) && jiraIssue.Type.Id == configurationSetup.Jira.StoryTypeCode)
+                this.remoteLinkEngine.Execute(
+                    jiraIssue,
+                    jiraIssueInfo.AnalysisUrl,
+                    "Analysis Documentation");
+
             LinkItem brAnalysisLink = null;
             LinkItem changeDocumentLink = null;
             LinkItem testDocumentLink = null;
             LinkItem newFeatureDocumentUrl = null;
 
-            GetLinks(jiraIssueInfo, ref analysisLink, ref brAnalysisLink, ref changeDocumentLink, ref testDocumentLink, ref newFeatureDocumentUrl);
+            GetLinks(jiraIssueInfo, ref brAnalysisLink, ref changeDocumentLink, ref testDocumentLink, ref newFeatureDocumentUrl);
 
             //if all links are anull no url to save
-            if (analysisLink == null && 
-                brAnalysisLink == null && 
+            if (brAnalysisLink == null && 
                 changeDocumentLink == null && 
                 testDocumentLink == null &&
                 newFeatureDocumentUrl == null)
@@ -283,50 +295,82 @@ namespace GeminiToJira.Engine
             IFolder folderAlfresco = null;
 
             //new folder is needed only if there is , at least, one File to save (url don't need folders)
-            if((analysisLink != null && analysisLink.FileName != "") ||
-                (brAnalysisLink != null && brAnalysisLink.FileName != "") ||
+            if((brAnalysisLink != null && brAnalysisLink.FileName != "") ||
                 (changeDocumentLink != null && changeDocumentLink.FileName != "") ||
                 (testDocumentLink != null && testDocumentLink.FileName != "") ||
                 (newFeatureDocumentUrl != null && newFeatureDocumentUrl.FileName != "") 
                 )
                 folderAlfresco = folderEngine.Execute(configurationSetup.Alfresco.RootFolder, newFolder, rooStoryFolder);
 
-            if (analysisLink != null)
-                SaveAndUploadToAlfresco(folderAlfresco, analysisLink, configurationSetup);
+            manageDocLink(
+                jiraIssue,
+                brAnalysisLink,
+                folderAlfresco,
+                configurationSetup,
+                "Business requirements");
 
-            if (brAnalysisLink != null)
-                SaveAndUploadToAlfresco(folderAlfresco, brAnalysisLink, configurationSetup);
+            manageDocLink(
+                jiraIssue,
+                changeDocumentLink,
+                folderAlfresco,
+                configurationSetup,
+                "Changes document");
 
-            if (changeDocumentLink != null)
-                SaveAndUploadToAlfresco(folderAlfresco, changeDocumentLink, configurationSetup);
+            manageDocLink(
+                jiraIssue,
+                testDocumentLink,
+                folderAlfresco,
+                configurationSetup,
+                "Test document");
 
-            if (testDocumentLink != null)
-                SaveAndUploadToAlfresco(folderAlfresco, testDocumentLink, configurationSetup);
-
-            if (newFeatureDocumentUrl != null)
-                SaveAndUploadToAlfresco(folderAlfresco, newFeatureDocumentUrl, configurationSetup);
+            manageDocLink(
+                jiraIssue,
+                newFeatureDocumentUrl,
+                folderAlfresco,
+                configurationSetup,
+                "New Feature document");
 
             //TODOPL save alfresco folder in csustomField if and only if folderAlfresco != null
             if (folderAlfresco != null && jiraIssue.Type.Id == configurationSetup.Jira.StoryTypeCode)
             {
-                jiraIssue.CustomFields.Add("Documentation Url", "http://10.100.2.85:8080/share/page/folder-details?nodeRef="+folderAlfresco.Id);
-                
+                var docUrl = configurationSetup.Alfresco.FolderLinkPrefix + folderAlfresco.Id;
+
+                jiraIssue.CustomFields.Add(
+                    "Documentation Url",
+                    docUrl);
+
+                this.remoteLinkEngine.Execute(
+                    jiraIssue,
+                    docUrl,
+                    "Documentation Url");
+
                 jiraIssue.SaveChanges();
             }
 
             return newFolder;
         }
 
+        private void manageDocLink(
+            Issue jiraIssue,
+            LinkItem docLink,
+            IFolder folderAlfresco,
+            GeminiToJiraParameters configurationSetup,
+            string docTitle)
+        {
+            if (docLink == null)
+                return;
+
+            var docUrl = SaveAndUploadToAlfresco(folderAlfresco, docLink, configurationSetup);
+
+            this.remoteLinkEngine.Execute(jiraIssue, docUrl, docTitle);
+        }
+
         private void GetLinks(CreateIssueInfo jiraIssueInfo, 
-            ref LinkItem analysisLink, 
             ref LinkItem brAnalysisLink, 
             ref LinkItem changeDocumentLink, 
             ref LinkItem testDocumentLink,
             ref LinkItem newFeatureDocumentUrl)
         {
-            if (jiraIssueInfo.AnalysisUrl != null && jiraIssueInfo.AnalysisUrl != "")
-                analysisLink = GetAttachmentLinkItem(jiraIssueInfo.AnalysisUrl);
-
             if (jiraIssueInfo.BrAnalysisUrl != null && jiraIssueInfo.BrAnalysisUrl != "")
                 brAnalysisLink = GetAttachmentLinkItem(jiraIssueInfo.BrAnalysisUrl);
 
@@ -345,7 +389,7 @@ namespace GeminiToJira.Engine
             if (attachmentUrl.Contains("drive.google.com"))
                 return new LinkItem
                 {
-                    Href = attachmentUrl.Replace("<p>", "").Replace("</p>", ""),
+                    Href = this.urlChecker.Execute(attachmentUrl),
                     FileName = ""
                 };
             else
@@ -353,6 +397,7 @@ namespace GeminiToJira.Engine
                 return linkItemEngine.Execute(attachmentUrl);
             }
         }
+
 
         private string SaveAndUploadToAlfresco(IFolder folderAlfresco, LinkItem attachmentLink, GeminiToJiraParameters configurationSetup)
         {
