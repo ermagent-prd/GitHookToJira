@@ -75,18 +75,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\ContainerFactory.cs" />
-    <Compile Include="Engine\AddWatchersEngine.cs" />
-    <Compile Include="Engine\AffectedVersionsEngine.cs" />
-    <Compile Include="Engine\AssigneeEngine.cs" />
-    <Compile Include="Engine\FilteredGeminiIssueListGetter.cs" />
-    <Compile Include="Engine\GeminiIssueChecker.cs" />
-    <Compile Include="Engine\ImportBugEngine.cs" />
-    <Compile Include="Engine\ImportTaskEngine.cs" />
-    <Compile Include="Engine\ImportUatEngine.cs" />
-    <Compile Include="Engine\ImportStoryEngine.cs" />
-    <Compile Include="Engine\JiraAccountIdEngine.cs" />
-    <Compile Include="Engine\ParseCommentEngine.cs" />
-    <Compile Include="Engine\TimeLogEngine.cs" />
+    <Compile Include="Engine\Common\AddWatchersEngine.cs" />
+    <Compile Include="Engine\Common\AffectedVersionsEngine.cs" />
+    <Compile Include="Engine\Common\AssigneeEngine.cs" />
+    <Compile Include="Engine\Common\ConfigurationContainer.cs" />
+    <Compile Include="Engine\Common\FilteredGeminiIssueListGetter.cs" />
+    <Compile Include="Engine\Common\GeminiIssueChecker.cs" />
+    <Compile Include="Engine\Bug\ImportBugEngine.cs" />
+    <Compile Include="Engine\Common\GeminiUserMapper.cs" />
+    <Compile Include="Engine\Task\ImportTaskEngine.cs" />
+    <Compile Include="Engine\Uat\ImportUatEngine.cs" />
+    <Compile Include="Engine\DevStory\ImportStoryEngine.cs" />
+    <Compile Include="Engine\Common\JiraAccountIdEngine.cs" />
+    <Compile Include="Engine\MainEngine.cs" />
+    <Compile Include="Engine\Common\ParseCommentEngine.cs" />
+    <Compile Include="Engine\Common\TimeLogEngine.cs" />
     <Compile Include="GeminiFilter\UatConstants.cs" />
     <Compile Include="GeminiFilter\ErmBugConstants.cs" />
     <Compile Include="GeminiFilter\DevelopmentConstants.cs" />

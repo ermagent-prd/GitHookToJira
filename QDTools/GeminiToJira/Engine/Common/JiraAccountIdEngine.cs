@@ -1,11 +1,8 @@
-﻿using Atlassian.Jira;
-using GeminiTools.Service;
-using JiraTools.Engine;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Atlassian.Jira;
+using GeminiToJira.Engine.Common;
+using JiraTools.Engine;
 
 namespace GeminiToJira.Engine
 {
@@ -14,8 +11,14 @@ namespace GeminiToJira.Engine
         private readonly List<string> userGroups = new List<string>() { "Administrators" };
         private readonly Lazy<Dictionary<string, JiraUser>> userListDictionary;
 
-        public JiraAccountIdEngine(UserListGetter userListGetter)
+        private readonly GeminiUserMapper userMapper;
+
+        public JiraAccountIdEngine(
+            UserListGetter userListGetter,
+            GeminiUserMapper userMapper)
         {
+            this.userMapper = userMapper;
+
             this.userListDictionary = new Lazy<Dictionary<string, JiraUser>> (() => GetUsersDictionary(userListGetter));
         }
 
@@ -27,8 +30,10 @@ namespace GeminiToJira.Engine
 
         public JiraUser Execute(string fullname, string defaultAccountname)
         {
+            var mappedUserName = this.userMapper.Execute(fullname);
+
             JiraUser userAccount;
-            if (userListDictionary.Value.TryGetValue(fullname, out userAccount))
+            if (userListDictionary.Value.TryGetValue(mappedUserName, out userAccount))
                 return userAccount;
 
             if (string.IsNullOrWhiteSpace(defaultAccountname))

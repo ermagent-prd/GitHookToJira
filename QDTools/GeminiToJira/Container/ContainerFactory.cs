@@ -2,6 +2,7 @@
 using AlfrescoTools.Engine;
 using AlfrescoTools.Parameters;
 using GeminiToJira.Engine;
+using GeminiToJira.Engine.Common;
 using GeminiToJira.Log;
 using GeminiToJira.Mapper;
 using GeminiToJira.Parameters;
@@ -46,15 +47,10 @@ namespace GeminiToJira.Container
             container.RegisterType<LogManager>();
             container.RegisterType<DebugLogManager>();
             container.RegisterType<StoryIssueMapper>();
-            
-
-
-
-
-
-
-
             container.RegisterType<ParseCommentEngine>();
+            container.RegisterType<MainEngine>();
+            container.RegisterType<GeminiUserMapper>();
+
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<GeminiToolsContainerExtension>();
             container.AddNewExtension<AlfrescoToolsContainerExtension>();

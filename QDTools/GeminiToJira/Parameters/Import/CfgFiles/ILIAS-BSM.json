@@ -238,7 +238,9 @@
       "use entity framework": "Refactoring",
       "sql test": "Integration test"
     },
-    "BUG_SUGGESTED_ACTION_TYPE_DEFAULT": "Other"
+    "BUG_SUGGESTED_ACTION_TYPE_DEFAULT": "Other",
+    "USER_MAPPING": {
+    }
   },
   "LogDirectory": "C:\\TMP\\FromGeminiImport\\Log\\",
   "AttachmentDownloadedPath": "C:\\TMP\\FromGeminiImport\\AttachmentDownloaded\\",
