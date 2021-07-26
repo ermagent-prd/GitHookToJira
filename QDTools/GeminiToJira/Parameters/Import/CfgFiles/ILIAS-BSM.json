@@ -49,7 +49,7 @@
     "ServiceUrl": "http://10.100.2.85:8080/alfresco/cmisatom",
     "UserName": "apiuser",
     "Password": "cmis",
-    "RootFolder": "/ERM/ESF/Production/Ermas/Ermas Developments",
+    "RootFolder": "/ERM/ESF/Production/Ermas/Ermas Developments/From Gemini",
     "FolderLinkPrefix":"http://10.100.2.85:8080/share/page/folder-details?nodeRef="
   },
   "Gemini": {

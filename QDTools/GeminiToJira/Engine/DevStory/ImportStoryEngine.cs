@@ -90,9 +90,6 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in filteredDevelopments)
             {
-                if (geminiIssue.IssueKey != "ERM-59753")
-                    continue;
-
                 importStory(
                     configurationSetup, 
                     projectCode, 
@@ -293,9 +290,10 @@ namespace GeminiToJira.Engine
                 newFeatureDocumentUrl == null)
                 return "";
 
-            var newFolder = jiraIssue.Key.Value + " " + jiraIssue.Summary;
+            var newFolder = jiraIssue.Summary;
             IFolder folderAlfresco = null;
 
+            
             //new folder is needed only if there is , at least, one File to save (url don't need folders)
             if((brAnalysisLink != null && brAnalysisLink.FileName != "") ||
                 (changeDocumentLink != null && changeDocumentLink.FileName != "") ||
