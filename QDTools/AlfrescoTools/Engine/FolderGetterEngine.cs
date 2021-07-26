@@ -37,6 +37,8 @@ namespace AlfrescoTools.Engine
             
             // get all folders  
             IFolder root = alfresco.GetRootFolder();
+
+            
                        
 
             return root.GetChildren();
@@ -44,19 +46,7 @@ namespace AlfrescoTools.Engine
 
         public ICmisObject Execute(string folderName)
         {
-            var folderList = this.Execute();
-            ICmisObject found = null;
-
-            foreach (var folder in folderList)
-            {
-                if (folder.Name == folderName)
-                {
-                    found = folder;
-                    break;
-                }
-            }
-
-            return found;
+            return alfresco.GetObjectByPath(folderName);
         }
 
         #endregion

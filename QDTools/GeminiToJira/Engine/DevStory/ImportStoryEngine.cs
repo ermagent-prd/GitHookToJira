@@ -90,6 +90,8 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in filteredDevelopments)
             {
+                if (geminiIssue.IssueKey != "ERM-59753")
+                    continue;
 
                 importStory(
                     configurationSetup, 
