@@ -10,11 +10,14 @@
     "STORY_PROJECT_ID": "|36|",
     "STORY_TYPES": "|Development|Task|Enhancement|",
     "STORY_RELEASES": [
-      "ERMAS 5.25.0"
+      "0.0.0.0"
     ],
     "STORY_LINES": [
+      "BSM",
       "ILIAS",
-      "Hedge Accounting"
+      "ILIAS-STA",
+      "Hedge Accounting",
+      "Other"
     ],
     "STORY_RELEASE_KEY": "Release Version",
     "STORY_LINE_KEY": "DVL",
@@ -121,7 +124,8 @@
       "ILIAS-STA": "ILIAS STATICO",
       "ILIAS": "ILIAS DINAMICO",
       "BSM": "BSM",
-      "Hedge Accounting" : "Hedge Accounting"
+      "Hedge Accounting" : "Hedge Accounting",
+      "Other" : "Other"
     },
     "TASK_TYPE_MAPPING_DEFAULT": "Other",
     "UAT_STATUS_MAPPING": {
