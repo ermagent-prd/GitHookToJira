@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{68DE191B-C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvnToolsTest", "SvnToolsTest\SvnToolsTest.csproj", "{63825A91-8FB1-4757-B6A0-E3B3ABDF64A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeminiToJiraTest", "GeminiToJiraTest\GeminiToJiraTest.csproj", "{E49E9CFA-A67F-49B2-B179-7DD2A5F7DD58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,10 @@ Global
 		{63825A91-8FB1-4757-B6A0-E3B3ABDF64A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63825A91-8FB1-4757-B6A0-E3B3ABDF64A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63825A91-8FB1-4757-B6A0-E3B3ABDF64A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E49E9CFA-A67F-49B2-B179-7DD2A5F7DD58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E49E9CFA-A67F-49B2-B179-7DD2A5F7DD58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E49E9CFA-A67F-49B2-B179-7DD2A5F7DD58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E49E9CFA-A67F-49B2-B179-7DD2A5F7DD58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +104,7 @@ Global
 		{6B7DE0D7-A94E-462F-BE95-27E63968F8B8} = {68DE191B-C371-4BF7-8873-9BC3E3089FCA}
 		{3F4BA9BC-B5C4-4C99-9602-8525683304D0} = {68DE191B-C371-4BF7-8873-9BC3E3089FCA}
 		{63825A91-8FB1-4757-B6A0-E3B3ABDF64A8} = {68DE191B-C371-4BF7-8873-9BC3E3089FCA}
+		{E49E9CFA-A67F-49B2-B179-7DD2A5F7DD58} = {68DE191B-C371-4BF7-8873-9BC3E3089FCA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D73078B6-F330-412D-8DC3-174805D4703B}

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace GeminiToJira.Engine.Common
 {
@@ -20,6 +18,13 @@ namespace GeminiToJira.Engine.Common
         {
             return
                 originalUrl.Replace("<p>", "").Replace("</p>", "");
+        }
+
+        public bool IsValid(string urlAddress)
+        {
+            Uri uriResult;
+            return Uri.TryCreate(urlAddress, UriKind.Absolute, out uriResult)
+                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
         #endregion

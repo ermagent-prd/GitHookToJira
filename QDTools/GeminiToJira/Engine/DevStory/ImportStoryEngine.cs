@@ -33,7 +33,7 @@ namespace GeminiToJira.Engine
         private readonly GeminiIssueChecker issueChecker;
 
         private readonly LogManager logManager;
-        private readonly RemoteLinkEngine remoteLinkEngine;
+        private readonly JiraRemoteLinkerEngine remoteLinkEngine;
 
         private readonly URLChecker urlChecker;
 
@@ -49,7 +49,7 @@ namespace GeminiToJira.Engine
             FilteredGeminiIssueListGetter issueGetter,
             GeminiIssueChecker issueChecker,
             LogManager logManager,
-            RemoteLinkEngine remoteLinkEngine,
+            JiraRemoteLinkerEngine remoteLinkEngine,
             URLChecker urlChecker)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
@@ -90,6 +90,9 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in filteredDevelopments)
             {
+                if (geminiIssue.IssueKey != "ERM-61163")
+                    continue;
+
                 importStory(
                     configurationSetup, 
                     projectCode, 
@@ -271,10 +274,12 @@ namespace GeminiToJira.Engine
         {
             //Set Analysis links
             if (!string.IsNullOrWhiteSpace(jiraIssueInfo.AnalysisUrl) && jiraIssue.Type.Id == configurationSetup.Jira.StoryTypeCode)
+            {
                 this.remoteLinkEngine.Execute(
                     jiraIssue,
                     jiraIssueInfo.AnalysisUrl,
                     "Analysis Documentation");
+            }
 
             LinkItem brAnalysisLink = null;
             LinkItem changeDocumentLink = null;

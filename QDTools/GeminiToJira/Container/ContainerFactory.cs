@@ -52,9 +52,7 @@ namespace GeminiToJira.Container
             container.RegisterType<GeminiUserMapper>();
             container.RegisterType<OriginalAccountLogger>();
             container.RegisterType<URLChecker>();
-            
-
-
+            container.RegisterType<JiraRemoteLinkerEngine>();
 
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<GeminiToolsContainerExtension>();
