@@ -10,14 +10,19 @@
     "STORY_PROJECT_ID": "|36|",
     "STORY_TYPES": "|Development|Task|Enhancement|",
     "STORY_RELEASES": [
-      "ERMAS 5.24.0"
+      "ERMAS 5.24.0",
+      "ERMAS 5.24.1",
+      "ERMAS 5.25.0",
+      "ERMAS 5.25.1",
+      "ERMAS 5.25.2",
+      "ERMAS 5.25.3",
+      "ERMAS 5.25.4",
+      "0.0.0.0"
     ],
     "STORY_LINES": [
-      "BSM",
-      "ILIAS",
-      "ILIAS-STA",
-      "Hedge Accounting",
-      "Other"
+      "Performance Management",
+      "ALM",
+      "Interactive Simulation"
     ],
     "STORY_RELEASE_KEY": "Release Version",
     "STORY_LINE_KEY": "DVL",
@@ -41,11 +46,14 @@
     "UAT_FUNCTIONALITY": [
       "ERMAS"
     ],
+    "UAT_RELATED_DEV": [
+    ],
+
     "ERMBUG_PROJECT_ID": "38",
     "ERMBUG_INCLUDED_CLOSED": true,
     "BUG_PRODUCT": "ERMAS",
     "BUG_RELEASES": [
-      "ERMAS 5.24.0"
+      "ERMAS 5.25.1"
     ]
   },
   "Alfresco": {
@@ -70,9 +78,9 @@
     "Url": "https://prometeia-erm.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
-    "ImportStory": true,
+    "ImportStory": false,
     "ImportTask": false,
-    "ImportUat": false,
+    "ImportUat": true,
     "ImportBug": false,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
@@ -125,7 +133,13 @@
       "ILIAS": "ILIAS DINAMICO",
       "BSM": "BSM",
       "Hedge Accounting" : "Hedge Accounting",
-      "Other" : "Other"
+      "Other" : "Other",
+      "Performance Management" : "Performance Management",
+      "ALM" : "ALM",
+      "Interactive Simulation" : "Interactive Simulation",
+      "Consolidamenti" : "Consolidation",
+      "Core Technologies" : "Core Technologies"
+    
     },
     "TASK_TYPE_MAPPING_DEFAULT": "Other",
     "UAT_STATUS_MAPPING": {

@@ -33,6 +33,9 @@ namespace GeminiToJira.Parameters.Import
         public bool UAT_GROUP_DEPENDENCIES { get; set; }
         public bool UAT_INCLUDED_CLOSED { get; set; }
         public List<string> UAT_FUNCTIONALITY { get; set; }
+
+        public List<string> UAT_RELATED_DEV { get; set; }
+
         public string ERMBUG_PROJECT_ID { get; set; }
         public bool ERMBUG_INCLUDED_CLOSED { get; set; }
 

@@ -71,11 +71,8 @@ namespace GeminiToJira.Engine
             List<String> functionalityList = configurationSetup.Filter.UAT_FUNCTIONALITY;
 
             //Load developments
-            string jsql = $"Project = \""+projectCode+"\" and type = \"Story\"";
 
-            var jiraStories = this.jqlgetter.Execute(jsql);
-
-            var stories = jiraStories.ToDictionary(s =>s.Summary);
+            var stories = getStories(projectCode, configurationSetup.Filter.STORY_RELEASES);
 
             //initial date from when we start the import
             var dateFrom = Convert.ToDateTime(configurationSetup.Filter.UAT_CREATED_FROM);
@@ -118,7 +115,7 @@ namespace GeminiToJira.Engine
                         var relatedDevSummary = getRelatedDevelopmentSummary(
                             geminiIssue,
                             configurationSetup.Gemini.ErmPrefix,
-                            configurationSetup.Mapping);
+                            configurationSetup);
 
                         if (string.IsNullOrWhiteSpace(relatedDevSummary))
                             continue;
@@ -128,8 +125,6 @@ namespace GeminiToJira.Engine
                         if (relatedDev == null)
                             continue;
 
-                        if (!relatedDev.FixVersions.Select(f => f.Name).Intersect(configurationSetup.Filter.STORY_RELEASES).Any())
-                            continue;
                         #endregion
 
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);           //we need a new call to have the attachments
@@ -186,21 +181,45 @@ namespace GeminiToJira.Engine
 
         #region Private 
 
-        private string getRelatedDevelopmentSummary(IssueDto geminiIssue, string ermPrefix, JiraTools.Parameters.MappingConfiguration mapping)
+        private Dictionary<String,Issue> getStories(string projectCode, List<string> releases)
+        {
+            string jsql = $"Project = \"" + projectCode + "\" and type = \"Story\"";
+
+            var jiraStories = this.jqlgetter.Execute(jsql);
+
+            var filteredIssues = jiraStories
+                .Where(s => s.FixVersions.Select(f => f.Name).Intersect(releases).Any())
+                .Select(s => s);
+
+            return filteredIssues.ToDictionary(s => s.Summary);
+
+        }
+
+        private string getRelatedDevelopmentSummary(IssueDto geminiIssue, string ermPrefix, GeminiToJiraParameters config)
         {
             //Related Development Build
-            var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.RELATED_DEVELOPMENT_LABEL);
+            var relatedDev = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == config.Mapping.RELATED_DEVELOPMENT_LABEL);
 
-            if (relatedDev != null)
-            {
-                return relatedDev.FormattedData;
-            }
+            if (relatedDev == null)
+                return null;
 
-            return null;
+            var devSummary = relatedDev.FormattedData;
+
+            if (String.IsNullOrWhiteSpace(devSummary))
+                return null;
+
+            //Check dev filter if active
+            if (config.Filter?.UAT_RELATED_DEV == null || !config.Filter.UAT_RELATED_DEV.Any())
+                return devSummary;
+
+            if (!config.Filter.UAT_RELATED_DEV.Contains(devSummary))
+                return null;
+
+            return devSummary;
         }
 
 
-        private Issue getStoryBySummary(string summary, Dictionary<string,Issue> stories)
+    private Issue getStoryBySummary(string summary, Dictionary<string,Issue> stories)
         {
             Issue item = null;
             if (stories.TryGetValue(summary, out item))
