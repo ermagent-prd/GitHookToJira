@@ -13,6 +13,7 @@ namespace JiraTools.Model
             this.CustomFields = new List<CustomFieldInfo>();
             this.Components = new List<string>();
             this.Logged = new List<WorkLogInfo>();
+            this.RemoteLinks = new List<RemoteLinkInfo>();
         }
 
         public string ProjectKey { get; set; }
@@ -69,6 +70,8 @@ namespace JiraTools.Model
         public string NewFeatureDocumentUrl { get; set; }
         public string Status { get; set; }
         public int PercentComplete { get; set; }
-        
+
+        public IEnumerable<RemoteLinkInfo> RemoteLinks { get; set; }
+
     }
 }

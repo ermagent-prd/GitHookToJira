@@ -84,6 +84,7 @@
     <Compile Include="Model\CreateIssueInfo.cs" />
     <Compile Include="Model\CustomFieldInfo.cs" />
     <Compile Include="Model\JiraErmIssue.cs" />
+    <Compile Include="Model\RemoteLinkInfo.cs" />
     <Compile Include="Model\WorkLogInfo.cs" />
     <Compile Include="Parameters\IJiraToolsParameters.cs" />
     <Compile Include="Parameters\JiraToolsConfiguration.cs" />

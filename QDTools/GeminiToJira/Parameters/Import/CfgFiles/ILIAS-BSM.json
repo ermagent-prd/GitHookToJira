@@ -1,5 +1,5 @@
 {
-  "JiraProjectCode": "ESIBT",
+  "JiraProjectCode": "ERMAS",
   "ComponentsForDevelopment": [
     "ILIAS",
     "ILIAS-STA",
@@ -53,7 +53,7 @@
     "ERMBUG_INCLUDED_CLOSED": true,
     "BUG_PRODUCT": "ERMAS",
     "BUG_RELEASES": [
-      "ERMAS 5.25.1"
+      "ERMAS 5.25.0"
     ]
   },
   "Alfresco": {
@@ -70,6 +70,7 @@
     "UatPrefix": "UAT-",
     "ErmBugPrefix": "ERMBUG-",
     "ProjectUrl": "https://erm-swfactory.prometeia.com/Gemini/project/",
+    "EsupWorkspaceUrl" : "https://erm-swfactory.prometeia.com/Gemini/workspace/3456/item/",
     "GroupTypeCode": "Group"
   },
   "Jira": {
@@ -80,8 +81,8 @@
     "MaxIssuesPerRequest": 10,
     "ImportStory": false,
     "ImportTask": false,
-    "ImportUat": true,
-    "ImportBug": false,
+    "ImportUat": false,
+    "ImportBug": true,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
     "TaskTypeCode": "10023",
@@ -143,14 +144,14 @@
     },
     "TASK_TYPE_MAPPING_DEFAULT": "Other",
     "UAT_STATUS_MAPPING": {
-      "assigned": "To Do",
+      "assigned": "Assigned",
       "in progress": "In progress",
       "fixed": "Ready for test",
-      "testing": "Testing",
-      "closed": "Closed",
-      "rejected": "Rejected",
-      "cancelled": "Cancelled",
-      "in Backlog": "In Backlog"
+      "testing": "In review",
+      "closed": "Fixed",
+      "rejected": "In progress",
+      "cancelled": "Not a bug",
+      "in Backlog": "Backlog"
     },
     "UAT_STATUS_MAPPING_DEFAULT": "To Do",
     "UAT_PRIORITY_MAPPING": {

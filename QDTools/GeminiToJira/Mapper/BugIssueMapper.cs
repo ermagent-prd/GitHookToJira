@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Atlassian.Jira;
 using Countersoft.Gemini.Commons.Dto;
@@ -91,6 +92,8 @@ namespace GeminiToJira.Mapper
 
             //watchers
             this.watchersEngine.Execute(jiraIssue, geminiIssue);
+
+            jiraIssue.RemoteLinks = getRemoteLinks(geminiIssue, configurationSetup);
 
             return jiraIssue;
         }
@@ -207,7 +210,22 @@ namespace GeminiToJira.Mapper
                 jiraIssue.CustomFields.Add(esup);
         }
 
+        private IEnumerable<RemoteLinkInfo> getRemoteLinks(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        {
+            var esupList = geminiIssue.Hierarchy
+                .Where(i => i.Value.EscapedProjectCode == "ESUP")
+                .Select(i => i);
 
+            
+
+            return esupList.Any() ?
+                esupList.Select(i => new RemoteLinkInfo(
+                    String.Format("{0} - {1}", i.Value.IssueKey, i.Value.Title),
+                    configurationSetup.Gemini.EsupWorkspaceUrl + i.Value.Id.ToString(),
+                    null))
+                : null;
+
+        }
 
         private void setDevelopmentLine(Issue relatedDev, CreateIssueInfo jiraIssue)
         {

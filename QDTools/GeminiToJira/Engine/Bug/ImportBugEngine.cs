@@ -71,6 +71,9 @@ namespace GeminiToJira.Engine
 
                 foreach (var geminiIssue in geminiIssues)
                 {
+                    if (geminiIssue.IssueKey != "ERMBUG-69064")
+                        continue;
+
                     try
                     {
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);

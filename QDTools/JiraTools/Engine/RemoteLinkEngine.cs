@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Atlassian.Jira;
 using JiraTools.Service;
 
@@ -24,6 +25,9 @@ namespace JiraTools.Engine
             string title,
             string summary = null)
         {
+            if (!IsValid(linkUrl))
+                return;
+
             var cmtTask = addRemoteLink(jiraIssue, linkUrl, title, summary);
 
             if (cmtTask == null)
@@ -38,6 +42,14 @@ namespace JiraTools.Engine
         #endregion
 
         #region Private methods
+
+        private bool IsValid(string urlAddress)
+        {
+            Uri uriResult;
+            return Uri.TryCreate(urlAddress, UriKind.Absolute, out uriResult)
+                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+
 
         private async Task addRemoteLink(
             Issue jiraIssue,

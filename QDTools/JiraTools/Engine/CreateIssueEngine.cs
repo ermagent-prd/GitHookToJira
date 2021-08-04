@@ -29,18 +29,20 @@ namespace JiraTools.Engine
         private readonly AddWorklogEngine worklogEngine;
         private readonly AddCommentEngine commentEngine;
         private readonly AddAttachmentEngine attachmentEngine;
-        
+        private readonly RemoteLinkEngine remoteLinkEngine;
 
         public CreateIssueEngine(
             ServiceManagerContainer requestFactory,
             AddWorklogEngine worklogEngine,
             AddCommentEngine commentEngine,
-            AddAttachmentEngine attachmentEngineEngine)
+            AddAttachmentEngine attachmentEngineEngine,
+            RemoteLinkEngine remoteLinkEngine)
         {
             this.requestFactory = requestFactory;
             this.worklogEngine = worklogEngine;
             this.commentEngine = commentEngine;
             this.attachmentEngine = attachmentEngineEngine;
+            this.remoteLinkEngine = remoteLinkEngine;
         }
 
         public Issue Execute(
@@ -120,8 +122,22 @@ namespace JiraTools.Engine
             if (fieldsInfo.Watchers != null && fieldsInfo.Watchers.Count > 0)
                 addWatchers(issue, fieldsInfo.Watchers);
 
+            addRemoteLinkers(issue, fieldsInfo.RemoteLinks);
+
             return issue;
         }
+
+        private void addRemoteLinkers(Issue jiraIssue, IEnumerable<RemoteLinkInfo> links)
+        {
+            if (links == null)
+                return;
+
+            foreach(var l in links)
+            {
+                this.remoteLinkEngine.Execute(jiraIssue, l.Url, l.Title, l.Sumnary);
+            }
+        }
+
 
         private static void addWatchers(Issue issue, List<string> resources)
         {
