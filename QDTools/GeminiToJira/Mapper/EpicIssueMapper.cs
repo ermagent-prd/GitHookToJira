@@ -87,6 +87,9 @@ namespace GeminiToJira.Mapper
             if (release != null && release.FormattedData != "")
                 jiraIssue.FixVersions.Add(release.FormattedData);
 
+            //Development Line
+            SetDevLine(geminiIssue, jiraIssue, configurationSetup.Mapping.DEV_LINE_MAPPING, configurationSetup.Mapping);
+
             //Watchers
             this.watchersEngine.Execute(jiraIssue, geminiIssue);
 
@@ -99,6 +102,19 @@ namespace GeminiToJira.Mapper
 
         #region Private    
 
+        private static void SetDevLine(IssueDto geminiIssue, CreateIssueInfo jiraIssue, Dictionary<string, string> devLinesDict, JiraTools.Parameters.MappingConfiguration mapping)
+        {
+            if (devLinesDict == null || !devLinesDict.Any())
+                return;
+
+            var devLine = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == mapping.LINE_KEY_LABEL);
+            if (devLine != null && devLine.Entity.Data != "")
+            {
+                string devLineValue;
+                if (devLinesDict.TryGetValue(devLine.Entity.Data, out devLineValue))
+                    jiraIssue.CustomFields.Add(new CustomFieldInfo("Development Line", devLineValue));
+            }
+        }
 
 
         private void CalculateRemainigEstimate(GeminiToJiraParameters configurationSetup, IssueDto geminiIssue, string type, CreateIssueInfo jiraIssue)

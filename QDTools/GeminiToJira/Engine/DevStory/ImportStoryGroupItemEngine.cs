@@ -91,9 +91,14 @@ namespace GeminiToJira.Engine
                 foreach (var group in currentIssuesGroups)
                 {
 
+                    var geminiGroupIssue = this.geminiItemsEngine.Execute(group.Value.Id);
+
+                    if (geminiGroupIssue == null)
+                        continue;
+
                     var jiraStoryInfo = this.geminiToJiraMapper.Execute(
-                        configurationSetup, 
-                        group.Value, 
+                        configurationSetup,
+                        geminiGroupIssue, 
                         configurationSetup.Jira.StoryTypeCode, 
                         projectCode,
                         currentIssue);
