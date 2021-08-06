@@ -66,7 +66,7 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in filteredDevelopments)
             {
-                if (geminiIssue.IssueKey != "ERM-67043")
+                if (!filterIssue(configurationSetup,geminiIssue.IssueKey))
                     continue;
                 
                 //Story with Group
@@ -99,6 +99,20 @@ namespace GeminiToJira.Engine
         }
 
         #region Private 
+
+        private bool filterIssue(GeminiToJiraParameters configurationSetup, string issueKey)
+        {
+            if (configurationSetup.Filter.SELECTED_ISSUES == null)
+                return true;
+
+            if (!configurationSetup.Filter.SELECTED_ISSUES.Any())
+                return true;
+
+            if (configurationSetup.Filter.SELECTED_ISSUES.Contains(issueKey))
+                return true;
+
+            return false;
+        }
 
         private void importStory(
             GeminiToJiraParameters configurationSetup, 

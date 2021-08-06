@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace GeminiToJira.Parameters.Import
 {
     public class FilterConfiguration
     {
-        //from DevelopmentConstants.cs
-        //from ErmBugConstants.cs
-        //from UatConstants.cs
+        public List<string> SELECTED_ISSUES { get; set; }
+
         public string STORY_PROJECT_ID { get; set; }
         public string STORY_TYPES { get; set; }
         public List<string> STORY_RELEASES { get; set; }

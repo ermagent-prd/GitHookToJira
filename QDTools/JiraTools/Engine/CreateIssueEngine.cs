@@ -63,9 +63,15 @@ namespace JiraTools.Engine
         {
             IssueTimeTrackingData timeTrackingData = null;
 
+
+
             if (fieldsInfo.Type.Id != jiraConfiguration.UatTypeCode && 
-                fieldsInfo.Type.Id != jiraConfiguration.BugTypeCode &&
+                fieldsInfo.Type.Id != jiraConfiguration.BugTypeCode) 
+/*                
+                &&
                 fieldsInfo.Type.Id != jiraConfiguration.EpicTypeCode)
+
+*/
                 timeTrackingData = new IssueTimeTrackingData(
                     fieldsInfo.OriginalEstimate,
                     fieldsInfo.RemainingEstimate);

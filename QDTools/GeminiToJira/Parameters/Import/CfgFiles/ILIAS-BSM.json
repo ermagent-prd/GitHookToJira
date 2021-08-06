@@ -7,16 +7,20 @@
     "Other"
   ],
   "Filter": {
+    "SELECTED_ISSUES" : [
+      "ERM-67043"
+    ],
     "STORY_PROJECT_ID": "|36|",
     "STORY_TYPES": "|Development|Task|Enhancement|",
     "STORY_RELEASES": [
       "ERMAS 5.26.0"
     ],
     "STORY_LINES": [
-      "Performance Management",
-      "ALM",
-      "Interactive Simulation",
-      "Hedge Accounting"
+      "BSM",
+      "ILIAS",
+      "ILIAS-STA",
+      "Hedge Accounting",
+      "ALM"
     ],
     "STORY_RELEASE_KEY": "Release Version",
     "STORY_LINE_KEY": "DVL",
