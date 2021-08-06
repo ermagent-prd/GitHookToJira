@@ -71,9 +71,6 @@ namespace GeminiToJira.Engine
 
                 foreach (var geminiIssue in geminiIssues)
                 {
-                    if (geminiIssue.IssueKey != "ERMBUG-69064")
-                        continue;
-
                     try
                     {
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
@@ -111,6 +108,27 @@ namespace GeminiToJira.Engine
         private bool isRelevant(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
             //Product check
+            if (!checkProduct(geminiIssue, configurationSetup))
+                return false;
+
+            //Status check
+            if (!checkStatus(geminiIssue, configurationSetup))
+                return false;
+
+            //Fixing Date Check
+            if (!checkCreateDate(geminiIssue, configurationSetup))
+                return false;
+
+            //Affected versions check
+            var affectedVersions = this.affectedVEngine.ExtractVersions(geminiIssue.AffectedVersionNumbers);
+            if (configurationSetup.Filter.BUG_RELEASES.Any() && !affectedVersions.Intersect(configurationSetup.Filter.BUG_RELEASES).Any())
+                return false;
+
+            return true;
+        }
+
+        private bool checkProduct(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        {
             var product = geminiIssue.CustomFields.FirstOrDefault(i => i.Name == "Product");
             if (product == null)
                 return false;
@@ -118,9 +136,41 @@ namespace GeminiToJira.Engine
             if (product.FormattedData != configurationSetup.Filter.BUG_PRODUCT)
                 return false;
 
-            //Affected versions check
-            var affectedVersions = this.affectedVEngine.ExtractVersions(geminiIssue.AffectedVersionNumbers);
-            if (configurationSetup.Filter.BUG_RELEASES.Any() && !affectedVersions.Intersect(configurationSetup.Filter.BUG_RELEASES).Any())
+            return true;
+        }
+
+        private bool checkStatus(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        {
+            if (configurationSetup.Filter?.BUG_STATUS == null || !configurationSetup.Filter.BUG_STATUS.Any())
+                return true;
+
+            return
+              configurationSetup.Filter.BUG_STATUS.Contains(geminiIssue.Status);
+        }
+
+        private bool checkCreateDate(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        {
+            if (String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_CREATED_DATE_FROM) &&
+                String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_CREATED_DATE_TO))
+                return true;
+
+
+            DateTime createdDate = geminiIssue.Created;
+
+            //from
+            if (!String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_CREATED_DATE_FROM))
+            {
+                var dateFrom = Convert.ToDateTime(configurationSetup.Filter.BUG_CREATED_DATE_FROM);
+
+                if (createdDate < dateFrom)
+                    return false;
+            }
+
+            //TO
+            var dateTo = Convert.ToDateTime(configurationSetup.Filter.BUG_CREATED_DATE_TO);
+
+
+            if (createdDate > dateTo)
                 return false;
 
             return true;

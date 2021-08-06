@@ -63,7 +63,9 @@ namespace JiraTools.Engine
         {
             IssueTimeTrackingData timeTrackingData = null;
 
-            if (fieldsInfo.Type.Id != jiraConfiguration.UatTypeCode && fieldsInfo.Type.Id != jiraConfiguration.BugTypeCode)
+            if (fieldsInfo.Type.Id != jiraConfiguration.UatTypeCode && 
+                fieldsInfo.Type.Id != jiraConfiguration.BugTypeCode &&
+                fieldsInfo.Type.Id != jiraConfiguration.EpicTypeCode)
                 timeTrackingData = new IssueTimeTrackingData(
                     fieldsInfo.OriginalEstimate,
                     fieldsInfo.RemainingEstimate);
@@ -110,6 +112,11 @@ namespace JiraTools.Engine
 //                newIssue.Components.Add(comp);
 
             newIssue.Assignee = fieldsInfo.Assignee;
+
+            if (!string.IsNullOrWhiteSpace(fieldsInfo.EpicName))
+                newIssue.CustomFields.Add("Epic Name", fieldsInfo.EpicName);
+
+
 
             var issue = await newIssue.SaveChangesAsync();
 

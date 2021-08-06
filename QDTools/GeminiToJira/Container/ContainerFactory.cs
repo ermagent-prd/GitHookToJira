@@ -3,6 +3,8 @@ using AlfrescoTools.Engine;
 using AlfrescoTools.Parameters;
 using GeminiToJira.Engine;
 using GeminiToJira.Engine.Common;
+using GeminiToJira.Engine.Common.Alfresco;
+using GeminiToJira.Engine.DevStory;
 using GeminiToJira.Log;
 using GeminiToJira.Mapper;
 using GeminiToJira.Parameters;
@@ -34,6 +36,8 @@ namespace GeminiToJira.Container
             container.RegisterType<BugIssueMapper>();
             container.RegisterType<UATIssueMapper>();
             container.RegisterType<TaskIssueMapper>();
+            container.RegisterType<EpicIssueMapper>();
+            
 
             container.RegisterType<FolderGetterEngine>();
             container.RegisterType<FolderCreateEngine>();
@@ -53,17 +57,16 @@ namespace GeminiToJira.Container
             container.RegisterType<OriginalAccountLogger>();
             container.RegisterType<URLChecker>();
             container.RegisterType<JiraRemoteLinkerEngine>();
-
+            container.RegisterType<AlfrescoUrlsEngine>();
+            container.RegisterType<StoryGroupIssueMapper>();
+            container.RegisterType<ReporterSaveEngine>();
+            container.RegisterType<StorySaveEngine>();
+            container.RegisterType<SubtaskSaveEngine>();
+            container.RegisterType<ImportStoryGroupItemEngine>();
+            
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<GeminiToolsContainerExtension>();
             container.AddNewExtension<AlfrescoToolsContainerExtension>();
-            
-
-
-
-
-
-
 
             return container;
         }

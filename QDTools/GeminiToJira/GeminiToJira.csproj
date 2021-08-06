@@ -77,6 +77,7 @@
     <Compile Include="Container\ContainerFactory.cs" />
     <Compile Include="Engine\Common\AddWatchersEngine.cs" />
     <Compile Include="Engine\Common\AffectedVersionsEngine.cs" />
+    <Compile Include="Engine\Common\Alfresco\AlfrescoUrlsEngine.cs" />
     <Compile Include="Engine\Common\AssigneeEngine.cs" />
     <Compile Include="Engine\Common\ConfigurationContainer.cs" />
     <Compile Include="Engine\Common\FilteredGeminiIssueListGetter.cs" />
@@ -85,7 +86,11 @@
     <Compile Include="Engine\Common\GeminiUserMapper.cs" />
     <Compile Include="Engine\Common\JiraRemoteLinkerEngine.cs" />
     <Compile Include="Engine\Common\OriginalAccountLogger.cs" />
+    <Compile Include="Engine\Common\ReporterSaveEngine.cs" />
     <Compile Include="Engine\Common\UrlChecker.cs" />
+    <Compile Include="Engine\DevStory\ImportStoryGroupItemEngine.cs" />
+    <Compile Include="Engine\DevStory\SubtaskSaveEngine.cs" />
+    <Compile Include="Engine\DevStory\StorySaveEngine.cs" />
     <Compile Include="Engine\Task\ImportTaskEngine.cs" />
     <Compile Include="Engine\Uat\ImportUatEngine.cs" />
     <Compile Include="Engine\DevStory\ImportStoryEngine.cs" />
@@ -101,6 +106,8 @@
     <Compile Include="Log\BaseLogManager.cs" />
     <Compile Include="Log\DebugLogManager.cs" />
     <Compile Include="Log\LogManager.cs" />
+    <Compile Include="Mapper\EpicIssueMapper.cs" />
+    <Compile Include="Mapper\StoryGroupIssueMapper.cs" />
     <Compile Include="Mapper\UATIssueMapper.cs" />
     <Compile Include="Mapper\CommentMapper.cs" />
     <Compile Include="Mapper\BugIssueMapper.cs" />

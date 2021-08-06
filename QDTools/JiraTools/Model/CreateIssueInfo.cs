@@ -38,6 +38,8 @@ namespace JiraTools.Model
 
         public string RemainingEstimate { get; set; }
 
+        public string EpicName { get; set; }
+
         public DateTime? DueDate { get; set; }
 
         public DateTime? StartDate{ get; set; }

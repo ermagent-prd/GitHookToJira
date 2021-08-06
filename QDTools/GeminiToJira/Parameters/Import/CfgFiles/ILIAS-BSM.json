@@ -10,19 +10,13 @@
     "STORY_PROJECT_ID": "|36|",
     "STORY_TYPES": "|Development|Task|Enhancement|",
     "STORY_RELEASES": [
-      "ERMAS 5.24.0",
-      "ERMAS 5.24.1",
-      "ERMAS 5.25.0",
-      "ERMAS 5.25.1",
-      "ERMAS 5.25.2",
-      "ERMAS 5.25.3",
-      "ERMAS 5.25.4",
-      "0.0.0.0"
+      "ERMAS 5.26.0"
     ],
     "STORY_LINES": [
       "Performance Management",
       "ALM",
-      "Interactive Simulation"
+      "Interactive Simulation",
+      "Hedge Accounting"
     ],
     "STORY_RELEASE_KEY": "Release Version",
     "STORY_LINE_KEY": "DVL",
@@ -53,8 +47,25 @@
     "ERMBUG_INCLUDED_CLOSED": true,
     "BUG_PRODUCT": "ERMAS",
     "BUG_RELEASES": [
-      "ERMAS 5.25.0"
+      "ERMAS 5.16.0",
+      "ERMAS 5.17.0",
+      "ERMAS 5.18.0",
+      "ERMAS 5.19.0",
+      "ERMAS 5.20.0",
+      "ERMAS 5.21.0",
+      "ERMAS 5.22.0",
+      "ERMAS 5.23.0",
+      "ERMAS 5.24.0",
+      "ERMAS 5.25.0",
+      "ERMAS 5.26.0"
+    ],
+    "BUG_CREATED_DATE_FROM" : "",
+    "BUG_CREATED_DATE_TO" : "31/07/2021",
+    "BUG_STATUS": [
+      "Fixed",
+      "Cancelled"
     ]
+
   },
   "Alfresco": {
     "ServiceUrl": "http://10.100.2.85:8080/alfresco/cmisatom",
@@ -79,10 +90,10 @@
     "Url": "https://prometeia-erm.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
-    "ImportStory": false,
+    "ImportStory": true,
     "ImportTask": false,
     "ImportUat": false,
-    "ImportBug": true,
+    "ImportBug": false,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
     "TaskTypeCode": "10023",
@@ -261,6 +272,7 @@
     },
     "BUG_SUGGESTED_ACTION_TYPE_DEFAULT": "Other",
     "USER_MAPPING": {
+      "Daniele Gozzi" : "daniele gozzi"
     }
   },
   "LogDirectory": "C:\\TMP\\FromGeminiImport\\Log\\",

@@ -42,5 +42,11 @@ namespace GeminiToJira.Parameters.Import
         public string BUG_PRODUCT { get; set; }
 
         public List<string> BUG_RELEASES { get; set; }
+
+        public HashSet<string> BUG_STATUS { get; set; }
+
+        public string BUG_CREATED_DATE_FROM { get; set; }
+
+        public string BUG_CREATED_DATE_TO { get; set; }
     }
 }
