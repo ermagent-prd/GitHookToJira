@@ -74,7 +74,7 @@ namespace GeminiToJira.Engine.DevStory
             if (!jiraSavedDictionary.TryGetValue(currentSubIssue.Id, out Issue existing))
                 jiraSavedDictionary.Add(currentSubIssue.Id, subIssue);
 
-            this.reporterEngine.Execute(subIssue, currentSubIssue, configurationSetup.Jira.DefaultAccount);
+            this.reporterEngine.Execute(subIssue, currentSubIssue.Reporter, configurationSetup.Jira.DefaultAccount);
 
             this.alfrescoEngine.Execute(jiraStorySubTaskInfo, subIssue, rooStoryFolder, configurationSetup);
         }

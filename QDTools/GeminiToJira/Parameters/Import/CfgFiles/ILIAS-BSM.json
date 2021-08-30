@@ -8,7 +8,7 @@
   ],
   "Filter": {
     "SELECTED_ISSUES" : [
-      "ERM-67043"
+      "ERM-62736"
     ],
     "STORY_PROJECT_ID": "|36|",
     "STORY_TYPES": "|Development|Task|Enhancement|",
@@ -86,7 +86,8 @@
     "ErmBugPrefix": "ERMBUG-",
     "ProjectUrl": "https://erm-swfactory.prometeia.com/Gemini/project/",
     "EsupWorkspaceUrl" : "https://erm-swfactory.prometeia.com/Gemini/workspace/3456/item/",
-    "GroupTypeCode": "Group"
+    "GroupTypeCode": "Group",
+    "TaskTypeCode": "Task"
   },
   "Jira": {
     "User": "ermagent-prd@prometeia.com",

@@ -22,11 +22,11 @@ namespace GeminiToJira.Engine.Common
 
         #region Public methods
 
-        public void Execute(Issue jiraIssue, IssueDto geminiIssue, string accountdefault)
+        public void Execute(Issue jiraIssue, string reporter, string accountdefault)
         {
-            if (geminiIssue.Reporter != "")
+            if (reporter != "")
             {
-                jiraIssue.Reporter = this.accountEngine.Execute(geminiIssue.Reporter, accountdefault).AccountId;
+                jiraIssue.Reporter = this.accountEngine.Execute(reporter, accountdefault).AccountId;
                 jiraIssue.SaveChanges();
             }
         }

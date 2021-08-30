@@ -131,7 +131,12 @@ namespace GeminiToJira.Engine
                 var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, storyType, projectCode);
 
                 //Create Story
-                Issue jiraIssue = this.storySaveEngine.Execute(jiraSavedDictionary, geminiIssue, jiraIssueInfo, configurationSetup);
+                Issue jiraIssue = this.storySaveEngine.Execute(
+                    jiraSavedDictionary, 
+                    geminiIssue.Id,
+                    geminiIssue.Reporter,
+                    jiraIssueInfo, 
+                    configurationSetup);
                 var storyFolder = this.alfrescoEngine.Execute(jiraIssueInfo, jiraIssue, "", configurationSetup);
 
                 storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
@@ -189,7 +194,12 @@ namespace GeminiToJira.Engine
                         {
                             //Create Story
                             var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentSubIssue, storyType, projectCode);
-                            Issue jiraIssue = this.storySaveEngine.Execute(jiraSavedDictionary, geminiIssue, jiraIssueInfo, configurationSetup);
+                            Issue jiraIssue = this.storySaveEngine.Execute(
+                                jiraSavedDictionary,
+                                geminiIssue.Id,
+                                geminiIssue.Reporter,
+                                jiraIssueInfo, 
+                                configurationSetup);
 
                             var storyFolder = this.alfrescoEngine.Execute(jiraIssueInfo, jiraIssue, "", configurationSetup);
 

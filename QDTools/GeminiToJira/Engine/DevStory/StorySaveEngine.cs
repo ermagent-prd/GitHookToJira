@@ -33,7 +33,8 @@ namespace GeminiToJira.Engine.DevStory
 
         public Issue Execute(
             Dictionary<int, Issue> jiraSavedDictionary, 
-            IssueDto geminiIssue, 
+            int? geminiIssueId,
+            string reporter, 
             CreateIssueInfo jiraIssueInfo, 
             GeminiToJiraParameters configurationSetup)
         {
@@ -43,11 +44,11 @@ namespace GeminiToJira.Engine.DevStory
                 configurationSetup.Jira,
                 configurationSetup.AttachmentDownloadedPath);
             //and set as saved
-            if (!jiraSavedDictionary.TryGetValue(geminiIssue.Id, out Issue existing))
-                jiraSavedDictionary.Add(geminiIssue.Id, jiraIssue);
+            if (geminiIssueId.HasValue && !jiraSavedDictionary.TryGetValue(geminiIssueId.Value, out Issue existing))
+                jiraSavedDictionary.Add(geminiIssueId.Value, jiraIssue);
 
             //save reporter
-            this.reporterEngine.Execute(jiraIssue, geminiIssue, configurationSetup.Jira.DefaultAccount);
+            this.reporterEngine.Execute(jiraIssue, reporter, configurationSetup.Jira.DefaultAccount);
 
             return jiraIssue;
         }

@@ -107,6 +107,7 @@
     <Compile Include="Log\DebugLogManager.cs" />
     <Compile Include="Log\LogManager.cs" />
     <Compile Include="Mapper\EpicIssueMapper.cs" />
+    <Compile Include="Mapper\StoryOtherTasksIssueMapper.cs" />
     <Compile Include="Mapper\StoryGroupIssueMapper.cs" />
     <Compile Include="Mapper\UATIssueMapper.cs" />
     <Compile Include="Mapper\CommentMapper.cs" />

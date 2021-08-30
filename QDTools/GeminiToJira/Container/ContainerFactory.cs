@@ -59,6 +59,8 @@ namespace GeminiToJira.Container
             container.RegisterType<JiraRemoteLinkerEngine>();
             container.RegisterType<AlfrescoUrlsEngine>();
             container.RegisterType<StoryGroupIssueMapper>();
+            container.RegisterType<StoryOtherTasksIssueMapper>();
+           
             container.RegisterType<ReporterSaveEngine>();
             container.RegisterType<StorySaveEngine>();
             container.RegisterType<SubtaskSaveEngine>();
