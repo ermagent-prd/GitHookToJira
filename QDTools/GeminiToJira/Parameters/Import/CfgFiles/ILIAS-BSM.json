@@ -8,7 +8,7 @@
   ],
   "Filter": {
     "SELECTED_ISSUES" : [
-      "ERM-62736"
+      "ERM-62965"
     ],
     "STORY_PROJECT_ID": "|36|",
     "STORY_TYPES": "|Development|Task|Enhancement|",
@@ -95,9 +95,9 @@
     "Url": "https://prometeia-erm.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
-    "ImportStory": true,
+    "ImportStory": false,
     "ImportTask": false,
-    "ImportUat": false,
+    "ImportUat": true,
     "ImportBug": false,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",

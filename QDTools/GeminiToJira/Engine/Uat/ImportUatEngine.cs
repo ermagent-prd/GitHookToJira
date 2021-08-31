@@ -183,7 +183,7 @@ namespace GeminiToJira.Engine
 
         private Dictionary<String,Issue> getStories(string projectCode, List<string> releases)
         {
-            string jsql = $"Project = \"" + projectCode + "\" and type = \"Story\"";
+            string jsql = $"Project = \"" + projectCode + "\" and (type = \"Story\" or type = \"Epic\")";
 
             var jiraStories = this.jqlgetter.Execute(jsql);
 
