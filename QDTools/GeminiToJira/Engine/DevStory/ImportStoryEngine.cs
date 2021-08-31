@@ -66,7 +66,7 @@ namespace GeminiToJira.Engine
 
             foreach (var geminiIssue in filteredDevelopments)
             {
-                if (!filterIssue(configurationSetup,geminiIssue.IssueKey))
+                if (!filterIssue(configurationSetup,geminiIssue))
                     continue;
                 
                 //Story with Group
@@ -100,15 +100,19 @@ namespace GeminiToJira.Engine
 
         #region Private 
 
-        private bool filterIssue(GeminiToJiraParameters configurationSetup, string issueKey)
+        private bool filterIssue(GeminiToJiraParameters configurationSetup, IssueDto issue)
         {
+            if (configurationSetup.Filter.INVALID_STATUSES != null && 
+                configurationSetup.Filter.INVALID_STATUSES.Contains(issue.Status))
+                return false;
+
             if (configurationSetup.Filter.SELECTED_ISSUES == null)
                 return true;
 
             if (!configurationSetup.Filter.SELECTED_ISSUES.Any())
                 return true;
 
-            if (configurationSetup.Filter.SELECTED_ISSUES.Contains(issueKey))
+            if (configurationSetup.Filter.SELECTED_ISSUES.Contains(issue.IssueKey))
                 return true;
 
             return false;

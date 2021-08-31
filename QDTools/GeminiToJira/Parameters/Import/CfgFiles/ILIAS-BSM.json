@@ -10,10 +10,13 @@
     "SELECTED_ISSUES" : [
       "ERM-62965"
     ],
+    "INVALID_STATUSES": [
+      "Cancelled"
+    ],
     "STORY_PROJECT_ID": "|36|",
     "STORY_TYPES": "|Development|Task|Enhancement|",
     "STORY_RELEASES": [
-      "ERMAS 5.26.0"
+      "ERMAS 5.27.0"
     ],
     "STORY_LINES": [
       "BSM",

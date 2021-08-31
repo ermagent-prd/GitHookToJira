@@ -6,6 +6,8 @@ namespace GeminiToJira.Parameters.Import
     {
         public List<string> SELECTED_ISSUES { get; set; }
 
+        public List<string> INVALID_STATUSES { get; set; }
+
         public string STORY_PROJECT_ID { get; set; }
         public string STORY_TYPES { get; set; }
         public List<string> STORY_RELEASES { get; set; }
