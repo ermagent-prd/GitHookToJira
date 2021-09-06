@@ -89,6 +89,7 @@
     <Compile Include="Engine\Common\ReporterSaveEngine.cs" />
     <Compile Include="Engine\Common\UrlChecker.cs" />
     <Compile Include="Engine\DevStory\ImportStoryGroupItemEngine.cs" />
+    <Compile Include="Engine\DevStory\ImportStoryNoGroupEngine.cs" />
     <Compile Include="Engine\DevStory\SubtaskSaveEngine.cs" />
     <Compile Include="Engine\DevStory\StorySaveEngine.cs" />
     <Compile Include="Engine\Task\ImportTaskEngine.cs" />

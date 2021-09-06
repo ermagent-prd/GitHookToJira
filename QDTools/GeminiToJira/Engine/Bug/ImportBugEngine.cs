@@ -1,18 +1,13 @@
-﻿using Countersoft.Gemini.Commons.Dto;
-using GeminiToJira.GeminiFilter;
-using GeminiToJira.Mapper;
-using GeminiToJira.Parameters;
-using JiraTools.Engine;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JiraTools.Parameters;
-using System;
 using Atlassian.Jira;
-using System.IO;
-using GeminiToJira.Parameters.Import;
+using Countersoft.Gemini.Commons.Dto;
 using GeminiToJira.Log;
+using GeminiToJira.Mapper;
+using GeminiToJira.Parameters.Import;
 using GeminiTools.Items;
-using static GeminiToJira.Engine.JiraAccountIdEngine;
+using JiraTools.Engine;
 
 namespace GeminiToJira.Engine
 {
@@ -115,6 +110,10 @@ namespace GeminiToJira.Engine
             if (!checkStatus(geminiIssue, configurationSetup))
                 return false;
 
+            //Skipped Status check
+            if (!checkSkippedStatus(geminiIssue, configurationSetup))
+                return false;
+
             //Fixing Date Check
             if (!checkCreateDate(geminiIssue, configurationSetup))
                 return false;
@@ -148,12 +147,18 @@ namespace GeminiToJira.Engine
               configurationSetup.Filter.BUG_STATUS.Contains(geminiIssue.Status);
         }
 
-        private bool checkCreateDate(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        private bool checkSkippedStatus(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
-            if (String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_CREATED_DATE_FROM) &&
-                String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_CREATED_DATE_TO))
+            if (configurationSetup.Filter?.BUG_SKIPPED_STATUS == null || !configurationSetup.Filter.BUG_SKIPPED_STATUS.Any())
                 return true;
 
+            return
+              !configurationSetup.Filter.BUG_SKIPPED_STATUS.Contains(geminiIssue.Status);
+        }
+
+
+        private bool checkCreateDate(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        {
 
             DateTime createdDate = geminiIssue.Created;
 
@@ -167,11 +172,15 @@ namespace GeminiToJira.Engine
             }
 
             //TO
-            var dateTo = Convert.ToDateTime(configurationSetup.Filter.BUG_CREATED_DATE_TO);
 
+            if (!String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_CREATED_DATE_TO))
+            {
+                var dateTo = Convert.ToDateTime(configurationSetup.Filter.BUG_CREATED_DATE_TO);
 
-            if (createdDate > dateTo)
-                return false;
+                if (createdDate > dateTo)
+                    return false;
+            }
+
 
             return true;
         }

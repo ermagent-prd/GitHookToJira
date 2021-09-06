@@ -6,6 +6,8 @@ namespace GeminiToJira.Parameters.Import
     {
         public List<string> SELECTED_ISSUES { get; set; }
 
+        public List<string> SKIPPED_ISSUES { get; set; }
+
         public List<string> INVALID_STATUSES { get; set; }
 
         public string STORY_PROJECT_ID { get; set; }
@@ -41,6 +43,8 @@ namespace GeminiToJira.Parameters.Import
         public List<string> BUG_RELEASES { get; set; }
 
         public HashSet<string> BUG_STATUS { get; set; }
+
+        public HashSet<string> BUG_SKIPPED_STATUS { get; set; }
 
         public string BUG_CREATED_DATE_FROM { get; set; }
 

@@ -8,22 +8,41 @@
   ],
   "Filter": {
     "SELECTED_ISSUES" : [
-      "ERM-62965"
+      "ERM-1872"
     ],
     "INVALID_STATUSES": [
       "Cancelled"
     ],
+    "SKIPPED_ISSUES": [
+      "ERM-32376",
+      "ERM-32888",
+      "ERM-32889",
+      "ERM-32890",
+      "ERM-32892",
+      "ERM-32999",
+      "ERM-40266",
+      "ERM-40276",
+      "ERM-40464",
+      "ERM-40465",
+      "ERM-48779",
+      "ERM-48780",
+      "ERM-48781",
+      "ERM-48782"
+    ],
+
     "STORY_PROJECT_ID": "|36|",
     "STORY_TYPES": "|Development|Task|Enhancement|",
     "STORY_RELEASES": [
-      "ERMAS 5.27.0"
+      "0.0.0.0"
     ],
     "STORY_LINES": [
       "BSM",
       "ILIAS",
       "ILIAS-STA",
       "Hedge Accounting",
-      "ALM"
+      "ALM",
+      "Core Technologies",
+      "Internal project"
     ],
     "STORY_RELEASE_KEY": "Release Version",
     "STORY_LINE_KEY": "DVL",
@@ -40,7 +59,7 @@
     "TASK_LINE_KEY": "DVL",
     "TASK_INCLUDED_CLOSED": true,
     "UAT_PROJECT_ID": "|37|",
-    "UAT_CREATED_FROM": "01/01/2020",
+    "UAT_CREATED_FROM": "01/05/2021",
     "UAT_DAYS_BLOCK": 7,
     "UAT_GROUP_DEPENDENCIES": true,
     "UAT_INCLUDED_CLOSED": true,
@@ -66,11 +85,10 @@
       "ERMAS 5.25.0",
       "ERMAS 5.26.0"
     ],
-    "BUG_CREATED_DATE_FROM" : "",
-    "BUG_CREATED_DATE_TO" : "31/07/2021",
+    "BUG_CREATED_DATE_FROM" : "01/08/2021",
+    "BUG_SKIPPED_STATUS": [
+    ],
     "BUG_STATUS": [
-      "Fixed",
-      "Cancelled"
     ]
 
   },
@@ -98,9 +116,9 @@
     "Url": "https://prometeia-erm.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
-    "ImportStory": false,
+    "ImportStory": true,
     "ImportTask": false,
-    "ImportUat": true,
+    "ImportUat": false,
     "ImportBug": false,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
@@ -130,7 +148,7 @@
       "development": "In progress",
       "waiting for test": "In progress",
       "testing": "In progress",
-      "cancelled": "Done",
+      "cancelled": "Cancelled",
       "done": "Done",
       "in progress": "In progress"
     },
@@ -280,7 +298,8 @@
     },
     "BUG_SUGGESTED_ACTION_TYPE_DEFAULT": "Other",
     "USER_MAPPING": {
-      "Daniele Gozzi" : "daniele gozzi"
+      "Daniele Gozzi" : "daniele gozzi",
+      "Giovanni Nardi Pantoli" : "Giovanni Nardi"
     }
   },
   "LogDirectory": "C:\\TMP\\FromGeminiImport\\Log\\",

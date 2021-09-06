@@ -21,6 +21,7 @@ namespace GeminiToJira.Engine
         private readonly StorySaveEngine storySaveEngine;
         private readonly SubtaskSaveEngine subTaskSaveEngine;
         private readonly ImportStoryGroupItemEngine importStoryGroupEngine;
+        private readonly ImportStoryNoGroupEngine noGroupEngine;
 
 
         public ImportStoryEngine(
@@ -31,7 +32,8 @@ namespace GeminiToJira.Engine
             AlfrescoUrlsEngine alfrescoEngine,
             StorySaveEngine storySaveEngine,
             SubtaskSaveEngine subTaskSaveEngine,
-            ImportStoryGroupItemEngine importStoryGroupEngine)
+            ImportStoryGroupItemEngine importStoryGroupEngine,
+            ImportStoryNoGroupEngine noGroupEngine)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -41,6 +43,7 @@ namespace GeminiToJira.Engine
             this.storySaveEngine = storySaveEngine;
             this.subTaskSaveEngine = subTaskSaveEngine;
             this.importStoryGroupEngine = importStoryGroupEngine;
+            this.noGroupEngine = noGroupEngine;
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -83,7 +86,7 @@ namespace GeminiToJira.Engine
                 if (importDone)
                     continue;
 
-                importStory(
+                this.noGroupEngine.Execute(
                     configurationSetup, 
                     projectCode, 
                     jiraSavedDictionary, 
@@ -102,6 +105,10 @@ namespace GeminiToJira.Engine
 
         private bool filterIssue(GeminiToJiraParameters configurationSetup, IssueDto issue)
         {
+            if (configurationSetup.Filter.SKIPPED_ISSUES != null &&
+                configurationSetup.Filter.SKIPPED_ISSUES.Contains(issue.IssueKey))
+                return false;
+
             if (configurationSetup.Filter.INVALID_STATUSES != null && 
                 configurationSetup.Filter.INVALID_STATUSES.Contains(issue.Status))
                 return false;
@@ -115,70 +122,9 @@ namespace GeminiToJira.Engine
             if (configurationSetup.Filter.SELECTED_ISSUES.Contains(issue.IssueKey))
                 return true;
 
+
+
             return false;
-        }
-
-        private void importStory(
-            GeminiToJiraParameters configurationSetup, 
-            string projectCode,
-            Dictionary<int, Issue> jiraSavedDictionary, 
-            Dictionary<string, string> storyFolderDictionary, 
-            string storyType, 
-            string storySubTaskType, 
-            List<IssueDto> filteredDevelopments, 
-            IssueDto geminiIssue)
-        {
-            try
-            {
-                var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
-
-                var jiraIssueInfo = geminiToJiraMapper.Execute(configurationSetup, currentIssue, storyType, projectCode);
-
-                //Create Story
-                Issue jiraIssue = this.storySaveEngine.Execute(
-                    jiraSavedDictionary, 
-                    geminiIssue.Id,
-                    geminiIssue.Reporter,
-                    jiraIssueInfo, 
-                    configurationSetup);
-                var storyFolder = this.alfrescoEngine.Execute(jiraIssueInfo, jiraIssue, "", configurationSetup);
-
-                storyFolderDictionary.Add(jiraIssue.JiraIdentifier, storyFolder);
-
-                var hierarchy = currentIssue.Hierarchy.Where(i => i.Value.Type != configurationSetup.Gemini.GroupTypeCode && i.Value.Id != currentIssue.Id);
-
-                //Story-SubTask
-                foreach (var sub in hierarchy)
-                {
-                    if (sub.Value.Type == "Task")
-                    {
-                        //Esclude figli di development (i dev sono censiti come story non in dipendenza
-                        if (sub.Value.ParentIssueId.HasValue && sub.Value.ParentIssueId.Value != currentIssue.Id)
-                        {
-                            var devParentIssue = filteredDevelopments.FirstOrDefault(d => d.Id == sub.Value.ParentIssueId.Value);
-
-                            if (devParentIssue != null)
-                                continue;
-                        }
-
-                        var currentSubIssue = geminiItemsEngine.Execute(sub.Value.Id);
-
-                        this.subTaskSaveEngine.Execute(
-                            configurationSetup, 
-                            jiraIssue, 
-                            currentSubIssue, 
-                            jiraSavedDictionary, 
-                            storySubTaskType, 
-                            storyFolder, 
-                            checkRelease: false);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                this.logManager.Execute(
-                    "[Story] - " + geminiIssue.IssueKey + " - " + ex.Message);
-            }
         }
 
 

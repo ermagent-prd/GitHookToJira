@@ -65,7 +65,11 @@ namespace GeminiToJira.Container
             container.RegisterType<StorySaveEngine>();
             container.RegisterType<SubtaskSaveEngine>();
             container.RegisterType<ImportStoryGroupItemEngine>();
-            
+            container.RegisterType<ImportStoryNoGroupEngine>();
+
+
+
+
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<GeminiToolsContainerExtension>();
             container.AddNewExtension<AlfrescoToolsContainerExtension>();

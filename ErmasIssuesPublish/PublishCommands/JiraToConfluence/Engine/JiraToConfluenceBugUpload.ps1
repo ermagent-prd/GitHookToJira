@@ -1,17 +1,17 @@
 param (
     [string]$Username = "pierluigi.nanni@prometeia.com",
     [string]$TokenFilePath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\JiraToken.txt",
-    [string]$Jql = "project = MRM and issuetype = Bug and ""Epic Link"" = ESOA-1 and status = Fixed",
+    [string]$Jql = "project = ERMAS and issuetype = Bug and ""Bug Category[Dropdown]"" = Post-release and status = Fixed",
     [string]$server = "https://prometeia.atlassian.net/",
-    [string]$ExcelFilePath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\MRMBugs.xlsx",
+    [string]$ExcelFilePath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\ERMBugs.xlsx",
     [string]$sheetName = "Bugs",
     [string]$ConfluenceURL = "https://intranet.prometeia.it/rest/api/content/",
-    [string]$pageId = "32768480", # PageId (from edit page)
-    [string]$fName = "MRMBugs.xlsx", # File name to search in the attachment list 
+    [string]$pageId = "30605372", # PageId (from edit page)
+    [string]$fName = "ERMBugs.xlsx", # File name to search in the attachment list 
     [string]$ConfluencepswdPath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\ConfluencePassword2.txt",
-    [string]$logFilePath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\MRMBugs.log",
-    [string]$newDataFile = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\MRMbugs.csv",
-    [string]$oldDataFile = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\MRMbugsOld.csv"
+    [string]$logFilePath = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\ERMBugs.log",
+    [string]$newDataFile = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\ERMbugs.csv",
+    [string]$oldDataFile = "C:\Projects\Others\Processtools\Bin\BugExport\FromJira\ERMbugsOld.csv"
  )
     try {
 
@@ -45,9 +45,9 @@ param (
 #>
     
         $jiraData = Get-JiraIssue `
-        -Fields "project, key, customfield_10125, status, summary, fixVersions, customfield_10124, description"  `
+        -Fields "project, key, customfield_10125, status, customfield_10173, summary, fixVersions, customfield_10124, description"  `
         -Query $Jql | `
-        Select-Object project, key, customfield_10125, status, summary, fixVersions, customfield_10124, description
+        Select-Object project, key, customfield_10125, status, customfield_10173, summary, fixVersions, customfield_10124, description
 
 
         $Data = New-Object Collections.Generic.List[PSCustomObject]
@@ -59,6 +59,7 @@ param (
                 key             = $jiraItem.key
                 bugFixing = $jiraItem.customfield_10125
                 status = $jiraItem.Status 
+                devLine = $jiraItem.customfield_10173.value
                 summary = $jiraItem.Summary
                 fixVersions = If($null -eq $jiraItem.fixVersions) {""} Else 
                     {
@@ -91,8 +92,8 @@ param (
         if ($ToCheck)
         {
             Try {
-                $Data | Select-Object Project, key, BugFixing, Status, summary, fixVersions, fixedInBuild, description | Export-XLSX -WorksheetName $sheetName -Path $ExcelFilePath -Table -Force -Autofit `
-                -Header Project, ID, BugFixing, Status, summary, fixVersions, FixedInBuild, description
+                $Data | Select-Object Project, key, BugFixing, Status, devLine, summary, fixVersions, fixedInBuild, description | Export-XLSX -WorksheetName $sheetName -Path $ExcelFilePath -Table -Force -Autofit `
+                -Header Project, ID, BugFixing, Status, DevLine, summary,  fixVersions, FixedInBuild, description
 
                 & "$PSScriptRoot\UpdateConfluenceFile.ps1" -ConfluenceURL $ConfluenceURL -pageId $pageId -fName $fName -fPath $ExcelFilePath -pswdPath $ConfluencepswdPath
         
