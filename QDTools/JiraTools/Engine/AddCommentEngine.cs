@@ -79,12 +79,24 @@ namespace JiraTools.Engine
         {
             var jira = this.requestFactory.Service;
 
-            var issue = await jira.Issues.GetIssueAsync(issueKey);
+            var issue = await getIssue(jira,issueKey);
 
             if (issue == null)
                 return null;
 
             return await issue.AddCommentAsync(comment);
+        }
+
+        private async Task<Issue> getIssue(Jira jira, string issueKey)
+        {
+            try
+            {
+                return await jira.Issues.GetIssueAsync(issueKey);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
 

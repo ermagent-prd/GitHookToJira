@@ -12,8 +12,6 @@ namespace SvnToJira
     {
         static void Main(string[] args)
         {
-
-
             if (args.Length != 1)
             {
                 Console.WriteLine("Invalid args");

@@ -100,6 +100,11 @@ namespace GeminiToJira.Engine
                 {
                     if (geminiCodes.Contains(geminiIssue.IssueKey))
                         continue;
+                    /*
+                    if (geminiIssue.Status == "Closed" || geminiIssue.Status == "Cancelled")
+                        continue;
+
+                    */
 
                     //for debug only
 
@@ -180,6 +185,21 @@ namespace GeminiToJira.Engine
         }
 
         #region Private 
+
+        private Dictionary<String, Issue> getStoriesTemp(string projectCode, List<string> releases)
+        {
+            string jsql = $"Project = \"" + projectCode + "\" and key = ERMAS-17462";
+
+            var jiraStories = this.jqlgetter.Execute(jsql);
+
+            var filteredIssues = jiraStories
+                .Where(s => s.FixVersions.Select(f => f.Name).Intersect(releases).Any())
+                .Select(s => s);
+
+            return filteredIssues.ToDictionary(s => s.Summary);
+
+        }
+
 
         private Dictionary<String,Issue> getStories(string projectCode, List<string> releases)
         {

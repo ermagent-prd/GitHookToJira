@@ -113,16 +113,9 @@ namespace GeminiToJira.Engine
                 configurationSetup.Filter.INVALID_STATUSES.Contains(issue.Status))
                 return false;
 
-            if (configurationSetup.Filter.SELECTED_ISSUES == null)
+            if (configurationSetup.Filter.SELECTED_ISSUES != null &&
+                configurationSetup.Filter.SELECTED_ISSUES.Contains(issue.IssueKey))
                 return true;
-
-            if (!configurationSetup.Filter.SELECTED_ISSUES.Any())
-                return true;
-
-            if (configurationSetup.Filter.SELECTED_ISSUES.Contains(issue.IssueKey))
-                return true;
-
-
 
             return false;
         }

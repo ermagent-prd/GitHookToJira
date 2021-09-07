@@ -102,6 +102,11 @@ namespace GeminiToJira.Engine
 
         private bool isRelevant(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
+            
+            //sELECTED CHECK
+            if (!checkSelected(geminiIssue, configurationSetup))
+                return false;
+
             //Product check
             if (!checkProduct(geminiIssue, configurationSetup))
                 return false;
@@ -147,6 +152,16 @@ namespace GeminiToJira.Engine
               configurationSetup.Filter.BUG_STATUS.Contains(geminiIssue.Status);
         }
 
+        private bool checkSelected(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
+        {
+            if (configurationSetup.Filter?.BUG_SELECTED_ITEMS == null || !configurationSetup.Filter.BUG_SELECTED_ITEMS.Any())
+                return true;
+
+            return
+              configurationSetup.Filter.BUG_SELECTED_ITEMS.Contains(geminiIssue.IssueKey);
+        }
+
+
         private bool checkSkippedStatus(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
             if (configurationSetup.Filter?.BUG_SKIPPED_STATUS == null || !configurationSetup.Filter.BUG_SKIPPED_STATUS.Any())
@@ -160,7 +175,7 @@ namespace GeminiToJira.Engine
         private bool checkCreateDate(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
 
-            DateTime createdDate = geminiIssue.Created;
+            DateTime createdDate = geminiIssue.Created.Date;
 
             //from
             if (!String.IsNullOrWhiteSpace(configurationSetup.Filter.BUG_CREATED_DATE_FROM))

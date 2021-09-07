@@ -44,10 +44,13 @@ namespace SvnToJira.Engine
                 properties.Log,
                 properties.Repo);
 
-            foreach(var issue in properties.TrackingIssues)
+            var issues = properties.TrackingIssues.Distinct();
+
+            foreach (var issue in issues)
             {
                 this.jiraEngine.Execute(issue, properties.Author, body);
             }
+
         }
 
         #endregion

@@ -46,6 +46,8 @@ namespace GeminiToJira.Parameters.Import
 
         public HashSet<string> BUG_SKIPPED_STATUS { get; set; }
 
+        public HashSet<string> BUG_SELECTED_ITEMS { get; set; }
+
         public string BUG_CREATED_DATE_FROM { get; set; }
 
         public string BUG_CREATED_DATE_TO { get; set; }

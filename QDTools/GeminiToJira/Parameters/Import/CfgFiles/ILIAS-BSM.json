@@ -8,7 +8,7 @@
   ],
   "Filter": {
     "SELECTED_ISSUES" : [
-      "ERM-1872"
+      "ERM-50875"
     ],
     "INVALID_STATUSES": [
       "Cancelled"
@@ -59,7 +59,7 @@
     "TASK_LINE_KEY": "DVL",
     "TASK_INCLUDED_CLOSED": true,
     "UAT_PROJECT_ID": "|37|",
-    "UAT_CREATED_FROM": "01/05/2021",
+    "UAT_CREATED_FROM": "01/08/2021",
     "UAT_DAYS_BLOCK": 7,
     "UAT_GROUP_DEPENDENCIES": true,
     "UAT_INCLUDED_CLOSED": true,
@@ -73,19 +73,14 @@
     "ERMBUG_INCLUDED_CLOSED": true,
     "BUG_PRODUCT": "ERMAS",
     "BUG_RELEASES": [
-      "ERMAS 5.16.0",
-      "ERMAS 5.17.0",
-      "ERMAS 5.18.0",
-      "ERMAS 5.19.0",
-      "ERMAS 5.20.0",
-      "ERMAS 5.21.0",
-      "ERMAS 5.22.0",
-      "ERMAS 5.23.0",
-      "ERMAS 5.24.0",
-      "ERMAS 5.25.0",
       "ERMAS 5.26.0"
     ],
-    "BUG_CREATED_DATE_FROM" : "01/08/2021",
+    "BUG_CREATED_DATE_FROM" : "03/08/2021",
+    "BUG_CREATED_DATE_TO" : "03/08/2021",
+    "BUG_SELECTED_ITEMS": [
+      "ERMBUG-74216"
+    ],
+
     "BUG_SKIPPED_STATUS": [
     ],
     "BUG_STATUS": [
@@ -116,10 +111,10 @@
     "Url": "https://prometeia-erm.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10,
-    "ImportStory": true,
+    "ImportStory": false,
     "ImportTask": false,
     "ImportUat": false,
-    "ImportBug": false,
+    "ImportBug": true,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
     "TaskTypeCode": "10023",
