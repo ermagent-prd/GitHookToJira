@@ -71,8 +71,9 @@ namespace GeminiToJira.Engine
             List<String> functionalityList = configurationSetup.Filter.UAT_FUNCTIONALITY;
 
             //Load developments
-
-            var stories = getStories(projectCode, configurationSetup.Filter.STORY_RELEASES);
+            var stories = configurationSetup.Filter.UAT_CHECK_RELATED_DEV ?
+                getStories(projectCode, configurationSetup.Filter.STORY_RELEASES):
+                null;
 
             //initial date from when we start the import
             var dateFrom = Convert.ToDateTime(configurationSetup.Filter.UAT_CREATED_FROM);
@@ -94,12 +95,17 @@ namespace GeminiToJira.Engine
                 filter.CreatedAfter = dateFrom.AddDays(-1).ToString(dateFormat);
                 filter.CreatedBefore = dateTo.ToString(dateFormat);
 
-                var geminiUatIssueList = GetFilteredGeminiIssueList(geminiItemsEngine, filter, functionalityList);
+                var geminiUatIssueList = GetFilteredGeminiIssueList(
+                    geminiItemsEngine, 
+                    filter, 
+                    functionalityList,
+                    configurationSetup.Filter.UAT_SELECTED_ITEMS);
 
                 foreach (var geminiIssue in geminiUatIssueList.OrderBy(f => f.CreatedTime).ThenBy(f => f.Id).ToList())
                 {
                     if (geminiCodes.Contains(geminiIssue.IssueKey))
                         continue;
+
                     /*
                     if (geminiIssue.Status == "Closed" || geminiIssue.Status == "Cancelled")
                         continue;
@@ -127,7 +133,7 @@ namespace GeminiToJira.Engine
 
                         Issue relatedDev = getStoryBySummary(relatedDevSummary, stories);
 
-                        if (relatedDev == null)
+                        if (relatedDev == null && configurationSetup.Filter.UAT_CHECK_RELATED_DEV)
                             continue;
 
                         #endregion
@@ -156,13 +162,22 @@ namespace GeminiToJira.Engine
 
 
                         //Add Link to development
-                        linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
+                        if (relatedDev?.Key != null)
+                            linkEngine.Execute(jiraIssue, relatedDev.Key.ToString(), "Relates");
 
-                        foreach (var c in relatedDev.Components)
-                            jiraIssue.Components.Add(c);
+                        if (relatedDev != null)
+                        {
+                            foreach (var c in relatedDev.Components)
+                                jiraIssue.Components.Add(c);
 
-                        foreach (var v in relatedDev.FixVersions)
-                            jiraIssue.FixVersions.Add(v);
+                        }
+
+                        if (relatedDev != null)
+                        {
+                            foreach (var v in relatedDev.FixVersions)
+                                jiraIssue.FixVersions.Add(v);
+
+                        }
 
 
                         jiraIssue.SaveChanges();
@@ -185,6 +200,16 @@ namespace GeminiToJira.Engine
         }
 
         #region Private 
+
+        private bool checkSelected(string issueKey, HashSet<string> codes)
+        {
+            if (codes == null || !codes.Any())
+                return true;
+
+            return
+                codes.Contains(issueKey);
+
+        }
 
         private Dictionary<String, Issue> getStoriesTemp(string projectCode, List<string> releases)
         {
@@ -241,6 +266,9 @@ namespace GeminiToJira.Engine
 
     private Issue getStoryBySummary(string summary, Dictionary<string,Issue> stories)
         {
+            if (stories == null)
+                return null;
+
             Issue item = null;
             if (stories.TryGetValue(summary, out item))
                 return item;
@@ -262,21 +290,29 @@ namespace GeminiToJira.Engine
         private IEnumerable<IssueDto> GetFilteredGeminiIssueList(
             GeminiTools.Items.ItemListGetter geminiItemsEngine,
             Countersoft.Gemini.Commons.Entity.IssuesFilter filter,
-            List<string> functionalityList)
+            List<string> functionalityList,
+            HashSet<string> selectedItems)
         {
             var geminiIssueList = geminiItemsEngine.Execute(filter);
             if (functionalityList != null && functionalityList.Count > 0)
-                return FilterByFunctionality(geminiIssueList, functionalityList);
+                return filterUat(geminiIssueList, functionalityList, selectedItems);
             else
                 return geminiIssueList;
         }
 
-        private IEnumerable<IssueDto> FilterByFunctionality(IEnumerable<IssueDto> geminiIssueList, List<string> functionalityList)
+        private IEnumerable<IssueDto> filterUat(
+            IEnumerable<IssueDto> geminiIssueList, 
+            List<string> functionalityList,
+            HashSet<string> selectedItems)
         {
             List<IssueDto> result = new List<IssueDto>();
 
             foreach(var issue in geminiIssueList)
             {
+                if (!checkSelected(issue.IssueKey, selectedItems))
+                    continue;
+
+
                 var functionality = issue.CustomFields.FirstOrDefault(i => i.Name == "Functionality");
                 if (functionality != null && functionalityList.Contains(functionality.FormattedData))
                     result.Add(issue);

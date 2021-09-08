@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace GeminiToJira.Parameters.Import
 {
@@ -34,6 +36,12 @@ namespace GeminiToJira.Parameters.Import
         public List<string> UAT_FUNCTIONALITY { get; set; }
 
         public List<string> UAT_RELATED_DEV { get; set; }
+
+        public HashSet<string> UAT_SELECTED_ITEMS { get; set; }
+
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        public bool UAT_CHECK_RELATED_DEV { get; set; }
 
         public string ERMBUG_PROJECT_ID { get; set; }
         public bool ERMBUG_INCLUDED_CLOSED { get; set; }

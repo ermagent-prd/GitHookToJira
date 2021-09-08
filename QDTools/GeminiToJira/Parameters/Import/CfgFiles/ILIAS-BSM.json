@@ -59,15 +59,22 @@
     "TASK_LINE_KEY": "DVL",
     "TASK_INCLUDED_CLOSED": true,
     "UAT_PROJECT_ID": "|37|",
-    "UAT_CREATED_FROM": "01/08/2021",
+    "UAT_CREATED_FROM": "02/09/2021",
     "UAT_DAYS_BLOCK": 7,
     "UAT_GROUP_DEPENDENCIES": true,
     "UAT_INCLUDED_CLOSED": true,
     "UAT_FUNCTIONALITY": [
       "ERMAS"
     ],
+
+    "UAT_CHECK_RELATED_DEV" : true,
     "UAT_RELATED_DEV": [
     ],
+
+    "UAT_SELECTED_ITEMS": [
+      "UAT-74740"
+    ],
+
 
     "ERMBUG_PROJECT_ID": "38",
     "ERMBUG_INCLUDED_CLOSED": true,
@@ -75,10 +82,10 @@
     "BUG_RELEASES": [
       "ERMAS 5.26.0"
     ],
-    "BUG_CREATED_DATE_FROM" : "03/08/2021",
-    "BUG_CREATED_DATE_TO" : "03/08/2021",
+    "BUG_CREATED_DATE_FROM" : "30/08/2021",
+    "BUG_CREATED_DATE_TO" : "30/08/2021",
     "BUG_SELECTED_ITEMS": [
-      "ERMBUG-74216"
+      "ERMBUG-74641"
     ],
 
     "BUG_SKIPPED_STATUS": [
@@ -113,8 +120,8 @@
     "MaxIssuesPerRequest": 10,
     "ImportStory": false,
     "ImportTask": false,
-    "ImportUat": false,
-    "ImportBug": true,
+    "ImportUat": true,
+    "ImportBug": false,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
     "TaskTypeCode": "10023",
