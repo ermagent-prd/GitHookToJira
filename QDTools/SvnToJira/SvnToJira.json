@@ -1,6 +1,6 @@
 {
   "SvnParameters": {
-    "ServerUrl": "http://erm-codever-p01.prometeia.lan/svn/ErmasNet/trunk",
+    "ServerUrl": "http://erm-codever-p01.prometeia.lan/svn/ErmasNet//branches/releases/5.25.0",
     "TrackingIssuePattern": "((?<!([A-Z]{1,10})-?)[A-Z]+-\\d+)",
     "WindowsAuth": true,
     "User": "",

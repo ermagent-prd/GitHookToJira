@@ -12,7 +12,7 @@ namespace GeminiToJira
         {
             var unityContainer = ContainerFactory.Execute();
 
-            var configContainer = new ConfigurationContainer(ImportCfgType.ILIASBSM);
+            var configContainer = new ConfigurationContainer(ImportCfgType.MRM);
 
             unityContainer.RegisterInstance<ConfigurationContainer>(configContainer);
 

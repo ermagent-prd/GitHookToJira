@@ -141,6 +141,9 @@
     <EmbeddedResource Include="Parameters\Import\CfgFiles\ILIAS-BSM.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Parameters\Import\CfgFiles\MRM.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AlfrescoTools\AlfrescoTools.csproj">

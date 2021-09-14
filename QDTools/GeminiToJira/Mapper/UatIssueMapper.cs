@@ -74,7 +74,7 @@ namespace GeminiToJira.Mapper
                 jiraIssue.Priority = priority;
 
             //Affectd version
-            this.affectedVersionEngine.Execute(geminiIssue, jiraIssue);
+            this.affectedVersionEngine.Execute(geminiIssue, jiraIssue, configurationSetup.Mapping.UAT_RELEASE_MAPPING);
 
             //Assignee
             this.assigneeEngine.Execute(geminiIssue, jiraIssue, configurationSetup.Jira.DefaultAccount);

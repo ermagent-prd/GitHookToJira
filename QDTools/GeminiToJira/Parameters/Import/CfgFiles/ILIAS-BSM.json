@@ -59,7 +59,7 @@
     "TASK_LINE_KEY": "DVL",
     "TASK_INCLUDED_CLOSED": true,
     "UAT_PROJECT_ID": "|37|",
-    "UAT_CREATED_FROM": "02/09/2021",
+    "UAT_CREATED_FROM": "06/08/2021",
     "UAT_DAYS_BLOCK": 7,
     "UAT_GROUP_DEPENDENCIES": true,
     "UAT_INCLUDED_CLOSED": true,
@@ -67,12 +67,12 @@
       "ERMAS"
     ],
 
-    "UAT_CHECK_RELATED_DEV" : true,
+    "UAT_CHECK_RELATED_DEV" : false,
     "UAT_RELATED_DEV": [
     ],
 
     "UAT_SELECTED_ITEMS": [
-      "UAT-74740"
+      "UAT-74356"
     ],
 
 
@@ -80,12 +80,29 @@
     "ERMBUG_INCLUDED_CLOSED": true,
     "BUG_PRODUCT": "ERMAS",
     "BUG_RELEASES": [
-      "ERMAS 5.26.0"
+      "ERMAS 5.16.0",
+      "ERMAS 5.17.0",
+      "ERMAS 5.18.0",
+      "ERMAS 5.19.0",
+      "ERMAS 5.20.0",
+      "ERMAS 5.21.0",
+      "ERMAS 5.22.0",
+      "ERMAS 5.23.0",
+      "ERMAS 5.24.0",
+      "ERMAS 5.24.1",
+      "ERMAS 5.25.0",
+      "ERMAS 5.25.1",
+      "ERMAS 5.25.2",
+      "ERMAS 5.25.3",
+      "ERMAS 5.26.0",
+      "ERMAS 5.27.0",
+      "ERMAS 5.27.1",
+      "ERMAS 5.28.0",
+      "ERMAS 5.29.0"
     ],
-    "BUG_CREATED_DATE_FROM" : "30/08/2021",
-    "BUG_CREATED_DATE_TO" : "30/08/2021",
+    "BUG_CREATED_DATE_FROM" : "01/01/2021",
     "BUG_SELECTED_ITEMS": [
-      "ERMBUG-74641"
+
     ],
 
     "BUG_SKIPPED_STATUS": [
@@ -120,8 +137,8 @@
     "MaxIssuesPerRequest": 10,
     "ImportStory": false,
     "ImportTask": false,
-    "ImportUat": true,
-    "ImportBug": false,
+    "ImportUat": false,
+    "ImportBug": true,
     "EpicTypeCode": "10000",
     "StoryTypeCode": "10005",
     "TaskTypeCode": "10023",

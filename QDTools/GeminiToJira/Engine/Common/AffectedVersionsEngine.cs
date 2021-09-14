@@ -3,6 +3,7 @@ using System.Linq;
 using Atlassian.Jira;
 using Countersoft.Gemini.Commons.Dto;
 using JiraTools.Model;
+using JiraTools.Parameters;
 
 namespace GeminiToJira.Engine
 {
@@ -20,11 +21,11 @@ namespace GeminiToJira.Engine
 
         #region Public methods
 
-        public void Execute(IssueDto geminiIssue, CreateIssueInfo jiraIssue)
+        public void Execute(IssueDto geminiIssue, CreateIssueInfo jiraIssue, Dictionary<string,string> mapping)
         {
             jiraIssue.AffectVersions = new List<string>();
 
-            var versions = getFromAffectedVersions(geminiIssue, jiraIssue);
+            var versions = getFromAffectedVersions(geminiIssue, jiraIssue, mapping);
 
             if (versions != null)
                 jiraIssue.AffectVersions.AddRange(versions);
@@ -50,20 +51,42 @@ namespace GeminiToJira.Engine
 
         #region Private methods
 
-        private List<string> getFromAffectedVersions(IssueDto geminiIssue, CreateIssueInfo jiraIssue)
+        private List<string> getFromAffectedVersions(IssueDto geminiIssue, CreateIssueInfo jiraIssue, Dictionary<string, string> mapping)
         {
             if (string.IsNullOrWhiteSpace(geminiIssue.AffectedVersionNumbers))
                 return null;
 
-            return ExtractVersions(geminiIssue.AffectedVersionNumbers);
+            return ExtractVersions(geminiIssue.AffectedVersionNumbers,mapping);
         }
 
 
 
-        public List<string> ExtractVersions(string versionList)
+        public List<string> ExtractVersions(string versionList, Dictionary<string, string> mapping)
         {
             var list = versionList.Split(',');
-            return list.Select(x => x.TrimEnd().TrimStart()).ToList();
+
+            var result = new List<string>();
+
+            foreach(var ver in list)
+            {
+                var mappedVersion = mapVersion(ver.TrimEnd().TrimStart(), mapping);
+
+                result.Add(mappedVersion);
+            }
+
+            return result;
+        }
+
+
+        private string mapVersion(string version, Dictionary<string, string> mapping)
+        {
+            if (mapping == null || !mapping.Any())
+                return version;
+
+            if (mapping.ContainsKey(version))
+                return mapping[version];
+
+            return version;
         }
 
 

@@ -22,3 +22,4 @@ C:\GeminiPorting\processesTools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.cspr
 C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.CopyComplete
 C:\Projects\Others\Processtools\Bin\QDTools\GeminiToJira\Debug\Parameters\Import\CfgFiles\ILIAS-BSM.json
 C:\Projects\Others\Processtools\QDTools\GeminiToJira\obj\Debug\GeminiToJira.csproj.AssemblyReference.cache
+C:\Projects\Others\Processtools\Bin\QDTools\GeminiToJira\Debug\Parameters\Import\CfgFiles\MRM.json

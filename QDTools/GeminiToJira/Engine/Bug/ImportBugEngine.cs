@@ -22,6 +22,7 @@ namespace GeminiToJira.Engine
         private readonly LogManager logManager;
         private readonly AffectedVersionsEngine affectedVEngine;
         private readonly ProjectVersionsGetter geminiProjectVersionGetter;
+        private readonly JqlGetter jqlgetter;
 
         public ImportBugEngine(
             BugIssueMapper geminiToJiraMapper,
@@ -32,7 +33,8 @@ namespace GeminiToJira.Engine
             LinkEngine linkEngine,
             LogManager logManager,
             AffectedVersionsEngine affectedVEngine,
-            ProjectVersionsGetter geminiProjectVersionGetter)
+            ProjectVersionsGetter geminiProjectVersionGetter,
+            JqlGetter jqlgetter)
         {
             this.geminiToJiraMapper = geminiToJiraMapper;
             this.geminiItemsEngine = geminiItemsEngine;
@@ -43,6 +45,7 @@ namespace GeminiToJira.Engine
             this.logManager = logManager;
             this.affectedVEngine = affectedVEngine;
             this.geminiProjectVersionGetter = geminiProjectVersionGetter;
+            this.jqlgetter = jqlgetter;
         }
 
         public void Execute(GeminiToJiraParameters configurationSetup)
@@ -62,12 +65,19 @@ namespace GeminiToJira.Engine
                 this.logManager.SetLogFile(configurationSetup.LogDirectory + bugLogFile);
 
 
+                var originaKeys = getJiraBugsOriginalKeys(projectCode);
+
+
+
                 var geminiIssues = geminiBugIssueList.OrderBy(f => f.Id);
 
                 foreach (var geminiIssue in geminiIssues)
                 {
                     try
                     {
+                        if (originaKeys.Contains(geminiIssue.IssueKey))
+                            continue;
+
                         var currentIssue = geminiItemsEngine.Execute(geminiIssue.Id);
             
                         var jiraIssueInfo = geminiToJiraMapper.Execute(
@@ -85,6 +95,8 @@ namespace GeminiToJira.Engine
                             configurationSetup.AttachmentDownloadedPath);
 
                         SetAndSaveReporter(jiraIssue, geminiIssue,configurationSetup.Jira.DefaultAccount);
+
+                        originaKeys.Add(geminiIssue.IssueKey);
                     }
                     catch(Exception e)
                     {
@@ -99,6 +111,33 @@ namespace GeminiToJira.Engine
                 this.logManager.Execute(e.Message);
             }
         }
+
+        private HashSet<String> getJiraBugsOriginalKeys(string projectCode)
+        {
+            string jsql = $"Project = \"" + projectCode + "\" and (type = \"Bug\" and \"Bug Category[Dropdown]\" = Post-release and  \"OriginalKey[Short text]\" IS NOT empty)";
+
+            var jiraBugs = this.jqlgetter.Execute(jsql);
+
+            var keys = new HashSet<string>();
+
+            foreach(var b in jiraBugs)
+            {
+                var oriKeyField = b.CustomFields.FirstOrDefault(f => f.Name == "OriginalKey");
+
+                if (oriKeyField == null)
+                    continue;
+
+                var oriKey = oriKeyField.Values[0];
+
+                if (!keys.Contains(oriKey))
+                    keys.Add(oriKey);
+
+            }
+
+            return keys;
+
+        }
+
 
         private bool isRelevant(IssueDto geminiIssue, GeminiToJiraParameters configurationSetup)
         {
@@ -124,9 +163,12 @@ namespace GeminiToJira.Engine
                 return false;
 
             //Affected versions check
-            var affectedVersions = this.affectedVEngine.ExtractVersions(geminiIssue.AffectedVersionNumbers);
-            if (configurationSetup.Filter.BUG_RELEASES.Any() && !affectedVersions.Intersect(configurationSetup.Filter.BUG_RELEASES).Any())
-                return false;
+            if (configurationSetup.Filter.BUG_RELEASES != null && configurationSetup.Filter.BUG_RELEASES.Any())
+            {
+                var affectedVersions = this.affectedVEngine.ExtractVersions(geminiIssue.AffectedVersionNumbers, null);
+                if (affectedVersions.Any() && !affectedVersions.Intersect(configurationSetup.Filter.BUG_RELEASES).Any())
+                    return false;
+            }
 
             return true;
         }

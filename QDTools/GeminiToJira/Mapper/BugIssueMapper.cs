@@ -67,7 +67,7 @@ namespace GeminiToJira.Mapper
             if (configurationSetup.Mapping.BUG_PRIORITY_MAPPING.TryGetValue(geminiIssue.Priority.ToLower(), out string priority))
                 jiraIssue.Priority = priority;
 
-            this.affectedVersionEngine.Execute(geminiIssue, jiraIssue);
+            this.affectedVersionEngine.Execute(geminiIssue, jiraIssue, configurationSetup.Mapping.BUG_RELEASE_MAPPING);
 
             SetBugFixVersion(geminiIssue, jiraIssue, configurationSetup.Mapping);
 
@@ -153,7 +153,7 @@ namespace GeminiToJira.Mapper
             //Product module
             var productModule = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "Product Module");
             if (productModule != null && productModule.FormattedData != "")
-                jiraIssue.CustomFields.Add(new CustomFieldInfo("OriginalProductModule", productModule.FormattedData));
+                jiraIssue.CustomFields.Add(new CustomFieldInfo("OriginalProductModule", productModule.FormattedData.Substring(0, Math.Min(productModule.FormattedData.Length, 255))));
 
             //Fixed in build
             var fixedInBuild = geminiIssue.CustomFields.FirstOrDefault(x => x.Name == "FixedInBuild");
@@ -266,7 +266,14 @@ namespace GeminiToJira.Mapper
             {
                 var fixVersions = ExtractVersions(fixVersion.FormattedData);
                 foreach (var version in fixVersions)
-                    jiraIssue.FixVersions.Add(version.TrimStart().TrimEnd());
+                {
+                    var mappedVersion = mapVersion(
+                        version.TrimStart().TrimEnd(),
+                        mapping);
+
+                    jiraIssue.FixVersions.Add(mappedVersion);
+                }
+                    
             }
         }
 
@@ -274,6 +281,17 @@ namespace GeminiToJira.Mapper
         {
             var list = versionList.Split(',');
             return list.Select(x => x.TrimEnd().TrimStart()).ToList();
+        }
+
+        private string mapVersion(string version, JiraTools.Parameters.MappingConfiguration mapping)
+        {
+            if (mapping.BUG_RELEASE_MAPPING == null || !mapping.BUG_RELEASE_MAPPING.Any())
+                return version;
+
+            if (mapping.BUG_RELEASE_MAPPING.ContainsKey(version))
+                return mapping.BUG_RELEASE_MAPPING[version];
+
+            return version;
         }
 
         private static string ParseSeverity(IssueDto geminiIssue)

@@ -36,6 +36,12 @@ namespace GeminiToJira.Parameters.Import
         /// <summary>
         /// Ermas5 ILIAS-BSM
         /// </summary>
-        ILIASBSM = 5
+        ILIASBSM = 5,
+
+        /// <summary>
+        /// Model Risk Management
+        /// </summary>
+        MRM = 6
+
     }
 }
