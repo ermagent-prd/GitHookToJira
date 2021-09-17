@@ -18,7 +18,9 @@ namespace SvnToJira
                 return;
             }
 
-            var svnCommit = args[0];
+            //var svnCommit = args[0];
+
+            var svnCommit = "148995";
 
             var cfgLoader = new ConfigurationLoader();
 

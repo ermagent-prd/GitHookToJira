@@ -56,3 +56,4 @@ C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.dl
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.pdb
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Parameters\Import\CfgFiles\ILIAS-BSM.json
 C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.AssemblyReference.cache
+C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Parameters\Import\CfgFiles\MRM.json

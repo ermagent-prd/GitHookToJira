@@ -44,12 +44,12 @@ namespace SvnToJira.Engine
                 properties.Log,
                 properties.Repo);
 
-            var issues = properties.TrackingIssues.Distinct();
+            var issue = properties.TrackingIssues.FirstOrDefault();
 
-            foreach (var issue in issues)
-            {
-                this.jiraEngine.Execute(issue, properties.Author, body);
-            }
+            if (issue == null)
+                return;
+
+            this.jiraEngine.Execute(issue, properties.Author, body);
 
         }
 
