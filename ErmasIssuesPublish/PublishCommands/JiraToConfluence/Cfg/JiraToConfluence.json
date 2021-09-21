@@ -1,7 +1,7 @@
 {
     "jira": 
     {
-        "username": "pierluigi.nanni@prometeia.com",
+        "username": "ermagent-prd@prometeia.com",
         "tokenFilePath" :"C:\\Projects\\Others\\Processtools\\Bin\\BugExport\\FromJira\\JiraToken.txt",
         "server": "https://prometeia.atlassian.net/"
     },
