@@ -39,6 +39,5 @@ namespace GeminiToJira.Engine.Common
             return configurationSetup;
         }
 
-
     }
 }
