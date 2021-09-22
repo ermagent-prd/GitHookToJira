@@ -17,9 +17,6 @@ namespace JiraIssueProducer
         [Required]
         public string Option { get; }
 
-        [Option("-v|--verbose", CommandOptionType.NoValue, Description = "Print parameters")]
-        public bool Verbose { get; }
-
         [Option("-p|--jira-project", CommandOptionType.SingleValue, Description = "Jira project")]
         [Required]
         public string Project { get; }
@@ -31,6 +28,10 @@ namespace JiraIssueProducer
         [Option("-d|--description", CommandOptionType.SingleValue, Description = "Issue description")]
         [Required]
         public string Description { get; }
+
+        [Option("-r|--resources", CommandOptionType.SingleValue, Description = "Gemini resources username (comma separated)")]
+        [Required]
+        public string Resources { get; }
 
         [Option("-a|--attachments", CommandOptionType.SingleValue, Description = "File attachments full paths (comma separated)")]
         public string Attachments { get; } = string.Empty;
@@ -64,7 +65,12 @@ namespace JiraIssueProducer
         /// --comment comment1
         /// </param>
         /// <returns>The id of the modified issue or negative error code</returns>
-        public static int Main(string[] args) => CommandLineApplication.Execute<Program>(args);
+        public static int Main(string[] args)
+        {
+            return   
+                CommandLineApplication.Execute<Program>(args);
+        }
+        
 
         public int OnExecute()
         {
@@ -95,12 +101,14 @@ namespace JiraIssueProducer
             var cmdOptions = new CommandLineOptions();
 
             cmdOptions.ProducerOption = commandOption;
-
+            
             cmdOptions.JiraProject = this.Project;
 
             cmdOptions.Summary = this.Summary;
 
             cmdOptions.Description = this.Description;
+
+            cmdOptions.Watchers = this.Resources;
 
             cmdOptions.Attachments = this.Attachments;
 

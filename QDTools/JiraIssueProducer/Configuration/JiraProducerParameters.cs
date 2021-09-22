@@ -28,6 +28,8 @@ namespace JiraIssueProducer.Configuration
 
         public string Comment { get; set; }
 
+        public string Watchers { get; set; }
+
     }
 
     public class JiraParameters
