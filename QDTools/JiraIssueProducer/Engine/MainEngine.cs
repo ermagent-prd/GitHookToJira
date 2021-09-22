@@ -11,14 +11,31 @@ namespace JiraIssueProducer.Engine
     {
         private readonly ConfigurationContainer configurationManager;
 
-        public MainEngine(ConfigurationContainer configurationManager)
+        private readonly IUpdateNotClosedEngine updateEngine;
+
+        private readonly IAddOrUpdateEngine addOrUpdateEngine;
+
+        public MainEngine(
+            ConfigurationContainer configurationManager,
+            IUpdateNotClosedEngine updateEngine,
+            IAddOrUpdateEngine addOrUpdateEngine)
         {
             this.configurationManager = configurationManager;
+
+            this.addOrUpdateEngine = addOrUpdateEngine;
+
+            this.updateEngine = updateEngine;
         }
 
         public int Execute()
         {
-            throw new NotImplementedException();
+            if (this.configurationManager.Configuration.CommandLineOptions.ProducerOption == JiraIssueProducerOption.AddOrUpdate)
+                return this.addOrUpdateEngine.Execute();
+
+            if (this.configurationManager.Configuration.CommandLineOptions.ProducerOption == JiraIssueProducerOption.UpdateNotClosed)
+                return this.updateEngine.Execute();
+
+            return CommandOptions.ERR_WRONG_OPTION;
         }
     }
 }

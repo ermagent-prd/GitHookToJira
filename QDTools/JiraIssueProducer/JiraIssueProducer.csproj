@@ -50,6 +50,8 @@
     <Compile Include="Configuration\ConfigurationContainer.cs" />
     <Compile Include="Configuration\JiraProducerParameters.cs" />
     <Compile Include="Container\ContainerFactory.cs" />
+    <Compile Include="Engine\IUpdateNotClosedEngine.cs" />
+    <Compile Include="Engine\IAddOrUpdateEngine.cs" />
     <Compile Include="Engine\MainEngine.cs" />
     <Compile Include="Options\CommandOptions.cs" />
     <Compile Include="Program.cs" />
@@ -74,7 +76,14 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Engine\Finder\" />
     <Folder Include="Validation\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JiraTools\JiraTools.csproj">
+      <Project>{d089f776-b54c-4e4c-a1a1-642ffebc9da0}</Project>
+      <Name>JiraTools</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
