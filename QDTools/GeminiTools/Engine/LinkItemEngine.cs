@@ -1,4 +1,4 @@
-﻿using GeminiTools.Items;
+using GeminiTools.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +12,7 @@ namespace GeminiTools.Engine
     {
         public LinkItemEngine()
         { }
+        
 
         public LinkItem Execute(string htmlToParse)
         {
