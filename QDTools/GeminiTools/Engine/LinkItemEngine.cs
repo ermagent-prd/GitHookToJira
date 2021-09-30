@@ -13,7 +13,6 @@ namespace GeminiTools.Engine
         public LinkItemEngine()
         { }
         
-
         public LinkItem Execute(string htmlToParse)
         {
             if (!htmlToParse.Contains("href"))
