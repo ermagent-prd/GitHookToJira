@@ -8,4 +8,4 @@ param (
 
  Set-Location $projectFolder
 
- & $msbuildpath $projectFile -t:pack /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg
+ & $msbuildpath $projectFolder"\"$projectFile -t:pack /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg

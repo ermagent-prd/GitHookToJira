@@ -1,11 +1,11 @@
 param (
-    [string]$projectFolder= "C:\Projects\Ermas5\AlmProSuite\Source\ALMProCommon\GeneralUtilities",
-    [string]$projectFile = "Prometeia.ALMPro.GeneralUtilities.csproj",
-    [string]$version = "1.0.1",
-    [string]$suffix = "alpha",
-    [string]$author = "Prometeia spa",
-    [string]$Description = "general utilities",
-    [string]$PackageDirectory = "C:\Projects\Others\NugetServer\PromNugetServer\PromNugetServer\Packages\"
+    [string]$projectFolder= "C:\Projects\Ermas5\AlmProSuite\Source\ALMProCommon\CommonPatterns",
+    [string]$projectFile = "Prometeia.ALMPro.CommonPatterns.csproj",
+    [string]$version = "1.0.0",
+    [string]$suffix = "beta",
+    [string]$author = "piern",
+    [string]$Description = "SHL Common Patterns",
+    [string]$PackageDirectory = "C:\Projects\Others\NugetWork\"
  )
 
  Set-Location $projectFolder
