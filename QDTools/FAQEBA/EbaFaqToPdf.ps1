@@ -20,7 +20,25 @@ param (
 
         $outFileName = "{0}_{1}_TO_{2}.pdf" -f $FileNamePrefix, $previousday.ToString("yyyy-MM-dd"), $today.ToString("yyyy-MM-dd")
 
-        Invoke-WebRequest -Uri $url -OutFile $OutFolder$outFileName
+        $outPdfPath = $OutFolder + $outFileName
+
+        Invoke-WebRequest -Uri $url -OutFile $outPdfPath
+
+        $messageSubject = “EBA Weekly updates ({0} - {1})” -f $previousday.ToString("yyyy/MM/dd"), $today.ToString("yyyy/MM/dd")
+
+        
+
+        $mailCredential = Get-Credential -UserName helpdesk_almpro - 
+
+        Send-MailMessage 
+            -To “pierluigi.nanni@prometeia.com” `
+            -From “FAQ EBA”  `
+            -Attachments $outPdfPath `
+            -Subject $messageSubject `
+            -Body “See the Attached pdf report” `
+            -Credential (Get-Credential) `
+            -SmtpServer “192.168.0.7” `
+            -Port 25
 
     }
     Catch {
