@@ -23,6 +23,18 @@ RUN `
 # Cleanup
 RUN del /q vs_buildtools.exe
 
+# Download the Build Tools bootstrapper.
+RUN dotnet tool install --global dotnet-sonarscanner
+
+#Install Java 8 Update 91 
+RUN powershell [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; (new-object System.Net.WebClient).Downloadfile('http://javadl.oracle.com/webapps/download/AutoDL?BundleId=210185', 'C:\jre-8u91-windows-x64.exe')
+RUN powershell start-process -filepath C:\jre-8u91-windows-x64.exe -passthru -wait -argumentlist "/s,INSTALLDIR=c:\Java\jre1.8.0_91,/L,install64.log"
+RUN del C:\jre-8u91-windows-x64.exe
+ENV JAVA_HOME c:\Java\jre1.8.0_91    
+
+#Add code coverage path
+RUN setx path "%path%;C:\Program Files (x86)\Microsoft Visual Studio\2022\TestAgent\Team Tools\Dynamic Code Coverage Tools"
+
 # Define the entry point for the docker container.
 # This entry point starts the developer command prompt and launches the PowerShell shell.
 ENTRYPOINT ["C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\Tools\\VsDevCmd.bat", "&&", "powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]
