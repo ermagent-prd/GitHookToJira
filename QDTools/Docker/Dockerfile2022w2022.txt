@@ -31,7 +31,7 @@ RUN powershell [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtoc
 RUN powershell start-process -filepath C:\jdk-11.0.14_windows-x64_bin.exe -passthru -wait -argumentlist "/s,INSTALLDIR=c:\Java\jre1.11.0_14,/L,install64.log"
 RUN del C:\jdk-11.0.14_windows-x64_bin.exe
 ENV JAVA_HOME c:\Java\jre1.11.0_14    
-  
+
 
 #Add code coverage path
 RUN setx path "%path%;C:\Program Files (x86)\Microsoft Visual Studio\2022\TestAgent\Team Tools\Dynamic Code Coverage Tools"
