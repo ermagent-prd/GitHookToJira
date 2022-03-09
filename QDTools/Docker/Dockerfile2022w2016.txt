@@ -23,6 +23,9 @@ RUN `
 # Cleanup
 RUN del /q vs_buildtools.exe
 
+# Download the nuget outdated tool.
+RUN dotnet tool install --global dotnet-outdated-tool
+
 # Download the Build Tools bootstrapper.
 RUN dotnet tool install --global dotnet-sonarscanner
 
