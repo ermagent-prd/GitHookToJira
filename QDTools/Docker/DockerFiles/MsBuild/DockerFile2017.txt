@@ -1,0 +1,32 @@
+# escape=`
+
+# Use the latest Windows Server Core image with .NET Framework 4.8.
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8
+
+# Restore the default Windows shell for correct batch processing.
+SHELL ["cmd", "/S", "/C"]
+
+# Download the Build Tools bootstrapper.
+ADD https://download.visualstudio.microsoft.com/download/pr/af181144-6075-4ca1-8543-9dbdeffb1b79/9d09c436e510d44ae798146b36153624/vs_buildtools.exe C:\TEMP\vs_buildtools.exe
+
+# Install Build Tools excluding workloads and components with known issues.
+# refer to https://docs.microsoft.com/it-it/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2017 for workload components
+RUN C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache --includeRecommended `
+    --installPath C:\BuildTools `
+    --add Microsoft.VisualStudio.Workload.WebBuildTools `
+    --add Microsoft.Net.Core.Component.SDK `
+ || IF "%ERRORLEVEL%"=="3010" EXIT 0
+
+RUN mkdir C:\mstask
+
+COPY . c:\mstask
+
+# Install Build Tools excluding workloads and components with known issues.
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+RUN Start-Process 'c:\\mstask\\MSBuild.Community.Tasks.v1.5.0.235.msi' '/qn' -PassThru | Wait-Process;
+
+
+# Default to PowerShell if no other command specified.
+CMD ["powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]

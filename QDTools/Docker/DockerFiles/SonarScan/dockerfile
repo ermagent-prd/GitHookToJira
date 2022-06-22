@@ -1,0 +1,7 @@
+FROM piern/msbuildjava11:latest
+
+RUN mkdir "c:\\sonarscan"
+
+COPY . "c:\\sonarscan"
+
+CMD [ "c:\\Java\\jdk-11.0.6\\bin\\java.exe", "-version"]
