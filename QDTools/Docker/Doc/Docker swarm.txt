@@ -1,0 +1,3 @@
+docker swarm init // inizializzazione docker swarm come manager (il computer è un manager e un worker al tempo stesso
+docker swarm join --token SWMTKN-1-24z8u3x7aveezqcsdo63a6yoy9trvmng15s65wcforljquvku9-3dhj5kjdo1ql2b5bg0pwk86dm 10.100.2.86:2377 //consente di aggiungere un worker al cluster. da lanciare dal computer worker
+docker node ls // lista dei nodi disponibili

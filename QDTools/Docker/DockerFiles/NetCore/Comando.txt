@@ -1,0 +1,1 @@
+docker build -t piern/msbuildtools2019:w2016 .
