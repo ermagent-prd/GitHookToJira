@@ -62,6 +62,7 @@
     <Compile Include="Engine\ConfigurationLoader.cs" />
     <Compile Include="Engine\PropertiesToCommentEngine.cs" />
     <Compile Include="Parameters\Jira\JiraParamContainer.cs" />
+    <Compile Include="Parameters\ReleasesBranchInfo.cs" />
     <Compile Include="Parameters\SvnToJiraParameters.cs" />
     <Compile Include="Parameters\Svn\SvnParamContainer.cs" />
     <Compile Include="Program.cs" />

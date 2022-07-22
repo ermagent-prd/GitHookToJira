@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\JiraToolsContainerExtension.cs" />
+    <Compile Include="Engine\IssueGetter.cs" />
     <Compile Include="Engine\RemoteLinkEngine.cs" />
     <Compile Include="Engine\AddWatcherEngine.cs" />
     <Compile Include="Engine\ProjectReleasesGetter.cs" />

@@ -6,11 +6,21 @@
     "User": "",
     "Password": ""
   },
-    "JiraParameters": {
-        "User": "pierluigi.nanni@prometeia.com",
-        "Token": "GOojveJqyGUAgi6mzSAu3FAA",
-        "Url": "https://prometeia.atlassian.net/",
-        "IssueApi": "rest/api/3/issue/",
-        "MaxIssuesPerRequest": 10
+  "JiraParameters": {
+    "User": "pierluigi.nanni@prometeia.com",
+    "Token": "GOojveJqyGUAgi6mzSAu3FAA",
+    "Url": "https://prometeia.atlassian.net/",
+    "IssueApi": "rest/api/3/issue/",
+    "MaxIssuesPerRequest": 10
+  },
+  "ReleaseBranches": [
+    {
+      "ReleaseName": "Ermas 5.29.0",
+      "Path": "/branches/releases/5.29.0"
+    },
+    {
+      "ReleaseName": "Ermas 5.30.0",
+      "Path": "/branches/releases/5.30.0"
     }
+  ]
 }

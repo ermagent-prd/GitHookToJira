@@ -20,6 +20,8 @@ namespace SvnTools.Model
 
         public IEnumerable<String> TrackingIssues { get; }
 
+        public IEnumerable<string> DiffList { get; }
+
         #endregion
 
         #region Constructor
@@ -30,7 +32,8 @@ namespace SvnTools.Model
             string date, 
             string author, 
             string repo,
-            IEnumerable<String> trackingIssues)
+            IEnumerable<String> trackingIssues,
+            IEnumerable<string> diffList)
         {
             this.Revision = revision;
             Log = log;
@@ -38,6 +41,7 @@ namespace SvnTools.Model
             Author = author;
             this.Repo = repo;
             this.TrackingIssues = trackingIssues;
+            this.DiffList = diffList;
         }
 
         #endregion

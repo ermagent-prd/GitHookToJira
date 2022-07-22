@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
 using SharpSvn;
 using SvnTools.Engine;
@@ -46,6 +48,11 @@ namespace SvnTools
 
                 var repoUri = new Uri(svnRepoPath);
 
+                //*********************** Test
+
+                //*********************** Test
+
+
                 SvnPropertyCollection properties = null;
 
                 client.GetRevisionPropertyList(repoUri,
@@ -63,13 +70,16 @@ namespace SvnTools
                     this.parameters.TrackingIssuePattern, 
                     log);
 
+                var fileDiffs = getFilesDiff(client, repoUri, revision);
+
                 return new RevisionProperties(
                     revision,
                     log,
                     date,
                     author,
                     svnRepoPath,
-                    trackingInfo);
+                    trackingInfo,
+                    fileDiffs);
             }
         }
 
@@ -80,6 +90,22 @@ namespace SvnTools
 
             return properties[key].StringValue;
 
+        }
+
+        private IEnumerable<string> getFilesDiff(
+            SvnClient client,
+            Uri repoUri,
+            int revision)
+        {
+
+            Collection<SvnDiffSummaryEventArgs> diffList = null;
+
+            client.GetDiffSummary(
+                new SvnUriTarget(repoUri, revision - 1),
+                new SvnUriTarget(repoUri, revision),
+                out diffList);
+
+            return diffList.Select(x => x.Path).ToList();
         }
 
     }

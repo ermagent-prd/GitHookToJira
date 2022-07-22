@@ -49,7 +49,7 @@ namespace SvnToJira.Engine
             if (issue == null)
                 return;
 
-            this.jiraEngine.Execute(issue, properties.Author, body);
+            //this.jiraEngine.Execute(issue, properties.Author, body);
 
         }
 

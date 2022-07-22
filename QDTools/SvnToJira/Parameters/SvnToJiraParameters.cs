@@ -16,6 +16,9 @@ namespace SvnToJira.Parameters
         public JiraToolConfiguration JiraParameters { get; set; }
 
 
+        public List<ReleasesBranchInfo> ReleaseBranches { get; set; }
+
+
         #endregion
     }
 }

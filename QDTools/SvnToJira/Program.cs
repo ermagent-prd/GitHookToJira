@@ -20,7 +20,6 @@ namespace SvnToJira
 
             var svnCommit = args[0];
 
-                      
 
             var cfgLoader = new ConfigurationLoader();
 
