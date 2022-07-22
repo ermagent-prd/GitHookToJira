@@ -3,6 +3,7 @@ using JiraTools.Parameters;
 using SvnToJira.Engine;
 using SvnToJira.Parameters;
 using SvnTools.Parameters;
+using System.Collections.Generic;
 using Unity;
 
 namespace SvnToJira.Container
@@ -17,11 +18,16 @@ namespace SvnToJira.Container
 
             container.RegisterInstance<ISvnToolsParameters>(new SvnParamContainer(parameters.SvnParameters));
             container.RegisterInstance<IJiraToolsParameters>(new JiraParamContainer(parameters.JiraParameters));
+            container.RegisterInstance<ReleaseInfoParamContainer>(new ReleaseInfoParamContainer(parameters.ReleaseBranches));
 
             container.RegisterType<ConfigurationLoader>();
 
             container.RegisterType<PropertiesToCommentEngine>();
-            
+
+            container.RegisterType<TrackingIssueCheckEngine>();
+
+            container.RegisterType<TrackingIssueChecker>();
+
             container.AddNewExtension<JiraToolsContainerExtension>();
 
             return container;

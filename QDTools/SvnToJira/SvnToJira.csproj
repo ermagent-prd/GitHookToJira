@@ -58,10 +58,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="Container\ContainerFactory.cs" />
     <Compile Include="Engine\ConfigurationLoader.cs" />
+    <Compile Include="Engine\ISvnToJiraEngine.cs" />
+    <Compile Include="Engine\TrackingIssueChecker.cs" />
+    <Compile Include="Engine\TrackingIssueCheckEngine.cs" />
     <Compile Include="Engine\PropertiesToCommentEngine.cs" />
     <Compile Include="Parameters\Jira\JiraParamContainer.cs" />
+    <Compile Include="Parameters\ReleaseInfo\ReleaseInfoParamContainer.cs" />
     <Compile Include="Parameters\ReleasesBranchInfo.cs" />
     <Compile Include="Parameters\SvnToJiraParameters.cs" />
     <Compile Include="Parameters\Svn\SvnParamContainer.cs" />

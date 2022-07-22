@@ -5,7 +5,7 @@ using SvnTools;
 
 namespace SvnToJira.Engine
 {
-    internal class PropertiesToCommentEngine
+    internal class PropertiesToCommentEngine : ISvnToJiraEngine
     {
         #region Private properties
 

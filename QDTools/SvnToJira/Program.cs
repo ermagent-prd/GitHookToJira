@@ -10,16 +10,24 @@ namespace SvnToJira
 {
     class Program
     {
+        /// <summary>
+        /// Svn pre and postcommit actions
+        /// arguments: 
+        /// svnCommit (int) 
+        /// actionType (int): 0: Add committ comment to tracking issue, 1: Check tracking issue (bug fixing check)
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            if (args.Length != 2)
             {
                 Console.WriteLine("Invalid args");
                 return;
             }
 
-            var svnCommit = args[0];
+            var svnCommit = Convert.ToInt32(args[0]);
 
+            var action = Convert.ToInt32(args[1]);
 
             var cfgLoader = new ConfigurationLoader();
 
@@ -27,9 +35,26 @@ namespace SvnToJira
 
             var unityContainer = ContainerFactory.Execute(cfg);
 
-            var engine = unityContainer.Resolve<PropertiesToCommentEngine>();
 
-            engine.Execute(Convert.ToInt32(svnCommit));
+            var engine = getEngine(unityContainer, action);
+           
+
+            engine.Execute(svnCommit);
+
+        }
+
+        private static ISvnToJiraEngine getEngine(IUnityContainer unityContainer, int action)
+        {
+            switch (action)
+            {
+                case SvnToJiraConstants.AddJiraComment:
+                    { return unityContainer.Resolve<PropertiesToCommentEngine>(); }
+
+                case SvnToJiraConstants.CheckJiraBugFix:
+                    return unityContainer.Resolve<TrackingIssueCheckEngine>();
+
+                default: return null;
+            }
 
         }
 

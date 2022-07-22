@@ -6,7 +6,7 @@ using SvnTools.Parameters;
 
 namespace SvnToJira.Parameters
 {
-    internal class ReleasesBranchInfo
+    public class ReleasesBranchInfo
     {
 
         #region Public properties
