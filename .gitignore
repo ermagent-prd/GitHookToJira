@@ -373,3 +373,4 @@ QDTools/GeminiToJira/obj/Debug/GeminiToJira.csproj.FileListAbsolute.txt
 QDTools/.vs/QDTools/v16/.suo
 *.manifest
 *.cache
+*.pdb

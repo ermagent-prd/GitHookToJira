@@ -65,10 +65,6 @@
       <Project>{48BCEB5B-0243-49F4-84C5-F469E2D2658E}</Project>
       <Name>AlfrescoTools</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GeminiToJira\GeminiToJira.csproj">
-      <Project>{99561e17-f740-4ae1-a9bd-a30bff1f6649}</Project>
-      <Name>GeminiToJira</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GeminiTools\GeminiTools.csproj">
       <Project>{E0C684EB-4D0F-4B6B-985F-F6264BC47C6E}</Project>
       <Name>GeminiTools</Name>

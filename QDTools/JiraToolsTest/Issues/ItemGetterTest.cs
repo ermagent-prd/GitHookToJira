@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Atlassian.Jira;
 using Atlassian.Jira.Remote;
-using GeminiToJira.Engine;
 using JiraTools.Engine;
 using JiraTools.Parameters;
 using JiraToolsTest.Container;

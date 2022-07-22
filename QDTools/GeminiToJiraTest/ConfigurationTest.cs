@@ -8,7 +8,7 @@ using GeminiTools.Parameters;
 using AlfrescoTools.Parameters;
 
 
-namespace ImportConfigurationTest
+namespace GeminiToJiraTest
 {
     [TestClass]
     public class ConfigurationTest

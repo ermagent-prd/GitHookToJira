@@ -95,10 +95,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GeminiToJira\GeminiToJira.csproj">
-      <Project>{99561E17-F740-4AE1-A9BD-A30BFF1F6649}</Project>
-      <Name>GeminiToJira</Name>
-    </ProjectReference>
     <ProjectReference Include="..\JiraTools\JiraTools.csproj">
       <Project>{d089f776-b54c-4e4c-a1a1-642ffebc9da0}</Project>
       <Name>JiraTools</Name>

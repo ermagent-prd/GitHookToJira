@@ -17,13 +17,6 @@ C:\Projects\Others\JiraApp\JiraTools\JiraTools\obj\Debug\JiraTools.csprojAssembl
 C:\Projects\Others\JiraApp\JiraTools\JiraTools\bin\Debug\JiraTools.dll.config
 C:\Projects\Others\JiraApp\JiraTools\JiraTools\bin\Debug\System.Net.Http.Formatting.dll
 C:\Projects\Others\JiraApp\JiraTools\JiraTools\bin\Debug\System.Net.Http.Formatting.xml
-C:\Projects\Others\Processtools\Bin\QDTools\JiraTools\Debug\JiraTools.dll.config
-C:\Projects\Others\Processtools\Bin\QDTools\JiraTools\Debug\JiraTools.dll
-C:\Projects\Others\Processtools\Bin\QDTools\JiraTools\Debug\JiraTools.pdb
-C:\Projects\Others\Processtools\QDTools\JiraTools\obj\Debug\JiraTools.csproj.CoreCompileInputs.cache
-C:\Projects\Others\Processtools\QDTools\JiraTools\obj\Debug\JiraTools.csproj.CopyComplete
-C:\Projects\Others\Processtools\QDTools\JiraTools\obj\Debug\JiraTools.dll
-C:\Projects\Others\Processtools\QDTools\JiraTools\obj\Debug\JiraTools.pdb
 C:\GeminiPorting\processesTools\Bin\QDTools\JiraTools\Debug\JiraTools.dll.config
 C:\GeminiPorting\processesTools\Bin\QDTools\JiraTools\Debug\JiraTools.dll
 C:\GeminiPorting\processesTools\Bin\QDTools\JiraTools\Debug\JiraTools.pdb
@@ -32,4 +25,11 @@ C:\GeminiPorting\processesTools\QDTools\JiraTools\obj\Debug\JiraTools.csproj.Cor
 C:\GeminiPorting\processesTools\QDTools\JiraTools\obj\Debug\JiraTools.csproj.CopyComplete
 C:\GeminiPorting\processesTools\QDTools\JiraTools\obj\Debug\JiraTools.dll
 C:\GeminiPorting\processesTools\QDTools\JiraTools\obj\Debug\JiraTools.pdb
+C:\Projects\Others\Processtools\Bin\QDTools\JiraTools\Debug\JiraTools.dll.config
+C:\Projects\Others\Processtools\Bin\QDTools\JiraTools\Debug\JiraTools.dll
+C:\Projects\Others\Processtools\Bin\QDTools\JiraTools\Debug\JiraTools.pdb
 C:\Projects\Others\Processtools\QDTools\JiraTools\obj\Debug\JiraTools.csproj.AssemblyReference.cache
+C:\Projects\Others\Processtools\QDTools\JiraTools\obj\Debug\JiraTools.csproj.CoreCompileInputs.cache
+C:\Projects\Others\Processtools\QDTools\JiraTools\obj\Debug\JiraTools.csproj.CopyComplete
+C:\Projects\Others\Processtools\QDTools\JiraTools\obj\Debug\JiraTools.dll
+C:\Projects\Others\Processtools\QDTools\JiraTools\obj\Debug\JiraTools.pdb

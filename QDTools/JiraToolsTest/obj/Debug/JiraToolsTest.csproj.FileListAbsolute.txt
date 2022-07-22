@@ -32,10 +32,6 @@ C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Microsoft.VisualStudio
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\JiraToolsTest.dll
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\JiraToolsTest.pdb
-C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.CoreCompileInputs.cache
-C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.CopyComplete
-C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.dll
-C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.pdb
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\JiraToolsTest.dll.config
 C:\GeminiPorting\processesTools\Bin\QDTools\JiraToolsTest\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
 C:\GeminiPorting\processesTools\Bin\QDTools\JiraToolsTest\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
@@ -54,6 +50,8 @@ C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Microsoft.Visual
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.dll.config
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.dll
 C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\JiraToolsTest.pdb
-C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Parameters\Import\CfgFiles\ILIAS-BSM.json
 C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.AssemblyReference.cache
-C:\Projects\Others\Processtools\Bin\QDTools\JiraToolsTest\Debug\Parameters\Import\CfgFiles\MRM.json
+C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.CoreCompileInputs.cache
+C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.csproj.CopyComplete
+C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.dll
+C:\Projects\Others\Processtools\QDTools\JiraToolsTest\obj\Debug\JiraToolsTest.pdb
