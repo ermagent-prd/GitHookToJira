@@ -1,6 +1,7 @@
 ﻿using SvnToJira.Parameters;
 using SvnTools;
 using System;
+using System.Linq;
 
 namespace SvnToJira.Engine
 {
@@ -32,33 +33,39 @@ namespace SvnToJira.Engine
 
         #region Public methods
 
-        public void Execute(
+        public ActionResult Execute(
             int svnCommit)
         {
-            //1. Recupero properties da revision svn
+            try
+            {
+                //1. Recupero properties da revision svn
 
-            var properties = this.svnEngine.Execute(svnCommit);
+                var properties = this.svnEngine.Execute(svnCommit);
 
-            if (properties == null)
-                return;
+                if (properties == null)
+                    return new ActionResult(false, "Invalid commit revision");
 
-            /*
-            if (properties.TrackingIssues == null || !properties.TrackingIssues.Any())
-                return;
+                if (properties.TrackingIssues == null || !properties.TrackingIssues.Any())
+                    return new ActionResult(false, "Tracking Issue not specified");
 
+                var issue = properties.TrackingIssues.FirstOrDefault();
 
-            var issue = properties.TrackingIssues.FirstOrDefault();
-
-            if (issue == null)
-                return;
-            */
-
-            //2. Check sulla release (verifica se il commit ha interessato le release specificate in configurazione (releaseParameters.Param)
+                if (issue == null)
+                    return new ActionResult(false, "Tracking Issue not specified");
 
 
-            //3. Check sul traking issue: recupero della issue jira, verifica sulle propietà
+                //2. Check sulla release (verifica se il commit ha interessato le release specificate in configurazione (releaseParameters.Param)
 
-            throw new NotImplementedException();
+
+                //3. Check sul traking issue: recupero della issue jira, verifica sulle propietà
+
+                throw new NotImplementedException();
+
+            }
+            catch (Exception ex)
+            {
+                return new ActionResult(false, ex.Message);
+            }
         }
 
         #endregion

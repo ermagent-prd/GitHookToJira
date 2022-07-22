@@ -35,12 +35,16 @@ namespace SvnToJira
 
             var unityContainer = ContainerFactory.Execute(cfg);
 
-
             var engine = getEngine(unityContainer, action);
            
+            var result = engine.Execute(svnCommit);
 
-            engine.Execute(svnCommit);
+            if (!result.Ok)
+            {
+                Console.Error.WriteLine(result.Message);
 
+                Environment.Exit(1);
+            }
         }
 
         private static ISvnToJiraEngine getEngine(IUnityContainer unityContainer, int action)

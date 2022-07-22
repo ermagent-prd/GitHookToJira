@@ -27,30 +27,38 @@ namespace SvnToJira.Engine
 
         #region Public methods
 
-        public void Execute(
+        public ActionResult Execute(
             int svnCommit)
         {
-            var properties = this.svnEngine.Execute(svnCommit);
+            try
+            {
+                var properties = this.svnEngine.Execute(svnCommit);
 
-            if (properties == null)
-                return;
+                if (properties == null)
+                    return ActionResult.Passed();
 
-            if (properties.TrackingIssues == null || !properties.TrackingIssues.Any())
-                return;
+                if (properties.TrackingIssues == null || !properties.TrackingIssues.Any())
+                    return ActionResult.Passed();
 
-            string body = string.Format("SVN Commit \n Revision {0} from {1}: \n {2} Repository: {3}",
-                properties.Revision.ToString(),
-                properties.Author,
-                properties.Log,
-                properties.Repo);
+                string body = string.Format("SVN Commit \n Revision {0} from {1}: \n {2} Repository: {3}",
+                    properties.Revision.ToString(),
+                    properties.Author,
+                    properties.Log,
+                    properties.Repo);
 
-            var issue = properties.TrackingIssues.FirstOrDefault();
+                var issue = properties.TrackingIssues.FirstOrDefault();
 
-            if (issue == null)
-                return;
+                if (issue == null)
+                    return ActionResult.Passed();
 
-            //this.jiraEngine.Execute(issue, properties.Author, body);
+                this.jiraEngine.Execute(issue, properties.Author, body);
 
+                return ActionResult.Passed();
+            }
+            catch (Exception ex)
+            {
+                return new ActionResult(false, ex.Message);
+            }
         }
 
         #endregion
