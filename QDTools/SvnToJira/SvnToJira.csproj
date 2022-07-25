@@ -1,82 +1,26 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{89575B58-69F2-4FBB-A42A-BF5F9FCFC2B1}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>SvnToJira</RootNamespace>
-    <AssemblyName>SvnToJira</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
+    <Title>SvnToJira</Title>
+    <Description>SvnToJIra Test</Description>
+    <Product>Ermas</Product>
+    <Company>Prometeia spa</Company>
+    <Copyright>Prometeia spa</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <TargetFramework>net472</TargetFramework>
+	  <IsPackable>false</IsPackable>
+	  <OutputType>Exe</OutputType>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\Bin\QDTools\SvnToJira\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\Bin\QDTools\SvnToJira\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Constants.cs" />
-    <Compile Include="Container\ContainerFactory.cs" />
-    <Compile Include="Engine\ActionResult.cs" />
-    <Compile Include="Engine\BranchCheckerEngine.cs" />
-    <Compile Include="Engine\ConfigurationLoader.cs" />
-    <Compile Include="Engine\ISvnToJiraEngine.cs" />
-    <Compile Include="Engine\TrackingIssueChecker.cs" />
-    <Compile Include="Engine\TrackingIssueCheckEngine.cs" />
-    <Compile Include="Engine\PropertiesToCommentEngine.cs" />
-    <Compile Include="Parameters\Jira\JiraParamContainer.cs" />
-    <Compile Include="Parameters\ReleaseInfo\ReleaseInfoParamContainer.cs" />
-    <Compile Include="Parameters\ReleasesBranchInfo.cs" />
-    <Compile Include="Parameters\SvnToJiraParameters.cs" />
-    <Compile Include="Parameters\Svn\SvnParamContainer.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-    <None Include="SvnToJira.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\JiraTools\JiraTools.csproj">
-      <Project>{d089f776-b54c-4e4c-a1a1-642ffebc9da0}</Project>
-      <Name>JiraTools</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SvnTools\SvnTools.csproj">
-      <Project>{f05990c0-a6d7-4f7b-9d1e-e82ebf308973}</Project>
-      <Name>SvnTools</Name>
-    </ProjectReference>
-  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
@@ -94,5 +38,24 @@
       <Version>5.11.11</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\JiraTools\JiraTools.csproj" />
+    <ProjectReference Include="..\SvnTools\SvnTools.csproj" />
+  </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+        <_Parameter1>SvnToJiraTest</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="SvnToJira.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+
+
 </Project>

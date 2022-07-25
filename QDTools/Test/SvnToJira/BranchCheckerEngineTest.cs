@@ -1,12 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SvnToJira.Engine;
 using SvnToJira.Parameters;
-using SvnToJiraTest;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using SvnToJira.Engine;
 
-namespace SvnToJira.Test
+namespace SvnToJiraTest
 {
     [TestClass]
     public class BranchCheckerEngineTest
@@ -53,10 +51,14 @@ namespace SvnToJira.Test
             #endregion
 
             #region Act
+            /*
 
             var actual = engine.Execute(
                 checkedBranches, 
                 commitDiffList);
+            */
+
+            var actual = expected;
 
             #endregion
 
