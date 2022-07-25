@@ -19,6 +19,10 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
+[assembly: InternalsVisibleTo("SvnToJira.Test")]
+
+
+
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("89575b58-69f2-4fbb-a42a-bf5f9fcfc2b1")]
 

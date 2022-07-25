@@ -61,6 +61,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Container\ContainerFactory.cs" />
     <Compile Include="Engine\ActionResult.cs" />
+    <Compile Include="Engine\BranchCheckerEngine.cs" />
     <Compile Include="Engine\ConfigurationLoader.cs" />
     <Compile Include="Engine\ISvnToJiraEngine.cs" />
     <Compile Include="Engine\TrackingIssueChecker.cs" />

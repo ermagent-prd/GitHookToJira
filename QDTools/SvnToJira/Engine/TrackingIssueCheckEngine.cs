@@ -13,6 +13,8 @@ namespace SvnToJira.Engine
 
         private readonly RevisionPropertiesEngine svnEngine;
 
+        private readonly BranchCheckerEngine branchChecker;
+
         private readonly TrackingIssueChecker issueChecker;
 
         #endregion
@@ -22,11 +24,13 @@ namespace SvnToJira.Engine
         public TrackingIssueCheckEngine(
             RevisionPropertiesEngine svnEngine, 
             TrackingIssueChecker issueChecker, 
-            ReleaseInfoParamContainer releaseParameters)
+            ReleaseInfoParamContainer releaseParameters,
+            BranchCheckerEngine branchChecker)
         {
             this.releaseParameters = releaseParameters;
             this.svnEngine = svnEngine;
             this.issueChecker = issueChecker;
+            this.branchChecker = branchChecker;
         }
 
         #endregion
@@ -40,15 +44,15 @@ namespace SvnToJira.Engine
             {
                 //1. Recupero properties da revision svn
 
-                var properties = this.svnEngine.Execute(svnCommit);
+                var commitProperties = this.svnEngine.Execute(svnCommit);
 
-                if (properties == null)
-                    return new ActionResult(false, "Invalid commit revision");
+                if (commitProperties == null)
+                    return new ActionResult(false, String.Format("Invalid commit revision: {0}",svnCommit));
 
-                if (properties.TrackingIssues == null || !properties.TrackingIssues.Any())
+                if (commitProperties.TrackingIssues == null || !commitProperties.TrackingIssues.Any())
                     return new ActionResult(false, "Tracking Issue not specified");
 
-                var issue = properties.TrackingIssues.FirstOrDefault();
+                var issue = commitProperties.TrackingIssues.FirstOrDefault();
 
                 if (issue == null)
                     return new ActionResult(false, "Tracking Issue not specified");
@@ -58,6 +62,7 @@ namespace SvnToJira.Engine
 
 
                 //3. Check sul traking issue: recupero della issue jira, verifica sulle propietà
+
 
                 throw new NotImplementedException();
 

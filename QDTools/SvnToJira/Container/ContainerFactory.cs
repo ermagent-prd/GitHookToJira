@@ -28,6 +28,10 @@ namespace SvnToJira.Container
 
             container.RegisterType<TrackingIssueChecker>();
 
+            container.RegisterType<BranchCheckerEngine>();
+
+            container.RegisterType<BranchCheckerEngine>();
+
             container.AddNewExtension<JiraToolsContainerExtension>();
 
             return container;
