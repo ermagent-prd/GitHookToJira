@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SvnToJira.Engine;
 using SvnToJira.Parameters;
+using SvnToJiraTest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +62,7 @@ namespace SvnToJira.Test
 
             #region Assert
 
-            CollectionAssert.AreEquivalent(expected, actual.ToList());
+            CollectionAssert.AreEqual(expected, actual.ToList(), new ReleasesBranchInfoComparer());
 
             #endregion
 
