@@ -3,6 +3,7 @@ using SvnToJira.Parameters;
 using System.Collections.Generic;
 using System.Linq;
 using SvnToJira.Engine;
+using Prometeia.AlmProTools.UnitTestHelpers;
 
 namespace SvnToJiraTest
 {
@@ -51,20 +52,15 @@ namespace SvnToJiraTest
             #endregion
 
             #region Act
-            /*
 
             var actual = engine.Execute(
                 checkedBranches, 
                 commitDiffList);
-            */
-
-            var actual = expected;
 
             #endregion
 
             #region Assert
-
-            CollectionAssert.AreEqual(expected, actual.ToList(), new ReleasesBranchInfoComparer());
+            AssertGeneric.AreEqual(expected, actual); 
 
             #endregion
 
