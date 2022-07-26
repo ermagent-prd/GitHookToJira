@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Prometeia.AlmProTools.UnitTestHelpers</name>
+    </assembly>
+    <members>
+        <member name="T:Prometeia.AlmProTools.UnitTestHelpers.AssertGeneric">
+            <summary>
+            MSTEST Assert extension using generic comparer(Kellerman)
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.AssertGeneric.AreEqual(System.Object,System.Object)">
+            <summary>
+            Compare object using generic comparer and default double precision: [1e-8].
+            Throw AssertFailedException if object are not equals.
+            </summary>
+            <exception cref="T:Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException"></exception>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.AssertGeneric.AreEqual``1(Prometeia.ALMPro.GeneralUtilities.Comparer.IGenericComparer{``0},``0,``0)">
+            <summary>
+            compare two objects with a customized comparer
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.AssertGeneric.AreEqual(System.Double,System.Object,System.Object)">
+            <summary>
+            Compare objects with given double precision.
+            </summary>
+            <exception cref="T:Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException"></exception>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.AssertGeneric.AreEqual(System.Collections.Generic.List{System.String},System.Object,System.Object)">
+            <summary>
+            Compare objects with given double precision and including only selected properties.
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.AssertGeneric.AreEqual(System.Double,System.Object,System.Object,System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String})">
+            <summary>
+            Compare objects with given double precision and properties selected.
+            </summary>
+            <param name="precision">Used for double comparison.</param>
+            <param name="expected">First object to compare</param>
+            <param name="actual">Second object to compare</param>
+            <param name="includePropertyName">Properties included in comparison.  list=={} | List==null-> include all properies; </param>
+            <param name="excludePropertyName">Properties excluded in comparison.  list=={} | List==null-> include all properies;</param>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.AssertGeneric.checkDifferentNumberOfElement``1(``0,``0)">
+            <summary>
+            Check If elemnts to compares are of type List,IList,IEnumerable or ICollection.
+            and if they have the same number of elements.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="expected"></param>
+            <param name="actual"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Prometeia.AlmProTools.UnitTestHelpers.BaseFakeBuilder`2">
+            <summary>
+            Base class to build a fake on interface
+            </summary>
+        </member>
+        <member name="F:Prometeia.AlmProTools.UnitTestHelpers.BaseFakeBuilder`2.mock">
+            <summary>
+            Interface mock
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.BaseFakeBuilder`2.#ctor">
+            <summary>
+            Base fake builder default constructor
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.BaseFakeBuilder`2.#ctor(System.Boolean)">
+            <summary>
+            Base fake builder constructor with behavior
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.BaseFakeBuilder`2.AFake">
+            <summary>
+            Build the fake builder
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.BaseFakeBuilder`2.Build">
+            <summary>
+            Build the fake interface implementation
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.BaseFakeBuilder`2.VerifyMethodCall(System.Linq.Expressions.Expression{System.Action{`0}},Moq.Times)">
+            <summary>
+            Check if a method has been called.
+            To be used in Assert region
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.BaseFakeBuilder`2.VerifyMethodCall(System.Linq.Expressions.Expression{System.Action{`0}},Moq.Times,System.String)">
+            <summary>
+            Check if a method has been called.
+            To be used in Assert region
+            </summary>
+        </member>
+        <member name="T:Prometeia.AlmProTools.UnitTestHelpers.ComponentTestContainer">
+            <summary>
+            DependencyInjectionContainer wrapper to apply component test overrides
+            </summary>
+        </member>
+        <member name="T:Prometeia.AlmProTools.UnitTestHelpers.DbSetFakeBuilder`1">
+            <summary>
+            Create a mock of DbSet of type T
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.DbSetFakeBuilder`1.WithListData(System.Collections.Generic.List{`0})">
+            <summary>
+            Add listData<typeparamref name="T"/> to mock
+            </summary>
+        </member>
+        <member name="T:Prometeia.AlmProTools.UnitTestHelpers.GenericComparerBuilderTest`1">
+            <summary>
+            Generic comparer builder used by test. Define common configuration with custom comparer for double and caste proxy class.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.GenericComparerBuilderTest`1.Build">
+            <summary>
+            Build GenericComparerBuilderTest of type T
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.GenericComparerBuilderTest`1.WithPrecision(System.Double)">
+            <summary>
+            Set double compare precision. If not set default is 1E-5.
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.GenericComparerBuilderTest`1.WithMaxDifferences(System.Int32)">
+            <summary>
+            Set compare max differences before stop comparing. If not set default is 1.
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.GenericComparerBuilderTest`1.WithMembersToIgnore(System.Collections.Generic.List{System.String})">
+            <summary>
+            Set compare members to ignore. If not set no member is ignored.
+            </summary>
+        </member>
+        <member name="M:Prometeia.AlmProTools.UnitTestHelpers.GenericComparerBuilderTest`1.WithMembersToInclude(System.Collections.Generic.List{System.String})">
+            <summary>
+            Set compare members to include. If not set each member is compared.
+            </summary>
+        </member>
+    </members>
+</doc>
