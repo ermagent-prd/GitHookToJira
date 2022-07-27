@@ -374,3 +374,8 @@ QDTools/.vs/QDTools/v16/.suo
 *.manifest
 *.cache
 *.pdb
+QDTools/GeminiToolsTest/obj/Debug/GeminiToolsTest.dll
+QDTools/GeminiToolsTest/obj/Debug/GeminiToolsTest.pdb
+QDTools/JiraTools/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+QDTools/JiraToolsTest/obj/Debug/JiraToolsTest.dll
+QDTools/JiraToolsTest/obj/Debug/JiraToolsTest.pdb

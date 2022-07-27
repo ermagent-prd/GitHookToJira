@@ -79,14 +79,12 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Atlassian.SDK" version="12.4.0"/>
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" version="5.2.7"/>
-    <PackageReference Include="Newtonsoft.Json" version="13.0.1"/>
-    <PackageReference Include="RestSharp" version="106.10.1"/>
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" version="4.5.2"/>
-    <PackageReference Include="Unity" version="5.11.9"/>
-
-
+    <PackageReference Include="Atlassian.SDK" version="12.4.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" version="5.2.7" />
+    <PackageReference Include="Newtonsoft.Json" version="13.0.1" />
+    <PackageReference Include="RestSharp" version="106.10.1" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" version="4.5.2" />
+    <PackageReference Include="Unity" version="5.11.9" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
