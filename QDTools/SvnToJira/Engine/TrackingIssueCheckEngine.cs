@@ -42,30 +42,38 @@ namespace SvnToJira.Engine
         {
             try
             {
-                //1. Recupero properties da revision svn
+                #region 1. Recupero properties da revision svn
 
                 var commitProperties = this.svnEngine.Execute(svnCommit);
 
                 if (commitProperties == null)
-                    return new ActionResult(false, String.Format("Invalid commit revision: {0}",svnCommit));
+                    return new ActionResult(false, String.Format("Invalid commit revision: {0}", svnCommit));
 
                 if (commitProperties.TrackingIssues == null || !commitProperties.TrackingIssues.Any())
                     return new ActionResult(false, "Tracking Issue not specified");
 
                 var issue = commitProperties.TrackingIssues.FirstOrDefault();
 
-                if (issue == null)
-                    return new ActionResult(false, "Tracking Issue not specified");
+                #endregion
 
+                #region 2. Check sulla release (verifica se il commit ha interessato le release specificate in configurazione 
 
-                //2. Check sulla release (verifica se il commit ha interessato le release specificate in configurazione (releaseParameters.Param)
+                var committedReleases = branchChecker.Execute(
+                    releaseParameters.ReleasesToCheck,
+                    commitProperties.DiffList);
 
+                if (committedReleases == null || !committedReleases.Any())
+                    return ActionResult.Passed();
 
-                //3. Check sul traking issue: recupero della issue jira, verifica sulle propietà
+                #endregion
 
+                #region 3. Check sul tracking issue: recupero della issue jira, verifica sulle propietà
 
-                throw new NotImplementedException();
+                return this.issueChecker.Execute(
+                    issue,
+                    committedReleases);
 
+                #endregion
             }
             catch (Exception ex)
             {

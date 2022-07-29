@@ -1,7 +1,4 @@
-﻿
-
-using SvnTools.Parameters;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SvnToJira.Parameters
 {
@@ -9,10 +6,10 @@ namespace SvnToJira.Parameters
     {
         public ReleaseInfoParamContainer(IEnumerable<ReleasesBranchInfo> param)
         {
-            this.Param = param;
+            this.ReleasesToCheck = param;
         }
 
-        public IEnumerable<ReleasesBranchInfo> Param { get; }
+        public IEnumerable<ReleasesBranchInfo> ReleasesToCheck { get; }
 
 
     }

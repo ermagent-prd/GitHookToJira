@@ -1,4 +1,5 @@
 ﻿using JiraTools.Engine;
+using SvnToJira.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +28,19 @@ namespace SvnToJira.Engine
 
         #region Public methods
 
-        public bool Execute()
+        public ActionResult Execute(
+            string trackingIssue,
+            IEnumerable<ReleasesBranchInfo> committedReleases)
         {
-            
+            if (trackingIssue == null)
+                return new ActionResult(false, "Tracking Issue not specified");
+
+
+            //1. recupero issue jira
+
+            //2. check issue jira (bug, fixed version inclusa nel committ,  statucategory in progress,...)  
+
+
             throw new NotImplementedException();    
         }
 
