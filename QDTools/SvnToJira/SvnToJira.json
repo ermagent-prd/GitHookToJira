@@ -16,11 +16,11 @@
   "ReleaseBranches": [
     {
       "ReleaseName": "Ermas 5.29.0",
-      "Path": "/branches/releases/5.29.0"
+      "Path": "branches/releases/5.29.0"
     },
     {
       "ReleaseName": "Ermas 5.30.0",
-      "Path": "/branches/releases/5.30.0"
+      "Path": "branches/releases/5.30.0"
     }
   ]
 }

@@ -8,18 +8,20 @@ using System;
 
 namespace SvnToJiraTest
 {
+
+
     [TestClass]
     public class BranchCheckerEngineTest
     {
         [TestMethod]
-
         /*
-          checkedBranch = 5.30.0
-          commitDiffList = 5.30.0
-          expected = 5.30.0
-          actual = 5.30.0
-          EQUALS = true
-        */
+      checkedBranch = 5.30.0
+      commitDiffList = 5.30.0
+      expected = 5.30.0
+      actual = 5.30.0
+      EQUALS = true
+       */
+
         public void Execute_Relevant_Branch_Return_Relevant_Branches()
         {
             #region Arrange
