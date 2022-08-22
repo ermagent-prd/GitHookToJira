@@ -37,6 +37,8 @@ namespace SvnToJira.Engine
 
 
             //1. recupero issue jira
+            var issue = this.issueGetter.Execute(trackingIssue);    
+
 
             //2. check issue jira (bug, fixed version inclusa nel committ,  statucategory in progress,...)  
 

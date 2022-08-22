@@ -14,7 +14,7 @@ namespace SvnToJira
         /// Svn pre and postcommit actions
         /// arguments: 
         /// svnCommit (int) 
-        /// actionType (int): 0: Add committ comment to tracking issue, 1: Check tracking issue (bug fixing check)
+        /// actionType (int): 0: Add commit comment to tracking issue, 1: Check tracking issue (bug fixing check)
         /// </summary>
         /// <param name="args"></param>
         static void Main(string[] args)
