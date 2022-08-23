@@ -1,4 +1,5 @@
-﻿using JiraTools.Engine;
+﻿using JiraTools.Constant;
+using JiraTools.Engine;
 using SvnToJira.Parameters;
 using System;
 using System.Collections.Generic;
@@ -40,28 +41,31 @@ namespace SvnToJira.Engine
             var issue = this.issueGetter.Execute(trackingIssue);
 
 
-            //2. check issue jira (bug, fixed version inclusa nel committ,  statucategory in progress,...)  
-            if (issue==null)
-            {
-                throw new NotImplementedException("Undefined issue...");
-            }
-            if(issue.Type=="Bug")
-            {
-                foreach(var release in committedReleases)
-                {
-                       if(issue.FixVersions==release.ReleaseName.ToUpper())
-                       {
-                           break;
-                       }
-                }
-            }
-            else
-            {
-                throw new NotImplementedException("This issue does not refer to a Bug type...");
-            }
-            return new ActionResult(true, "Corrispondenza...");
+            //2. check issue jira 
+            return checkIssue(
+                trackingIssue, 
+                issue, 
+                committedReleases);
         }
 
+        #endregion
+
+        #region Private method
+
+        private ActionResult checkIssue(
+            string trackingIssue,
+            Atlassian.Jira.Issue issue,
+            IEnumerable<ReleasesBranchInfo> committedReleases)
+        {
+            if (issue == null)
+              return new ActionResult(false, String.Format("Jira Issue {0} not found", trackingIssue));
+
+            //Bug Type
+            if (issue.Type.Id != JiraConstant.BugIssueTypeId)
+              return new ActionResult(false, String.Format("Jira Issue {0} is not a valid bug", trackingIssue));
+
+            return ActionResult.Passed();
+        }
         #endregion
     }
 }

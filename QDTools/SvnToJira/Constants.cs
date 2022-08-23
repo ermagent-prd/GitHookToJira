@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SvnToJira
 {
-    internal static class SvnToJiraConstants
+    internal static class EngineOptionValue
     {
         /// <summary>
         /// Add comment about svn revision to tracking issue
@@ -16,5 +16,9 @@ namespace SvnToJira
         /// Check svn commit related tracking issue
         /// </summary>
         public const int CheckJiraBugFix = 1;
+
+
     }
+
+
 }

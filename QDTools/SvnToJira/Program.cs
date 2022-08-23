@@ -60,10 +60,10 @@ namespace SvnToJira
         {
             switch (action)
             {
-                case SvnToJiraConstants.AddJiraComment:
+                case EngineOptionValue.AddJiraComment:
                     { return unityContainer.Resolve<PropertiesToCommentEngine>(); }
 
-                case SvnToJiraConstants.CheckJiraBugFix:
+                case EngineOptionValue.CheckJiraBugFix:
                     return unityContainer.Resolve<TrackingIssueCheckEngine>();
 
                 default: return null;

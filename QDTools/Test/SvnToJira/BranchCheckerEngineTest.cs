@@ -77,6 +77,8 @@ namespace SvnToJiraTest
         ///expected = 5.29.0
         ///actual = 5.30.0
         ///EQUALS = false
+        
+        [TestMethod]
         public void Execute_Relevant_Branch_Return_Relevant_Branches1()
            {
                #region Arrange
@@ -135,6 +137,8 @@ namespace SvnToJiraTest
         ///expected = 5.29.0
         ///actual = null
         ///EQUALS = false
+        ///
+        [TestMethod]
         public void Execute_Relevant_Branch_Return_Relevant_Branches2()
         {
             #region Arrange
@@ -193,6 +197,8 @@ namespace SvnToJiraTest
         ///expected = 5.30.0
         ///actual = null
         ///EQUALS = false
+        ///
+        [TestMethod]
         public void Execute_Relevant_Branch_Return_Relevant_Branches3()
         {
             #region Arrange
@@ -252,6 +258,8 @@ namespace SvnToJiraTest
         ///expected = 5.29.0
         ///actual = 5.29.0
         ///EQUALS = true
+        ///
+        [TestMethod]
         public void Execute_Relevant_Branch_Return_Relevant_Branches4()
         {
             #region Arrange
