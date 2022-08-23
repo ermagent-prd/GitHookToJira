@@ -19,6 +19,7 @@ namespace SvnToJira.Engine
 
         #endregion
 
+
         #region Constructor
 
         public TrackingIssueCheckEngine(
@@ -35,10 +36,10 @@ namespace SvnToJira.Engine
 
         #endregion
 
+
         #region Public methods
 
-        public ActionResult Execute(
-            int svnCommit)
+        public ActionResult Execute(int svnCommit)
         {
             try
             {
@@ -64,7 +65,7 @@ namespace SvnToJira.Engine
 
                 if (committedReleases == null || !committedReleases.Any())
                     return ActionResult.Passed();
-
+                
                 #endregion
 
                 #region 3. Check sul tracking issue: recupero della issue jira, verifica sulle propietà
@@ -80,11 +81,9 @@ namespace SvnToJira.Engine
                 return new ActionResult(false, ex.Message);
             }
         }
-
         #endregion
 
         #region Private methods
-
 
         #endregion
     }

@@ -27,8 +27,7 @@ namespace SvnToJira.Engine
 
         #region Public methods
 
-        public ActionResult Execute(
-            int svnCommit)
+        public ActionResult Execute(int svnCommit)
         {
             try
             {
