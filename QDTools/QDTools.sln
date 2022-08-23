@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlfrescoToolsTest", "Alfres
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraToExcel", "JiraToExcel\JiraToExcel.csproj", "{95AF5120-FAF1-49C3-AB82-6C3B73BF37E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvnToJira", "SvnToJira\SvnToJira.csproj", "{89575B58-69F2-4FBB-A42A-BF5F9FCFC2B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvnToJira", "SvnToJira\SvnToJira.csproj", "{89575B58-69F2-4FBB-A42A-BF5F9FCFC2B1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvnTools", "SvnTools\SvnTools.csproj", "{F05990C0-A6D7-4F7B-9D1E-E82EBF308973}"
 EndProject

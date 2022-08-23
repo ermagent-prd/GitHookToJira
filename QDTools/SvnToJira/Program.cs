@@ -7,6 +7,7 @@ using SvnToJira.Engine;
 using SvnToJira.Parameters;
 using Unity;
 using System.ComponentModel.DataAnnotations;
+using SvnToJira.Parameters.CommandLine;
 
 namespace SvnToJira
 {
@@ -14,13 +15,13 @@ namespace SvnToJira
     {
         [Option("-r|--revision", CommandOptionType.SingleValue, Description = "Svn Revision Number")]
         [Required]
+        [RevisionValidationRange]
         public int SvnRevision { get; } = -1;
 
         [Option("-o|--option", CommandOptionType.SingleValue, Description = "Command option")]
         [OptionValidation]
         [Required]
         public int Option { get; } = 0;
-
 
         /// <summary>
         /// Svn pre and postcommit actions

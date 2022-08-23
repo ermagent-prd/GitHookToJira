@@ -37,13 +37,29 @@ namespace SvnToJira.Engine
 
 
             //1. recupero issue jira
-            var issue = this.issueGetter.Execute(trackingIssue);    
+            var issue = this.issueGetter.Execute(trackingIssue);
 
 
             //2. check issue jira (bug, fixed version inclusa nel committ,  statucategory in progress,...)  
-
-
-            throw new NotImplementedException();    
+            if (issue==null)
+            {
+                throw new NotImplementedException("Undefined issue...");
+            }
+            if(issue.Type=="Bug")
+            {
+                foreach(var release in committedReleases)
+                {
+                       if(issue.FixVersions==release.ReleaseName.ToUpper())
+                       {
+                           break;
+                       }
+                }
+            }
+            else
+            {
+                throw new NotImplementedException("This issue does not refer to a Bug type...");
+            }
+            return new ActionResult(true, "Corrispondenza...");
         }
 
         #endregion

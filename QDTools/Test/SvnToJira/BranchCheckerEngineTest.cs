@@ -14,14 +14,12 @@ namespace SvnToJiraTest
     public class BranchCheckerEngineTest
     {
         [TestMethod]
-        /*
-      checkedBranch = 5.30.0
-      commitDiffList = 5.30.0
-      expected = 5.30.0
-      actual = 5.30.0
-      EQUALS = true
-       */
 
+        ///checkedBranch = 5.30.0
+        ///commitDiffList = 5.30.0
+        ///expected = 5.30.0
+        ///actual = 5.30.0
+        ///EQUALS = true
         public void Execute_Relevant_Branch_Return_Relevant_Branches()
         {
             #region Arrange
@@ -73,13 +71,12 @@ namespace SvnToJiraTest
         }
 
 
-        /*
-          checkedBranch = 5.30.0
-          commitDiffList = 5.30.0
-          expected = 5.29.0
-          actual = 5.30.0
-          EQUALS = false
-        */
+
+        ///checkedBranch = 5.30.0
+        ///commitDiffList = 5.30.0
+        ///expected = 5.29.0
+        ///actual = 5.30.0
+        ///EQUALS = false
         public void Execute_Relevant_Branch_Return_Relevant_Branches1()
            {
                #region Arrange
@@ -132,13 +129,12 @@ namespace SvnToJiraTest
            }
 
 
-        /*
-          checkedBranch = 5.30.0
-          commitDiffList = 5.29.0
-          expected = 5.29.0
-          actual = null
-          EQUALS = false
-        */
+
+        ///checkedBranch = 5.30.0
+        ///commitDiffList = 5.29.0
+        ///expected = 5.29.0
+        ///actual = null
+        ///EQUALS = false
         public void Execute_Relevant_Branch_Return_Relevant_Branches2()
         {
             #region Arrange
@@ -191,13 +187,12 @@ namespace SvnToJiraTest
         }
 
 
-        /*
-          checkedBranch = 5.30.0
-          commitDiffList = 5.29.0
-          expected = 5.30.0
-          actual = null
-          EQUALS = false
-        */
+
+        ///checkedBranch = 5.30.0
+        ///commitDiffList = 5.29.0
+        ///expected = 5.30.0
+        ///actual = null
+        ///EQUALS = false
         public void Execute_Relevant_Branch_Return_Relevant_Branches3()
         {
             #region Arrange
@@ -250,14 +245,13 @@ namespace SvnToJiraTest
         }
 
 
-        /*
-          MULTIPLE CHECKEDBRANCH + CHECK SAME RELEASE FILE 
-          checkedBranch = 5.30.0 - 5.29.0  --> anche invertiti
-          commitDiffList = 5.29.0
-          expected = 5.29.0
-          actual = 5.29.0
-          EQUALS = true
-        */
+
+        ///MULTIPLE CHECKEDBRANCH + CHECK SAME RELEASE FILE 
+        ///checkedBranch = 5.30.0 - 5.29.0  --> anche invertiti
+        ///commitDiffList = 5.29.0
+        ///expected = 5.29.0
+        ///actual = 5.29.0
+        ///EQUALS = true
         public void Execute_Relevant_Branch_Return_Relevant_Branches4()
         {
             #region Arrange
@@ -302,25 +296,6 @@ namespace SvnToJiraTest
             #endregion
 
             #region Act
-            //controlla che i file modificati ovvero quelli in commiDiffList siano tutti della stessa release
-            string first=null;
-            int count = 0;
-            foreach(var i in commitDiffList)
-            {
-                if (count == 0)
-                {
-                    first = i.Substring(0,25);
-                    count++;
-                }
-                else
-                { 
-                    if(first != i.Substring(0, 25))
-                    {
-                        throw new Exception("Modificati file di più release...");
-                    }
-                }
-            }
-
 
             var actual = engine.Execute(checkedBranches, commitDiffList);
 
