@@ -2,7 +2,7 @@
   "profiles": {
     "SvnToJira": {
       "commandName": "Project",
-      "commandLineArgs": "158662 1"
+      "commandLineArgs": ""
     }
   }
 }

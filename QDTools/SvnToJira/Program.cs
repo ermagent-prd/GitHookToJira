@@ -1,15 +1,27 @@
 ﻿using System;
 using System.IO;
+using McMaster.Extensions.CommandLineUtils;
 using Newtonsoft.Json;
 using SvnToJira.Container;
 using SvnToJira.Engine;
 using SvnToJira.Parameters;
 using Unity;
+using System.ComponentModel.DataAnnotations;
 
 namespace SvnToJira
 {
     class Program
     {
+        [Option("-r|--revision", CommandOptionType.SingleValue, Description = "Svn Revision Number")]
+        [Required]
+        public int SvnRevision { get; } = -1;
+
+        [Option("-o|--option", CommandOptionType.SingleValue, Description = "Command option")]
+        [OptionValidation]
+        [Required]
+        public int Option { get; } = 0;
+
+
         /// <summary>
         /// Svn pre and postcommit actions
         /// arguments: 
@@ -17,27 +29,23 @@ namespace SvnToJira
         /// actionType (int): 0: Add commit comment to tracking issue, 1: Check tracking issue (bug fixing check)
         /// </summary>
         /// <param name="args"></param>
-        static void Main(string[] args)
+        public static int Main(string[] args)
         {
-            if (args.Length != 2)
-            {
-                Console.WriteLine("Invalid args");
-                return;
-            }
+            return
+                CommandLineApplication.Execute<Program>(args);
+        }
 
-            var svnCommit = Convert.ToInt32(args[0]);
-
-            var action = Convert.ToInt32(args[1]);
-
+        public void OnExecute()
+        {
             var cfgLoader = new ConfigurationLoader();
 
             var cfg = cfgLoader.Execute();
 
             var unityContainer = ContainerFactory.Execute(cfg);
 
-            var engine = getEngine(unityContainer, action);
-           
-            var result = engine.Execute(svnCommit);
+            var engine = getEngine(unityContainer, this.Option);
+
+            var result = engine.Execute(this.SvnRevision);
 
             if (!result.Ok)
             {
