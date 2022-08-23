@@ -12,9 +12,10 @@ namespace WebSlide.Pages
             _logger = logger;
         }
 
-        public void OnGet()
-        {
-
-        }
+        //public IActionResult OnGet()
+        //{
+            
+        //    return Redirect(@"https://www.google.com");
+        //}
     }
 }
