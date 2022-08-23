@@ -58,11 +58,11 @@ namespace SvnToJira.Engine
             IEnumerable<ReleasesBranchInfo> committedReleases)
         {
             if (issue == null)
-              return new ActionResult(false, String.Format("Jira Issue {0} not found", trackingIssue));
+              return new ActionResult(false, String.Format("Jira Tracking Issue {0} not found", trackingIssue));
 
             //Bug Type
             if (issue.Type.Id != JiraConstant.BugIssueTypeId)
-              return new ActionResult(false, String.Format("Jira Issue {0} is not a valid bug", trackingIssue));
+              return new ActionResult(false, String.Format("Jira Tracking Issue {0} is not a valid bug", trackingIssue));
 
             return ActionResult.Passed();
         }
