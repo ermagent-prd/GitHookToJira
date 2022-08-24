@@ -33,9 +33,8 @@ namespace SvnToJira.Engine
             string trackingIssue,
             IEnumerable<ReleasesBranchInfo> committedReleases)
         {
-            if (trackingIssue == null)
+            if (string.IsNullOrEmpty(trackingIssue))
                 return new ActionResult(false, "Tracking Issue not specified");
-
 
             //1. recupero issue jira
             var issue = this.issueGetter.Execute(trackingIssue);

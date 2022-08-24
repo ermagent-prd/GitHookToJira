@@ -50,11 +50,6 @@ namespace SvnToJira.Engine
                 if (commitProperties == null)
                     return new ActionResult(false, String.Format("Invalid commit revision: {0}", svnCommit));
 
-                if (commitProperties.TrackingIssues == null || !commitProperties.TrackingIssues.Any())
-                    return new ActionResult(false, "Tracking Issue not specified");
-
-                var issue = commitProperties.TrackingIssues.FirstOrDefault();
-
                 #endregion
 
                 #region 2. Check sulla release (verifica se il commit ha interessato le release specificate in configurazione 
@@ -65,10 +60,16 @@ namespace SvnToJira.Engine
 
                 if (committedReleases == null || !committedReleases.Any())
                     return ActionResult.Passed();
-                
+
                 #endregion
 
                 #region 3. Check sul tracking issue: recupero della issue jira, verifica sulle propietà
+
+                if (commitProperties.TrackingIssues == null || !commitProperties.TrackingIssues.Any())
+                    return new ActionResult(false, "Tracking Issue not specified");
+
+                var issue = commitProperties.TrackingIssues.FirstOrDefault();
+
 
                 return this.issueChecker.Execute(
                     issue,
