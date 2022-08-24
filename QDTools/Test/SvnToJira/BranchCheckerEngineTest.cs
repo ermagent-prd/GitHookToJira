@@ -14,12 +14,10 @@ namespace SvnToJiraTest
     public class BranchCheckerEngineTest
     {
         [TestMethod]
-
         ///checkedBranch = 5.30.0
         ///commitDiffList = 5.30.0
         ///expected = 5.30.0
         ///actual = 5.30.0
-        ///EQUALS = true
         public void Execute_Relevant_Branch_Return_Relevant_Branches()
         {
             #region Arrange
@@ -72,73 +70,62 @@ namespace SvnToJiraTest
 
 
 
-        ///checkedBranch = 5.30.0
-        ///commitDiffList = 5.30.0
-        ///expected = 5.29.0
-        ///actual = 5.30.0
-        ///EQUALS = false
-        
         [TestMethod]
-        public void Execute_Relevant_Branch_Return_Relevant_Branches1()
-           {
-               #region Arrange
-
-               var checkedBranches = new List<ReleasesBranchInfo>();
-
-               checkedBranches.Add(
-                   new ReleasesBranchInfo()
-                   {
-                       Path = "/branches/releases/5.30.0",
-                       ReleaseName = "Ermas 5.30.0"
-                   }
-               );
-
-
-               var commitDiffList = new List<string>();
-               commitDiffList.Add("/branches/releases/5.30.0");
-               commitDiffList.Add("/branches/releases/5.30.0/AlmProSuite");
-               commitDiffList.Add("/branches/releases/5.30.0/AlmProSuite/Source");
-               commitDiffList.Add("/branches/releases/5.30.0/AlmProSuite/Source/ALMProSystem");
-               commitDiffList.Add("/branches/releases/5.30.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices");
-               commitDiffList.Add("/branches/releases/5.30.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices/DAL/SQL2005/Flow/FlowEntity_DALSQL2005.cs");
-
-
-               var expected = new List<ReleasesBranchInfo>();
-               expected.Add(
-                   new ReleasesBranchInfo()
-                   {
-                       Path = "/branches/releases/5.29.0",
-                       ReleaseName = "Ermas 5.29.0"
-                   }
-               );
-
-               var engine = new BranchCheckerEngine();
-
-               #endregion
-
-               #region Act
-
-               var actual = engine.Execute(checkedBranches, commitDiffList);
-
-               #endregion
-
-               #region Assert
-
-               AssertGeneric.AreEqual(expected, actual);
-
-               #endregion
-
-           }
-
-
-
         ///checkedBranch = 5.30.0
         ///commitDiffList = 5.29.0
-        ///expected = 5.29.0
+        ///expected = null
         ///actual = null
-        ///EQUALS = false
-        ///
+        public void Execute_Relevant_Branch_Return_Relevant_Branches1()
+        {
+            #region Arrange
+
+            var checkedBranches = new List<ReleasesBranchInfo>();
+
+            checkedBranches.Add(
+                new ReleasesBranchInfo()
+                {
+                    Path = "/branches/releases/5.30.0",
+                    ReleaseName = "Ermas 5.30.0"
+                }
+            );
+
+
+            var commitDiffList = new List<string>();
+            commitDiffList.Add("/branches/releases/5.29.0");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices/DAL/SQL2005/Flow/FlowEntity_DALSQL2005.cs");
+
+
+            var expected = new List<ReleasesBranchInfo>();
+
+            var engine = new BranchCheckerEngine();
+
+            #endregion
+
+            #region Act
+
+            var actual = engine.Execute(checkedBranches, commitDiffList);
+
+            #endregion
+
+            #region Assert
+
+            AssertGeneric.AreEqual(expected, actual);
+
+            #endregion
+
+        }
+
+
+
         [TestMethod]
+        ///checkedBranch = 5.30.0 - 5.29.0
+        ///commitDiffList = 5.29.0
+        ///expected = 5.29.0
+        ///actual = 5.29
         public void Execute_Relevant_Branch_Return_Relevant_Branches2()
         {
             #region Arrange
@@ -152,7 +139,13 @@ namespace SvnToJiraTest
                     ReleaseName = "Ermas 5.30.0"
                 }
             );
-
+            checkedBranches.Add(
+                new ReleasesBranchInfo()
+                {
+                    Path = "/branches/releases/5.29.0",
+                    ReleaseName = "Ermas 5.29.0"
+                }
+            );
 
             var commitDiffList = new List<string>();
             commitDiffList.Add("/branches/releases/5.29.0");
@@ -192,13 +185,11 @@ namespace SvnToJiraTest
 
 
 
-        ///checkedBranch = 5.30.0
-        ///commitDiffList = 5.29.0
-        ///expected = 5.30.0
-        ///actual = null
-        ///EQUALS = false
-        ///
         [TestMethod]
+        ///checkedBranch = 5.30.0 - 5.29.0
+        ///commitDiffList = 5.30.0 - 5.29.0
+        ///expected = 5.30.0 - 5.29.0
+        ///actual = 5.30.0 - 5.29.0
         public void Execute_Relevant_Branch_Return_Relevant_Branches3()
         {
             #region Arrange
@@ -212,25 +203,38 @@ namespace SvnToJiraTest
                     ReleaseName = "Ermas 5.30.0"
                 }
             );
-
-
-            var commitDiffList = new List<string>();
-            commitDiffList.Add("/branches/releases/5.29.0");
-            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite");
-            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source");
-            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem");
-            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices");
-            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices/DAL/SQL2005/Flow/FlowEntity_DALSQL2005.cs");
-
-
-            var expected = new List<ReleasesBranchInfo>();
-            expected.Add(
+            checkedBranches.Add(
                 new ReleasesBranchInfo()
                 {
                     Path = "/branches/releases/5.29.0",
                     ReleaseName = "Ermas 5.29.0"
                 }
             );
+
+            var commitDiffList = new List<string>();
+            commitDiffList.Add("/branches/releases/5.30.0");
+            commitDiffList.Add("/branches/releases/5.30.0/AlmProSuite");
+            commitDiffList.Add("/branches/releases/5.30.0/AlmProSuite/Source");
+
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices/DAL/SQL2005/Flow/FlowEntity_DALSQL2005.cs");
+
+            var expected = new List<ReleasesBranchInfo>();
+            expected.Add(
+                new ReleasesBranchInfo()
+                {
+                    Path = "/branches/releases/5.30.0",
+                    ReleaseName = "Ermas 5.30.0"
+                }
+            );
+            expected.Add(
+               new ReleasesBranchInfo()
+               {
+                   Path = "/branches/releases/5.29.0",
+                   ReleaseName = "Ermas 5.29.0"
+               }
+           );
 
             var engine = new BranchCheckerEngine();
 
@@ -250,16 +254,13 @@ namespace SvnToJiraTest
 
         }
 
+        
 
-
-        ///MULTIPLE CHECKEDBRANCH + CHECK SAME RELEASE FILE 
-        ///checkedBranch = 5.30.0 - 5.29.0  --> anche invertiti
-        ///commitDiffList = 5.29.0
-        ///expected = 5.29.0
-        ///actual = 5.29.0
-        ///EQUALS = true
-        ///
         [TestMethod]
+        ///checkedBranch = 5.30.0 - 5.29.0
+        ///commitDiffList = 5.28.0
+        ///expected = null
+        ///actual = null
         public void Execute_Relevant_Branch_Return_Relevant_Branches4()
         {
             #region Arrange
@@ -281,23 +282,15 @@ namespace SvnToJiraTest
                 }
             );
 
-
             var commitDiffList = new List<string>();
-            commitDiffList.Add("/branches/releases/5.29.0");
-            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite");
-            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source");
-            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem");
-            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices");
-            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices/DAL/SQL2005/Flow/FlowEntity_DALSQL2005.cs");
+            commitDiffList.Add("/branches/releases/5.28.0");
+            commitDiffList.Add("/branches/releases/5.28.0/AlmProSuite");
+            commitDiffList.Add("/branches/releases/5.28.0/AlmProSuite/Source");
+            commitDiffList.Add("/branches/releases/5.28.0/AlmProSuite/Source/ALMProSystem");
+            commitDiffList.Add("/branches/releases/5.28.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices");
+            commitDiffList.Add("/branches/releases/5.28.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices/DAL/SQL2005/Flow/FlowEntity_DALSQL2005.cs");
 
             var expected = new List<ReleasesBranchInfo>();
-            expected.Add(
-                new ReleasesBranchInfo()
-                {
-                    Path = "/branches/releases/5.29.0",
-                    ReleaseName = "Ermas 5.29.0"
-                }
-            );
 
             var engine = new BranchCheckerEngine();
 
@@ -317,5 +310,136 @@ namespace SvnToJiraTest
 
         }
 
+
+
+        [TestMethod]
+        ///checkedBranch = 5.30.0 - 5.29.0 - 5.28.0
+        ///commitDiffList = 5.29.0
+        ///expected = 5.29.0
+        ///actual = 5.29.0
+        public void Execute_Relevant_Branch_Return_Relevant_Branches5()
+        {
+            #region Arrange
+
+            var checkedBranches = new List<ReleasesBranchInfo>();
+
+            checkedBranches.Add(
+                new ReleasesBranchInfo()
+                {
+                    Path = "/branches/releases/5.30.0",
+                    ReleaseName = "Ermas 5.30.0"
+                }
+            );
+            checkedBranches.Add(
+                new ReleasesBranchInfo()
+                {
+                    Path = "/branches/releases/5.29.0",
+                    ReleaseName = "Ermas 5.29.0"
+                }
+            );
+            checkedBranches.Add(
+               new ReleasesBranchInfo()
+               {
+                   Path = "/branches/releases/5.28.0",
+                   ReleaseName = "Ermas 5.28.0"
+               }
+           );
+
+            var commitDiffList = new List<string>();
+            commitDiffList.Add("/branches/releases/5.29.0");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices/DAL/SQL2005/Flow/FlowEntity_DALSQL2005.cs");
+
+            var expected = new List<ReleasesBranchInfo>();
+            expected.Add(
+                new ReleasesBranchInfo()
+                {
+                    Path = "/branches/releases/5.29.0",
+                    ReleaseName = "Ermas 5.29.0"
+                }
+            );
+            var engine = new BranchCheckerEngine();
+
+            #endregion
+
+            #region Act
+
+            var actual = engine.Execute(checkedBranches, commitDiffList);
+
+            #endregion
+
+            #region Assert
+
+            AssertGeneric.AreEqual(expected, actual);
+
+            #endregion
+
+        }
+
+
+
+        [TestMethod]
+        ///checkedBranch = 5.30.0 - 5.29.0
+        ///commitDiffList = 5.29.0 - 5.28.0
+        ///expected = 5.29.0
+        ///actual = 5.29.0
+        public void Execute_Relevant_Branch_Return_Relevant_Branches6()
+        {
+            #region Arrange
+
+            var checkedBranches = new List<ReleasesBranchInfo>();
+
+            checkedBranches.Add(
+                new ReleasesBranchInfo()
+                {
+                    Path = "/branches/releases/5.30.0",
+                    ReleaseName = "Ermas 5.30.0"
+                }
+            );
+            checkedBranches.Add(
+                new ReleasesBranchInfo()
+                {
+                    Path = "/branches/releases/5.29.0",
+                    ReleaseName = "Ermas 5.29.0"
+                }
+            );
+
+            var commitDiffList = new List<string>();
+            commitDiffList.Add("/branches/releases/5.29.0");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem");
+            commitDiffList.Add("/branches/releases/5.29.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices");
+
+            commitDiffList.Add("/branches/releases/5.28.0/AlmProSuite/Source/ALMProSystem/Prometeia.ALMPro.EntityServices/DAL/SQL2005/Flow/FlowEntity_DALSQL2005.cs");
+
+            var expected = new List<ReleasesBranchInfo>();
+            expected.Add(
+                new ReleasesBranchInfo()
+                {
+                    Path = "/branches/releases/5.29.0",
+                    ReleaseName = "Ermas 5.29.0"
+                }
+            );
+            var engine = new BranchCheckerEngine();
+
+            #endregion
+
+            #region Act
+
+            var actual = engine.Execute(checkedBranches, commitDiffList);
+
+            #endregion
+
+            #region Assert
+
+            AssertGeneric.AreEqual(expected, actual);
+
+            #endregion
+
+        }
     }
 }
