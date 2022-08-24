@@ -1,35 +1,122 @@
-﻿using JiraTools.Engine;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Prometeia.AlmProTools.UnitTestHelpers;
+using SvnToJira;
 using SvnToJira.Engine;
 using SvnToJira.Parameters;
-using System;
 using System.Collections.Generic;
 
-namespace UnitTestProject1
+namespace SvnToJiraTest
 {
     [TestClass]
     public class TrackingIssueCheckerTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void Execute_IssueIsNull_ReturnsMessage()
         {
-            var checkedBranches = new List<ReleasesBranchInfo>();
+            #region Arrange
 
-            checkedBranches.Add(
-                new ReleasesBranchInfo()
-                {
-                    Path = "/branches/releases/5.30.0",
-                    ReleaseName = "Ermas 5.30.0"
-                }
-            );
+            var trackingIssue = "ERMAS-TestIssue";
 
-            string trackingIssue = "ERMAS-22694";
+            TrackingIssueToCheckFields jiraIssue = null;
 
-            //var engine = new TrackingIssueChecker();
+            List<ReleasesBranchInfo> checkedBranches = null;
 
-            //var actual = engine.Execute(trackingIssue, checkedBranches);
+            var engine = new TrackingIssuePropertiesChecker();
+
+            var expected = new ActionResult(
+                false,
+                string.Format(Messages.JiraIssueNotFound, trackingIssue));
+
+            #endregion
+
+            #region Act
+
+            var actual = engine.Execute(
+                trackingIssue,
+                jiraIssue,
+                checkedBranches);
+
+            #endregion
+
+            #region Assert
+
+            AssertGeneric.AreEqual(expected, actual);
+
+            #endregion
+
+        }
+
+        [TestMethod]
+        public void Execute_IsBug_ReturnsOk()
+        {
+            #region Arrange
+
+            var trackingIssue = "ERMAS-TestIssue";
+
+            var jiraIssue = new TrackingIssueToCheckFields(trackingIssue, "10001");
+
+            List<ReleasesBranchInfo> checkedBranches = null;
+
+            var engine = new TrackingIssuePropertiesChecker();
+
+            var expected = ActionResult.Passed();
+
+            #endregion
+
+            #region Act
+
+            var actual = engine.Execute(
+                trackingIssue,
+                jiraIssue,
+                checkedBranches);
+
+            #endregion
+
+            #region Assert
+
+            AssertGeneric.AreEqual(expected, actual);
+
+            #endregion
 
 
         }
+
+        [TestMethod]
+        public void Execute_IsNotABug_ReturnsError()
+        {
+            #region Arrange
+
+            var trackingIssue = "ERMAS-TestIssue";
+
+            var jiraIssue = new TrackingIssueToCheckFields(trackingIssue, "XXXXX");
+
+            List<ReleasesBranchInfo> checkedBranches = null;
+
+            var engine = new TrackingIssuePropertiesChecker();
+
+            var expected = new ActionResult(
+                false,
+                string.Format(Messages.JiraIssueNotABug, trackingIssue));
+
+            #endregion
+
+            #region Act
+
+            var actual = engine.Execute(
+                trackingIssue,
+                jiraIssue,
+                checkedBranches);
+
+            #endregion
+
+            #region Assert
+
+            AssertGeneric.AreEqual(expected, actual);
+
+            #endregion
+
+
+        }
+
     }
 }

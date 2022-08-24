@@ -1,10 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Prometeia.AlmProTools.UnitTestHelpers;
+using SvnToJira.Engine;
 using SvnToJira.Parameters;
 using System.Collections.Generic;
-using System.Linq;
-using SvnToJira.Engine;
-using Prometeia.AlmProTools.UnitTestHelpers;
-using System;
 
 namespace SvnToJiraTest
 {

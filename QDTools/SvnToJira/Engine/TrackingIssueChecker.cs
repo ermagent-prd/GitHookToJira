@@ -1,11 +1,6 @@
-﻿using JiraTools.Constant;
-using JiraTools.Engine;
+﻿using JiraTools.Engine;
 using SvnToJira.Parameters;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SvnToJira.Engine
 {
@@ -15,13 +10,18 @@ namespace SvnToJira.Engine
 
         private readonly IssueGetter issueGetter;
 
+        private readonly TrackingIssuePropertiesChecker issueChecker;
+
         #endregion
 
         #region constructor
 
-        public TrackingIssueChecker(IssueGetter issueGetter)
+        public TrackingIssueChecker(
+            IssueGetter issueGetter,
+            TrackingIssuePropertiesChecker issueChecker)
         {
             this.issueGetter = issueGetter;
+            this.issueChecker = issueChecker;
         }
 
 
@@ -40,32 +40,20 @@ namespace SvnToJira.Engine
             //1. recupero issue jira
             var issue = this.issueGetter.Execute(trackingIssue);
 
+            var issueProperties = issue == null ? 
+                null : 
+                new TrackingIssueToCheckFields(
+                    trackingIssue,
+                    issue.Type.Id);  
 
             //2. check issue jira 
-            return checkIssue(
-                trackingIssue, 
-                issue, 
+            return this.issueChecker.Execute(
+                trackingIssue,
+                issueProperties, 
                 committedReleases);
         }
 
         #endregion
 
-        #region Private method
-
-        private ActionResult checkIssue(
-            string trackingIssue,
-            Atlassian.Jira.Issue issue,
-            IEnumerable<ReleasesBranchInfo> committedReleases)
-        {
-            if (issue == null)
-              return new ActionResult(false, String.Format("Jira Tracking Issue {0} not found", trackingIssue));
-
-            //Bug Type
-            if (issue.Type.Id != JiraConstant.BugIssueTypeId)
-              return new ActionResult(false, String.Format("Jira Tracking Issue {0} is not a valid bug", trackingIssue));
-
-            return ActionResult.Passed();
-        }
-        #endregion
     }
 }
