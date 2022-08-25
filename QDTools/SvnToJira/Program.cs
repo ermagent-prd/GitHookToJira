@@ -27,7 +27,6 @@ namespace SvnToJira
         public string SvnTransaction { get; } = string.Empty;
 
         [Option("-f|--repofolder", CommandOptionType.SingleValue, Description = "Repositoryfolder (for pre-commit interception)")]
-        [Required]
         public string RepoFolder { get; } = string.Empty;
 
 
