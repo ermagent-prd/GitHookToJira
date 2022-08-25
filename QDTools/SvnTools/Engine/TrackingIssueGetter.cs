@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace SvnTools.Engine
 {
-    internal class TrackingIssueGetter
+    public class TrackingIssueGetter
     {
         #region Private properties
 

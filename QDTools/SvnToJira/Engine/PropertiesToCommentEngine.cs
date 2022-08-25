@@ -27,11 +27,11 @@ namespace SvnToJira.Engine
 
         #region Public methods
 
-        public ActionResult Execute(int svnCommit)
+        public ActionResult Execute(EngineInput input)
         {
             try
             {
-                var properties = this.svnEngine.Execute(svnCommit);
+                var properties = this.svnEngine.Execute(input.SvnRevision);
 
                 if (properties == null)
                     return ActionResult.Passed();

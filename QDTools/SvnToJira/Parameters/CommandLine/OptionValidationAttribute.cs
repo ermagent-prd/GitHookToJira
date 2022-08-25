@@ -16,7 +16,7 @@ namespace SvnToJira.Parameters
 
         protected override ValidationResult IsValid(object value, ValidationContext context)
         {
-            if (value == null || (value is string str && str != "0" && str != "1"))
+            if (value == null || (value is string str && str != EngineOptionArgument.AddJiraComment && str != EngineOptionArgument.CheckJiraBugFix))
             {
                 return new ValidationResult(FormatErrorMessage(context.DisplayName));
             }

@@ -8,13 +8,13 @@ using SvnToJira.Parameters;
 using Unity;
 using System.ComponentModel.DataAnnotations;
 using SvnToJira.Parameters.CommandLine;
+using System.Collections.Generic;
 
 namespace SvnToJira
 {
     class Program
     {
         [Option("-r|--revision", CommandOptionType.SingleValue, Description = "Svn Revision Number")]
-        [Required]
         [RevisionValidationRange]
         public int SvnRevision { get; } = -1;
 
@@ -22,6 +22,14 @@ namespace SvnToJira
         [OptionValidation]
         [Required]
         public int Option { get; } = 0;
+
+        [Option("-t|--transaction", CommandOptionType.SingleValue, Description = "Svn Transaction Number (for pre-commit interception)")]
+        public string SvnTransaction { get; } = string.Empty;
+
+        [Option("-f|--repofolder", CommandOptionType.SingleValue, Description = "Repositoryfolder (for pre-commit interception)")]
+        [Required]
+        public string RepoFolder { get; } = string.Empty;
+
 
         /// <summary>
         /// Svn pre and postcommit actions
@@ -46,7 +54,12 @@ namespace SvnToJira
 
             var engine = getEngine(unityContainer, this.Option);
 
-            var result = engine.Execute(this.SvnRevision);
+            var engineInput = new EngineInput(
+                this.SvnRevision,
+                this.RepoFolder,
+                this.SvnTransaction);
+
+            var result = engine.Execute(engineInput);
 
             if (!result.Ok)
             {

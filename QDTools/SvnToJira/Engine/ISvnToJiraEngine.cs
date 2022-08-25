@@ -2,6 +2,6 @@
 {
     internal interface ISvnToJiraEngine
     {
-        ActionResult Execute(int svnCommit);
+        ActionResult Execute(EngineInput input);
     }
 }

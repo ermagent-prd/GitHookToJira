@@ -3,6 +3,7 @@ using SvnTools;
 using System;
 using System.Linq;
 
+
 namespace SvnToJira.Engine
 {
     internal class TrackingIssueCheckEngine : ISvnToJiraEngine
@@ -11,7 +12,7 @@ namespace SvnToJira.Engine
 
         private readonly ReleaseInfoParamContainer releaseParameters;
 
-        private readonly RevisionPropertiesEngine svnEngine;
+        private readonly SvnLookEngine svnEngine;
 
         private readonly BranchCheckerEngine branchChecker;
 
@@ -23,7 +24,7 @@ namespace SvnToJira.Engine
         #region Constructor
 
         public TrackingIssueCheckEngine(
-            RevisionPropertiesEngine svnEngine, 
+            SvnLookEngine svnEngine, 
             TrackingIssueChecker issueChecker, 
             ReleaseInfoParamContainer releaseParameters,
             BranchCheckerEngine branchChecker)
@@ -39,16 +40,18 @@ namespace SvnToJira.Engine
 
         #region Public methods
 
-        public ActionResult Execute(int svnCommit)
+        public ActionResult Execute(EngineInput input)
         {
             try
             {
                 #region 1. Recupero properties da revision svn
 
-                var commitProperties = this.svnEngine.Execute(svnCommit);
+                var commitProperties = this.svnEngine.Execute(
+                    input.RepoFolder,
+                    input.SvnTransaction);
 
                 if (commitProperties == null)
-                    return new ActionResult(false, String.Format("Invalid commit revision: {0}", svnCommit));
+                    return new ActionResult(false, String.Format("Invalid svn input : Repo Folder: {0}, Transaction {1}", input.RepoFolder,input.SvnTransaction));
 
                 #endregion
 
@@ -56,7 +59,7 @@ namespace SvnToJira.Engine
 
                 var committedReleases = branchChecker.Execute(
                     releaseParameters.ReleasesToCheck,
-                    commitProperties.DiffList);
+                    commitProperties.Paths);
 
                 if (committedReleases == null || !committedReleases.Any())
                     return ActionResult.Passed();

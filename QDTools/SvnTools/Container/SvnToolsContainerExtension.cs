@@ -20,7 +20,7 @@ namespace SvnTools.Container
         {
             Container.RegisterType<RevisionPropertiesEngine>();
             Container.RegisterType<TrackingIssueGetter>();
-
+            Container.RegisterType<SvnLookEngine>();
 
         }
 

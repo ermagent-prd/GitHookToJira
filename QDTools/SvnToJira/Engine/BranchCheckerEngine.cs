@@ -9,7 +9,6 @@ namespace SvnToJira.Engine
             IEnumerable<ReleasesBranchInfo> checkedBranch,
             IEnumerable<string> commitDiffList)
         {
-
             var resultList = new List<ReleasesBranchInfo>();
 
             foreach (var cb in checkedBranch)

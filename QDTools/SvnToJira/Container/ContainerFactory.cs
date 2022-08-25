@@ -2,6 +2,7 @@
 using JiraTools.Parameters;
 using SvnToJira.Engine;
 using SvnToJira.Parameters;
+using SvnTools.Container;
 using SvnTools.Parameters;
 using System.Collections.Generic;
 using Unity;
@@ -33,6 +34,7 @@ namespace SvnToJira.Container
             container.RegisterType<TrackingIssuePropertiesChecker>();
 
             container.AddNewExtension<JiraToolsContainerExtension>();
+            container.AddNewExtension<SvnToolsContainerExtension>();
 
             return container;
         }
