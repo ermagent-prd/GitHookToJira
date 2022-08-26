@@ -11,13 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeminiTools", "GeminiTools\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeminiToolsTest", "GeminiToolsTest\GeminiToolsTest.csproj", "{6B7DE0D7-A94E-462F-BE95-27E63968F8B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QDCommon", "QDCommon\QDCommon.csproj", "{61088F10-2D00-42EE-A2FD-4A961A4418F2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlfrescoTools", "AlfrescoTools\AlfrescoTools.csproj", "{48BCEB5B-0243-49F4-84C5-F469E2D2658E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlfrescoToolsTest", "AlfrescoToolsTest\AlfrescoToolsTest.csproj", "{3F4BA9BC-B5C4-4C99-9602-8525683304D0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraToExcel", "JiraToExcel\JiraToExcel.csproj", "{95AF5120-FAF1-49C3-AB82-6C3B73BF37E5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvnToJira", "SvnToJira\SvnToJira.csproj", "{89575B58-69F2-4FBB-A42A-BF5F9FCFC2B1}"
 EndProject
@@ -41,8 +37,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraIssueProducer", "JiraIs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvnToJiraTest", "Test\SvnToJira\SvnToJiraTest.csproj", "{422E4737-EEF8-496C-BA73-6453695BBD82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSlide", "WebSlide\WebSlide.csproj", "{59316AFA-8B19-4C21-BEE1-FC316E7F4751}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,10 +59,6 @@ Global
 		{6B7DE0D7-A94E-462F-BE95-27E63968F8B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B7DE0D7-A94E-462F-BE95-27E63968F8B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B7DE0D7-A94E-462F-BE95-27E63968F8B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{61088F10-2D00-42EE-A2FD-4A961A4418F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{61088F10-2D00-42EE-A2FD-4A961A4418F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{61088F10-2D00-42EE-A2FD-4A961A4418F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{61088F10-2D00-42EE-A2FD-4A961A4418F2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{48BCEB5B-0243-49F4-84C5-F469E2D2658E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{48BCEB5B-0243-49F4-84C5-F469E2D2658E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48BCEB5B-0243-49F4-84C5-F469E2D2658E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -77,10 +67,6 @@ Global
 		{3F4BA9BC-B5C4-4C99-9602-8525683304D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F4BA9BC-B5C4-4C99-9602-8525683304D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F4BA9BC-B5C4-4C99-9602-8525683304D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{95AF5120-FAF1-49C3-AB82-6C3B73BF37E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95AF5120-FAF1-49C3-AB82-6C3B73BF37E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95AF5120-FAF1-49C3-AB82-6C3B73BF37E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95AF5120-FAF1-49C3-AB82-6C3B73BF37E5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{89575B58-69F2-4FBB-A42A-BF5F9FCFC2B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89575B58-69F2-4FBB-A42A-BF5F9FCFC2B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89575B58-69F2-4FBB-A42A-BF5F9FCFC2B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -117,10 +103,6 @@ Global
 		{422E4737-EEF8-496C-BA73-6453695BBD82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{422E4737-EEF8-496C-BA73-6453695BBD82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{422E4737-EEF8-496C-BA73-6453695BBD82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59316AFA-8B19-4C21-BEE1-FC316E7F4751}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59316AFA-8B19-4C21-BEE1-FC316E7F4751}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59316AFA-8B19-4C21-BEE1-FC316E7F4751}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59316AFA-8B19-4C21-BEE1-FC316E7F4751}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
