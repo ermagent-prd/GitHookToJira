@@ -29,6 +29,9 @@ namespace SvnToJira
         [Option("-f|--repofolder", CommandOptionType.SingleValue, Description = "Repositoryfolder (for pre-commit interception)")]
         public string RepoFolder { get; } = string.Empty;
 
+        [Option("-cfg|--configuration", CommandOptionType.SingleValue, Description = "Configuration path")]
+        public string ConfigurationPath { get; } = string.Empty;
+
 
         /// <summary>
         /// Svn pre and postcommit actions
@@ -47,7 +50,7 @@ namespace SvnToJira
         {
             var cfgLoader = new ConfigurationLoader();
 
-            var cfg = cfgLoader.Execute();
+            var cfg = cfgLoader.Execute(this.ConfigurationPath);
 
             var unityContainer = ContainerFactory.Execute(cfg);
 

@@ -13,11 +13,20 @@ namespace SvnToJira.Engine
 
         #region Public methods
 
-        public SvnToJiraParameters Execute()
+        public SvnToJiraParameters Execute(string pathJson)
         {
+            string cfgFile;
+
             Assembly resourceAssembly = Assembly.GetExecutingAssembly();
 
-            string cfgFile = Path.GetDirectoryName(resourceAssembly.Location) + "\\SvnToJira.json";
+            if (string.IsNullOrEmpty(pathJson))
+            {
+                cfgFile = Path.GetDirectoryName(resourceAssembly.Location) + "\\SvnToJira.json";
+            }
+            else
+            {
+                cfgFile = pathJson;
+            }
 
             string jsonString = File.ReadAllText(cfgFile);
 
