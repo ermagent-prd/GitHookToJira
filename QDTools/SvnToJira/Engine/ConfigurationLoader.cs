@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SvnToJira.Parameters;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace SvnToJira.Engine
 {
@@ -13,20 +11,18 @@ namespace SvnToJira.Engine
 
         #region Public methods
 
-        public SvnToJiraParameters Execute(string pathJson)
+        public SvnToJiraParameters Execute(string cfgPath)
         {
-            string cfgFile;
+            string cfgFile = cfgPath;
 
-            Assembly resourceAssembly = Assembly.GetExecutingAssembly();
-
-            if (string.IsNullOrEmpty(pathJson))
+            if (string.IsNullOrWhiteSpace(cfgPath))
             {
+                Assembly resourceAssembly = Assembly.GetExecutingAssembly();
                 cfgFile = Path.GetDirectoryName(resourceAssembly.Location) + "\\SvnToJira.json";
             }
             else
-            {
-                cfgFile = pathJson;
-            }
+            if (!File.Exists(cfgPath))
+                throw new Exception(string.Format("Configuration file not found ({0})", cfgPath));
 
             string jsonString = File.ReadAllText(cfgFile);
 

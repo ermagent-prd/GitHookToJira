@@ -29,7 +29,7 @@ namespace SvnToJira
         [Option("-f|--repofolder", CommandOptionType.SingleValue, Description = "Repositoryfolder (for pre-commit interception)")]
         public string RepoFolder { get; } = string.Empty;
 
-        [Option("-cfg|--configuration", CommandOptionType.SingleValue, Description = "Configuration path")]
+        [Option("-cfg|--configuration", CommandOptionType.SingleValue, Description = "Configuration file path")]
         public string ConfigurationPath { get; } = string.Empty;
 
 
@@ -48,24 +48,33 @@ namespace SvnToJira
 
         public void OnExecute()
         {
-            var cfgLoader = new ConfigurationLoader();
-
-            var cfg = cfgLoader.Execute(this.ConfigurationPath);
-
-            var unityContainer = ContainerFactory.Execute(cfg);
-
-            var engine = getEngine(unityContainer, this.Option);
-
-            var engineInput = new EngineInput(
-                this.SvnRevision,
-                this.RepoFolder,
-                this.SvnTransaction);
-
-            var result = engine.Execute(engineInput);
-
-            if (!result.Ok)
+            try
             {
-                Console.Error.WriteLine(result.Message);
+                var cfgLoader = new ConfigurationLoader();
+
+                var cfg = cfgLoader.Execute(this.ConfigurationPath);
+
+                var unityContainer = ContainerFactory.Execute(cfg);
+
+                var engine = getEngine(unityContainer, this.Option);
+
+                var engineInput = new EngineInput(
+                    this.SvnRevision,
+                    this.RepoFolder,
+                    this.SvnTransaction);
+
+                var result = engine.Execute(engineInput);
+
+                if (!result.Ok)
+                {
+                    Console.Error.WriteLine(result.Message);
+
+                    Environment.Exit(1);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
 
                 Environment.Exit(1);
             }
