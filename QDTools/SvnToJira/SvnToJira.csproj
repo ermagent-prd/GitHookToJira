@@ -42,6 +42,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JiraTools\JiraTools.csproj" />
+    <ProjectReference Include="..\QDToolsUtilities\QDToolsUtilities.csproj" />
     <ProjectReference Include="..\SvnTools\SvnTools.csproj" />
   </ItemGroup>
 
@@ -52,9 +53,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="SvnToJira.json">
+        <None Update="SvnToJira.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        </None>
     </ItemGroup>
 
 

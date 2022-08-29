@@ -2,7 +2,7 @@
 
 using SvnTools.Parameters;
 
-namespace SvnToJira.Parameters
+namespace SvnTools.Container
 {
     public class SvnParamContainer : ISvnToolsParameters
     {

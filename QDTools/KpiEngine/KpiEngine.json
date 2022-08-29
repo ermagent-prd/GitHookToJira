@@ -1,0 +1,32 @@
+{
+  "SvnParameters": {
+    "ServerUrl": "http://erm-codever-p01.prometeia.lan/svn/ErmasNet/",
+    "TrackingIssuePattern": "((?<!([A-Z]{1,10})-?)[A-Z]+-\\d+)",
+    "WindowsAuth": true,
+    "User": "",
+    "Password": ""
+  },
+  "JiraParameters": {
+    "User": "pierluigi.nanni@prometeia.com",
+    "Token": "GOojveJqyGUAgi6mzSAu3FAA",
+    "Url": "https://prometeia.atlassian.net/",
+    "IssueApi": "rest/api/3/issue/",
+    "MaxIssuesPerRequest": 10
+  },
+  "MySql": {
+    "host": {
+      "schema": "http",
+      "address": "10.102.2.26",
+      "port": 9000,
+      "user": "sonarscan",
+      "password": "qubescan"
+    },
+    "database": {
+      "connectionstring": "server=erm-almcode-01;database=sonarapidata;user=sonar;password=sonar"
+    }
+  },
+
+  "Elastic": {
+    "uri": "http://example.com:9200"
+  }
+}

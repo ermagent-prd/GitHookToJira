@@ -9,6 +9,9 @@ using Unity;
 using System.ComponentModel.DataAnnotations;
 using SvnToJira.Parameters.CommandLine;
 using System.Collections.Generic;
+using QDToolsUtilities;
+using JiraTools.Container;
+using SvnTools.Container;
 
 namespace SvnToJira
 {
@@ -52,7 +55,7 @@ namespace SvnToJira
             {
                 var cfgLoader = new ConfigurationLoader();
 
-                var cfg = cfgLoader.Execute(this.ConfigurationPath);
+                var cfg = cfgLoader.Execute<SvnToJiraParameters>(this.ConfigurationPath, "SvnToJira.json");
 
                 var unityContainer = ContainerFactory.Execute(cfg);
 

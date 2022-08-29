@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Container\SvnParamContainer.cs" />
     <Compile Include="Container\SvnToolsContainerExtension.cs" />
     <Compile Include="Engine\RevisionPropertiesEngine.cs" />
     <Compile Include="Engine\SvnLookEngine.cs" />

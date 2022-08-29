@@ -1,6 +1,6 @@
 ﻿using JiraTools.Parameters;
 
-namespace SvnToJira.Parameters
+namespace JiraTools.Container
 {
     public class JiraParamContainer : IJiraToolsParameters
     {

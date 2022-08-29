@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constant\JiraConstant.cs" />
+    <Compile Include="Container\JiraParamContainer.cs" />
     <Compile Include="Container\JiraToolsContainerExtension.cs" />
     <Compile Include="Engine\IssueGetter.cs" />
     <Compile Include="Engine\RemoteLinkEngine.cs" />

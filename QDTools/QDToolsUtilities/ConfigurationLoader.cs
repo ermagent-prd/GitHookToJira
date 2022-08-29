@@ -1,24 +1,20 @@
 ﻿using Newtonsoft.Json;
-using SvnToJira.Parameters;
 using System;
 using System.IO;
 using System.Reflection;
 
-namespace SvnToJira.Engine
+namespace QDToolsUtilities
 {
-    internal class ConfigurationLoader
+    public class ConfigurationLoader
     {
-
-        #region Public methods
-
-        public SvnToJiraParameters Execute(string cfgPath)
+        public T Execute<T>(string cfgPath, string defaultCfgFileName) where T : class
         {
             string cfgFile = cfgPath;
 
             if (string.IsNullOrWhiteSpace(cfgPath))
             {
                 Assembly resourceAssembly = Assembly.GetExecutingAssembly();
-                cfgFile = Path.GetDirectoryName(resourceAssembly.Location) + "\\SvnToJira.json";
+                cfgFile = Path.GetDirectoryName(resourceAssembly.Location) + "\\" + defaultCfgFileName;
             }
             else
             if (!File.Exists(cfgPath))
@@ -26,10 +22,7 @@ namespace SvnToJira.Engine
 
             string jsonString = File.ReadAllText(cfgFile);
 
-            return JsonConvert.DeserializeObject<SvnToJiraParameters>(jsonString);
+            return JsonConvert.DeserializeObject<T>(jsonString);
         }
-
-        #endregion
-
     }
 }
