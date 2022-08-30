@@ -38,7 +38,6 @@ namespace JiraTools.Container
             Container.RegisterType<ProjectGetter>();
             Container.RegisterType<ProjectReleasesGetter>();
             Container.RegisterType<RemoteLinkEngine>();
-
         }
 
         #endregion

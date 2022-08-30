@@ -13,6 +13,7 @@ namespace KpiEngine.Parameters
 
         public JiraToolConfiguration JiraParameters { get; set; }
 
+        public KpiCoreParameters KpiCoreParameters { get; set; }
 
 
         #endregion

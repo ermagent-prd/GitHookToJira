@@ -1,4 +1,5 @@
 ﻿using KpiEngine.Container;
+using KpiEngine.Engine;
 using KpiEngine.Parameters;
 using McMaster.Extensions.CommandLineUtils;
 using QDToolsUtilities;
@@ -8,17 +9,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity;
 
 namespace KpiEngine
 {
     internal class Program
     {
         #region Parameters
-
-        [Option("-o|--option", CommandOptionType.SingleValue, Description = "Command option")]
-        [OptionValidation]
-        [Required]
-        public OptionType Option { get; } = OptionType.None;
 
         [Option("-cfg|--configuration", CommandOptionType.SingleValue, Description = "Configuration file path")]
         public string ConfigurationPath { get; } = string.Empty;
@@ -41,8 +38,9 @@ namespace KpiEngine
 
                 var unityContainer = ContainerFactory.Execute(cfg);
 
-                throw new NotImplementedException();
+                var engine = unityContainer.Resolve<IMainEngine>();
 
+                engine.Execute();
 
             }
             catch (Exception ex)

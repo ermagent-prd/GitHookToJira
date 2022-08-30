@@ -8,5 +8,13 @@ namespace KpiEngine.Models
 {
     internal class KpiInput
     {
+        public KpiInput(
+            JiraProjectRelease jiraRelease)
+        {
+            JiraRelease = jiraRelease;
+        }
+
+        public JiraProjectRelease JiraRelease { get; }
+
     }
 }

@@ -19,11 +19,4 @@ namespace KpiEngine.Models
         public string Message { get; }
     }
 
-    internal class ExecutionOutput
-    {
-        public ProcessResult ProcessResult { get; }
-
-
-
-    }
 }

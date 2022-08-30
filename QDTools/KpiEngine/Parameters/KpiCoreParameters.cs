@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KpiEngine.Models
+namespace KpiEngine.Parameters
 {
-    internal class KpiValues
+    public class KpiCoreParameters
     {
-
+        public KpiFilters Filters { get; set; }
     }
 }

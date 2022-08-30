@@ -28,5 +28,13 @@
 
   "Elastic": {
     "uri": "http://example.com:9200"
+  },
+  "KpiCoreParameters": {
+    "Filters": {
+      "JiraProjects": [
+        { "ProjectKey": "ERMAS" }
+      ]
+    }
   }
+
 }

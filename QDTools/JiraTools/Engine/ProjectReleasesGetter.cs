@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Atlassian.Jira;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Atlassian.Jira;
-using JiraTools.Service;
 
 namespace JiraTools.Engine
 {
-    public class ProjectReleasesGetter
+    public class ProjectReleasesGetter : IProjectReleasesGetter
     {
         #region Private properties
 
@@ -29,11 +28,11 @@ namespace JiraTools.Engine
         public IEnumerable<ProjectVersion> Execute(string projectKey)
         {
 
-           var task = GetProjectReleases(projectKey);
+            var task = GetProjectReleases(projectKey);
 
-           task.Wait();
+            task.Wait();
 
-           return task.Result;
+            return task.Result;
         }
 
 

@@ -46,6 +46,8 @@
     <Compile Include="Constant\JiraConstant.cs" />
     <Compile Include="Container\JiraParamContainer.cs" />
     <Compile Include="Container\JiraToolsContainerExtension.cs" />
+    <Compile Include="Engine\IProjectGetter.cs" />
+    <Compile Include="Engine\IProjectReleasesGetter.cs" />
     <Compile Include="Engine\IssueGetter.cs" />
     <Compile Include="Engine\RemoteLinkEngine.cs" />
     <Compile Include="Engine\AddWatcherEngine.cs" />

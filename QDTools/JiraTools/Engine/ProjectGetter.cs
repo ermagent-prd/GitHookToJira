@@ -5,7 +5,7 @@ using JiraTools.Service;
 
 namespace JiraTools.Engine
 {
-    public class ProjectGetter
+    public class ProjectGetter : IProjectGetter
     {
         #region Private properties
 
@@ -28,13 +28,21 @@ namespace JiraTools.Engine
         public Project Execute(string projectKey)
         {
 
-           var task = GetProject(projectKey);
+            var task = GetProject(projectKey);
 
-           task.Wait();
+            task.Wait();
 
-           return task.Result;
+            return task.Result;
         }
 
+        public IEnumerable<Project> Execute()
+        {
+            var task = GetProjects();
+
+            task.Wait();
+
+            return task.Result;
+        }
 
 
         #endregion
@@ -45,6 +53,12 @@ namespace JiraTools.Engine
         {
             return await this.requestFactory.Service.Projects.GetProjectAsync(projectKey);
         }
+
+        private async Task<IEnumerable<Project>> GetProjects()
+        {
+            return await this.requestFactory.Service.Projects.GetProjectsAsync();
+        }
+
 
         #endregion
     }
