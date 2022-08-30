@@ -8,8 +8,12 @@ namespace KpiEngine.Models
 {
     internal class KpiOutput
     {
-        public KpiOutput(ProcessResult executionResult, KpiValue kpiValue)
+        public KpiOutput(
+            KpiInfo kpiInfo,
+            ProcessResult executionResult,
+            KpiValue kpiValue)
         {
+            KpiInfo = kpiInfo;
             ExecutionResult = executionResult;
             KpiValue = kpiValue;
         }
@@ -17,7 +21,7 @@ namespace KpiEngine.Models
         /// <summary>
         /// Kpi info
         /// </summary>
-        public Kpi KpiInfo { get; }
+        public KpiInfo KpiInfo { get; }
 
         public ProcessResult ExecutionResult { get; }   
 

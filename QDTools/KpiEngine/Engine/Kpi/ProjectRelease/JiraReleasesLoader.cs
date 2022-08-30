@@ -43,8 +43,12 @@ namespace KpiEngine.Engine
 
                 foreach (var r in releases)
                 {
-                    if (r.ReleasedDate.HasValue)
-                        result.Add(new JiraProjectRelease(r.ProjectKey, r.Id, r.ReleasedDate.Value));
+                    if (r.ReleasedDate.HasValue && r.IsReleased)
+                        result.Add(new JiraProjectRelease(
+                            r.ProjectKey, 
+                            r.Id, 
+                            r.Name,
+                            r.ReleasedDate.Value));
                 }
             }
 

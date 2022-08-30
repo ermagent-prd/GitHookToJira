@@ -36,7 +36,9 @@ namespace JiraTools.Container
             Container.RegisterType<AddCustomFieldEngine>();
             Container.RegisterType<AddWatcherEngine>();
             Container.RegisterType<ProjectGetter>();
+            Container.RegisterType<IProjectGetter, ProjectGetter>();
             Container.RegisterType<ProjectReleasesGetter>();
+            Container.RegisterType<IProjectReleasesGetter,ProjectReleasesGetter>();
             Container.RegisterType<RemoteLinkEngine>();
         }
 

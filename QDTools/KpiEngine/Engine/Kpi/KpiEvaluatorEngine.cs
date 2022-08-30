@@ -7,6 +7,11 @@ namespace KpiEngine.Engine
     {
         private IProjectReleaseLoopEngine releaseEngine;
 
+        public KpiEvaluatorEngine(IProjectReleaseLoopEngine releaseEngine)
+        {
+            this.releaseEngine = releaseEngine;
+        }
+
         public IEnumerable<KpiOutput> Execute()
         {
             var kpiResult = new List<KpiOutput>();

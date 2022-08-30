@@ -1,6 +1,7 @@
 ﻿using JiraTools.Container;
 using JiraTools.Parameters;
 using KpiEngine.Engine;
+using KpiEngine.Engine.Csv;
 using KpiEngine.Engine.TestEfficacy;
 using KpiEngine.Parameters;
 using SvnTools.Container;
@@ -22,9 +23,15 @@ namespace KpiEngine.Container
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<SvnToolsContainerExtension>();
 
-            container.RegisterType<IProjectReleaseLoopEngine, ProjectReleaseLoopEngine>();
+            container.RegisterType<IProjectReleaseLoopEngine, ProjectReleaseLoopEngine>(); 
             container.RegisterType<IJiraReleasesLoader, JiraReleasesLoader>();
             container.RegisterType<ITestEfficacyKpiEngine, TestEfficacyKpiEngine>();
+            container.RegisterType<IReleasesKpiEnginesExecutor, ReleasesKpiEnginesExecutor>();
+            container.RegisterType<ICsvExportEngine, CsvExportEngine>();
+
+            
+
+
 
             container.RegisterType<IKpiEvaluatorEngine, KpiEvaluatorEngine>();
 

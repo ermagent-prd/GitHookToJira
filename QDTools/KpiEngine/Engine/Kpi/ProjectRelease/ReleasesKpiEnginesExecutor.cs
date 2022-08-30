@@ -28,7 +28,8 @@ namespace KpiEngine.Engine
 
                 var kpiOut = engine.Execute(input);
 
-                result.Add(kpiOut);
+                if (kpiOut != null)
+                    result.Add(kpiOut);
 
                 if (stopOnFailure && kpiOut.ExecutionResult.Result == ExecutionResult.Error)
                     break;

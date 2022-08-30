@@ -32,7 +32,7 @@
   "KpiCoreParameters": {
     "Filters": {
       "JiraProjects": [
-        { "ProjectKey": "ERMAS" }
+        "ERMAS" 
       ]
     }
   }

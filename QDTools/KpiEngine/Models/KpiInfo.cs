@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace KpiEngine.Models
 {
-    internal class Kpi
+    internal class KpiInfo
     {
-        public Kpi(string key, string description)
+        public KpiInfo(string key, string description)
         {
             Key = key;
             Description = description;

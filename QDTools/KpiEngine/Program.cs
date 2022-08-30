@@ -4,11 +4,6 @@ using KpiEngine.Parameters;
 using McMaster.Extensions.CommandLineUtils;
 using QDToolsUtilities;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Unity;
 
 namespace KpiEngine
@@ -19,6 +14,8 @@ namespace KpiEngine
 
         [Option("-cfg|--configuration", CommandOptionType.SingleValue, Description = "Configuration file path")]
         public string ConfigurationPath { get; } = string.Empty;
+
+
 
         #endregion
 

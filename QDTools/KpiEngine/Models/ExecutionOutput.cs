@@ -15,6 +15,12 @@ namespace KpiEngine.Models
 
     internal class ProcessResult
     {
+        public ProcessResult(ExecutionResult result, string message)
+        {
+            Result = result;
+            Message = message;
+        }
+
         public ExecutionResult Result { get; }
         public string Message { get; }
     }

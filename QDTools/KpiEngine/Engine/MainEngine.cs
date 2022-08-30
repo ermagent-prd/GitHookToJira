@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KpiEngine.Engine.Csv;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,14 @@ namespace KpiEngine.Engine
     internal class MainEngine : IMainEngine
     {
         private readonly IKpiEvaluatorEngine kpiEngine;
+        private readonly ICsvExportEngine csvExporter;
 
-        public MainEngine(IKpiEvaluatorEngine kpiEngine)
+        public MainEngine(
+            IKpiEvaluatorEngine kpiEngine,
+            ICsvExportEngine csvExporter)
         {
             this.kpiEngine = kpiEngine;
+            this.csvExporter = csvExporter;
         }
 
         public void Execute()
@@ -23,12 +28,17 @@ namespace KpiEngine.Engine
             foreach (var k in kpiList)
             {
                 Console.WriteLine(string.Format(
-                    "Kpi: {0} - {1} --> ({3},{4})",
+                    "Kpi: {0} - {1} --> ({2},{3})",
                     k.KpiInfo.Key,
                     k.KpiInfo.Description,
                     k.KpiValue.Keys.ToString(),
                     k.KpiValue.Value.ToString()));
             }
+
+            Console.ReadLine();
+
+            //3. kpi to csv
+            this.csvExporter.Execute("c:\\temp\\kpi.csv",kpiList);
 
             //2. kpi To Db
 

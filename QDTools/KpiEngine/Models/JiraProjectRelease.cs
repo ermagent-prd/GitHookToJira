@@ -8,16 +8,23 @@ namespace KpiEngine.Models
 {
     internal class JiraProjectRelease
     {
-        public JiraProjectRelease(string project, string release, DateTime releaseDate)
+        public JiraProjectRelease(
+            string project, 
+            string id, 
+            string releaseName,
+            DateTime releaseDate)
         {
             Project = project;
-            Release = release;
+            Id = id;
+            ReleaseName = releaseName;
             ReleaseDate = releaseDate;
         }
 
         public string Project { get; }
 
-        public string Release { get; }
+        public string Id { get; }
+
+        public string ReleaseName { get; }
 
         public DateTime ReleaseDate { get; }
 

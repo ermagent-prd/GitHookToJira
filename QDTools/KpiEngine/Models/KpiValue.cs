@@ -5,7 +5,7 @@ namespace KpiEngine.Models
 {
     internal class KpiValue
     {
-        public KpiValue(IEnumerable<KpiKey> keys, double value)
+        public KpiValue(IEnumerable<KpiKey> keys, double? value)
         {
             Keys = keys;
             Value = value;
@@ -13,7 +13,7 @@ namespace KpiEngine.Models
 
         public IEnumerable<KpiKey> Keys { get; }
 
-        public Double Value { get; }   
+        public Double? Value { get; }   
 
     }
 }
