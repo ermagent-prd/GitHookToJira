@@ -7,6 +7,14 @@ namespace QDToolsUtilities
 {
     public class ConfigurationLoader
     {
+        /// <summary>
+        /// Load Json configuration from file
+        /// </summary>
+        /// <typeparam name="T">Parameters class</typeparam>
+        /// <param name="cfgPath">Json configuration file path</param>
+        /// <param name="defaultCfgFileName">Default configuration file name></param>
+        /// <returns>Parameters class instance</returns>
+        /// <exception cref="Exception">Thrown in case of not existing configuration file</exception>
         public T Execute<T>(string cfgPath, string defaultCfgFileName) where T : class
         {
             string cfgFile = cfgPath;

@@ -1,5 +1,6 @@
 ﻿using JiraTools.Container;
 using JiraTools.Parameters;
+using KpiEngine.Engine.TestEfficacy;
 using KpiEngine.Parameters;
 using SvnTools.Container;
 using SvnTools.Parameters;
@@ -17,10 +18,11 @@ namespace KpiEngine.Container
 
             container.RegisterInstance<ISvnToolsParameters>(new SvnParamContainer(parameters.SvnParameters));
             container.RegisterInstance<IJiraToolsParameters>(new JiraParamContainer(parameters.JiraParameters));
-
+            
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<SvnToolsContainerExtension>();
 
+            container.RegisterType<ITestEfficacyKpiEngine, TestEfficacyKpiEngine>();
 
 
             return container;
