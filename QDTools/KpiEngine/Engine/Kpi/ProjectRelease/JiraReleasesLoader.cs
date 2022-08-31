@@ -1,7 +1,10 @@
-﻿using JiraTools.Engine;
+﻿using Atlassian.Jira;
+using JiraTools.Engine;
 using KpiEngine.Models;
 using KpiEngine.Parameters;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace KpiEngine.Engine
 {
@@ -34,12 +37,16 @@ namespace KpiEngine.Engine
 
             var projects = this.projectGetter.Execute();
 
+
+
             foreach (var p in projects)
             {
                 if (!this.kpiParameters.Parameters.Filters.JiraProjects.Contains(p.Key))
                     continue;
 
-                var releases = this.releaseGetter.Execute(p.Key);
+                var releases = getFilteredReleases(
+                    this.kpiParameters.Parameters.Filters.MinReleaseDate, 
+                    p.Key);
 
                 foreach (var r in releases)
                 {
@@ -54,5 +61,15 @@ namespace KpiEngine.Engine
 
             return result;
         }
+
+        #region private methods
+
+        private IEnumerable<ProjectVersion> getFilteredReleases(DateTime minReleaseDate, string projectKey)
+        {
+            var releases = this.releaseGetter.Execute(projectKey);
+            return releases.Select(r => r).Where(r => r.IsReleased && r.ReleasedDate.HasValue && r.ReleasedDate >= minReleaseDate);
+        }
+
+        #endregion
     }
 }

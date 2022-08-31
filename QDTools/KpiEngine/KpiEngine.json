@@ -32,9 +32,9 @@
   "KpiCoreParameters": {
     "Filters": {
       "JiraProjects": [
-        "ERMAS" 
-      ]
+        "ERMAS"
+      ],
+      "MinReleaseDate": "2021-10-31T00:00:00Z"
     }
   }
-
 }

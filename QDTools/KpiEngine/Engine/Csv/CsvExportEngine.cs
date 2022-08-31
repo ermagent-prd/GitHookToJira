@@ -42,6 +42,8 @@ namespace KpiEngine.Engine.Csv
                     KpiKeys = String.Join("#", line.KpiValue.Keys.Select(k => k.KeyValue))
 
                 };
+
+                result.Add(csvLine);
             }
 
             return result;

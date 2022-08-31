@@ -35,8 +35,6 @@ namespace KpiEngine.Engine
                     k.KpiValue.Value.ToString()));
             }
 
-            Console.ReadLine();
-
             //3. kpi to csv
             this.csvExporter.Execute("c:\\temp\\kpi.csv",kpiList);
 

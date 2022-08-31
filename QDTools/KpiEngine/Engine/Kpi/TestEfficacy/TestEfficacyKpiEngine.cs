@@ -1,5 +1,6 @@
 ﻿using JiraTools.Engine;
 using KpiEngine.Models;
+using QDToolsUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace KpiEngine.Engine.TestEfficacy
         private const string kpiKey = "Kpi0001";
 
         private const string kpiDescription = "Test Efficacy";
+
+        private const int monthLag = 3;
 
         private readonly JqlGetter jqlGetter;
 
@@ -26,21 +29,23 @@ namespace KpiEngine.Engine.TestEfficacy
                 if (!checkEvaluation(input))
                     return null;
 
-                string jqlString = "project = \"{0}\" and issuetype = Bug and \"Fixing Date[Date]\" {1} {2} and fixVersion = \"{3}\" and status = Fixed";
+                var firstDate = getPreviousDate(input.JiraRelease);
+                var lastDate = getLastDate(input.JiraRelease);
 
+                string jqlString = "project = \"{0}\" and issuetype = Bug and \"Fixing Date[Date]\" > {1} and \"Fixing Date[Date]\" <= {2} and fixVersion = \"{3}\" and status = Fixed";
 
                 string preReleaseJsql = String.Format(
                     jqlString,
                     input.JiraRelease.Project,
-                    "<=",
+                    firstDate.ToString("yyyy-MM-dd"),
                     input.JiraRelease.ReleaseDate.ToString("yyyy-MM-dd"),
                     input.JiraRelease.Id);
 
                 string postReleaseJsql = String.Format(
                     jqlString,
                     input.JiraRelease.Project,
-                    ">",
                     input.JiraRelease.ReleaseDate.ToString("yyyy-MM-dd"),
+                    lastDate.ToString("yyyy-MM-dd"),
                     input.JiraRelease.Id);
 
 
@@ -89,7 +94,7 @@ namespace KpiEngine.Engine.TestEfficacy
         private bool checkEvaluation(KpiInput input)
         {
             var months = DateTime.Now.Subtract(input.JiraRelease.ReleaseDate).Days / (365.25 / 12);
-            if (months < 3.0)
+            if (months < monthLag)
                 return false;
             return true;
         }
@@ -108,6 +113,16 @@ namespace KpiEngine.Engine.TestEfficacy
 
             return new KpiValue(kpiKeys, value);
 
+        }
+
+        private DateTime getPreviousDate(JiraProjectRelease release)
+        {
+            return DateTimeUtilities.AddToDate(release.ReleaseDate, 0, -monthLag, 0, true);        
+        }
+
+        private DateTime getLastDate(JiraProjectRelease release)
+        {
+            return DateTimeUtilities.AddToDate(release.ReleaseDate, 0, monthLag, 0, true);
         }
 
         #endregion
