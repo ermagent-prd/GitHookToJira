@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Title>KpiEngine</Title>
-    <Description>Kpi evaluator</Description>
+    <Title>ElasticTools</Title>
+    <Description>Elasticsearch Tools</Description>
     <Product>Erm SHL QD</Product>
     <Company>Prometeia spa</Company>
     <Copyright>Prometeia spa</Copyright>
@@ -10,20 +10,19 @@
     <FileVersion>1.0.0</FileVersion>
     <TargetFramework>net472</TargetFramework>
 	  <IsPackable>false</IsPackable>
-	  <OutputType>Exe</OutputType>
+	  <OutputType>library</OutputType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\Bin\QDTools\KpiEngine\Debug\</OutputPath>
+    <OutputPath>..\..\Bin\QDTools\ElasticTools\Debug\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\Bin\QDTools\KpiEngine\Release\</OutputPath>
+    <OutputPath>..\..\Bin\QDTools\ElasticTools\Release\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="CsvHelper" Version="15.0.5" />
-	<PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.0.1" />
+	<PackageReference Include="NEST" Version="7.17.4" />
 	<PackageReference Include="Newtonsoft.Json">
 		<Version>13.0.1</Version>
 	</PackageReference>
@@ -39,23 +38,6 @@
 	<PackageReference Include="Unity.Container">
 		<Version>5.11.11</Version>
 	</PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ElasticTools\ElasticTools.csproj" />
-    <ProjectReference Include="..\JiraTools\JiraTools.csproj" />
-    <ProjectReference Include="..\QDToolsUtilities\QDToolsUtilities.csproj" />
-    <ProjectReference Include="..\SvnTools\SvnTools.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="KpiEngine.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="CommandLine\" />
   </ItemGroup>
 
 </Project>

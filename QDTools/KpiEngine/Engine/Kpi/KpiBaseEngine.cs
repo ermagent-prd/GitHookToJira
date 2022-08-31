@@ -45,7 +45,7 @@ namespace KpiEngine.Engine
 
             var refDate = getReferenceDate(input);
 
-            return new KpiValue(refDate, kpiKeys, value);
+            return new KpiValue(input.JiraRelease.Project, refDate, kpiKeys, value);
         }
 
 

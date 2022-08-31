@@ -40,7 +40,7 @@ namespace KpiEngine.Engine.Csv
                     KpiResultMessage = line.ProcessResult.Message,
                     ReferenceDate = line.KpiValue.ReferenceDate,
                     KpiValue = line.KpiValue.Value,
-                    KpiKeys = String.Join("#", line.KpiValue.Keys.Select(k => k.KeyValue))
+                    KpiKeys = String.Join("-", line.KpiValue.Keys.Select(k => k.KeyValue))
 
                 };
 

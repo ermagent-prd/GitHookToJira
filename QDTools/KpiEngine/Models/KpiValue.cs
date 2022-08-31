@@ -5,12 +5,18 @@ namespace KpiEngine.Models
 {
     internal class KpiValue
     {
-        public KpiValue(DateTime referenceDate, IEnumerable<KpiKey> keys, double? value)
+        public KpiValue(
+            string project,
+            DateTime referenceDate, 
+            IEnumerable<KpiKey> keys, double? value)
         {
+            this.Project = project;
             this.ReferenceDate = referenceDate;
             this.Keys = keys;
             this.Value = value;
         }
+
+        public string Project { get; }
 
         public DateTime ReferenceDate { get; }
 

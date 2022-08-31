@@ -1,4 +1,5 @@
 ﻿using KpiEngine.Engine.Csv;
+using KpiEngine.Engine.Elastic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,14 @@ namespace KpiEngine.Engine
     {
         private readonly IKpiEvaluatorEngine kpiEngine;
         private readonly ICsvExportEngine csvExporter;
+        private readonly ElasticExporterEngine elasticExporter;
 
         public MainEngine(
             IKpiEvaluatorEngine kpiEngine,
-            ICsvExportEngine csvExporter)
+            ICsvExportEngine csvExporter,
+            ElasticExporterEngine elasticExporter)
         {
+            this.elasticExporter = elasticExporter; 
             this.kpiEngine = kpiEngine;
             this.csvExporter = csvExporter;
         }
@@ -25,22 +29,13 @@ namespace KpiEngine.Engine
             //1. Kpi Evaluation
             var kpiList = this.kpiEngine.Execute();
 
-            foreach (var k in kpiList)
-            {
-                Console.WriteLine(string.Format(
-                    "Kpi: {0} - {1} --> ({2},{3})",
-                    k.KpiInfo.Key,
-                    k.KpiInfo.Description,
-                    k.KpiValue.Keys.ToString(),
-                    k.KpiValue.Value.ToString()));
-            }
-
             //3. kpi to csv
-            this.csvExporter.Execute("c:\\temp\\kpi.csv",kpiList);
+            this.csvExporter.Execute("c:\\temp\\kpiErmas.csv",kpiList);
 
             //2. kpi To Db
 
             //3. Kpi to Elk
+            this.elasticExporter.Execute(kpiList);
 
 
         }

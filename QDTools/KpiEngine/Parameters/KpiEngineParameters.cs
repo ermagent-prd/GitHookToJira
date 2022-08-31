@@ -1,4 +1,5 @@
-﻿using JiraTools.Parameters;
+﻿using ElasticTools.Parameters;
+using JiraTools.Parameters;
 using SvnTools.Parameters;
 using System.Collections.Generic;
 
@@ -12,6 +13,8 @@ namespace KpiEngine.Parameters
         public SvnToolsParameters SvnParameters { get; set; }
 
         public JiraToolConfiguration JiraParameters { get; set; }
+
+        public ElasticToolConfiguration ElasticParameters { get; set; }
 
         public KpiCoreParameters KpiCoreParameters { get; set; }
 
