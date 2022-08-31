@@ -31,7 +31,7 @@ namespace KpiEngine.Engine
                 if (kpiOut != null)
                     result.Add(kpiOut);
 
-                if (stopOnFailure && kpiOut.ExecutionResult.Result == ExecutionResult.Error)
+                if (stopOnFailure && kpiOut.ProcessResult.Result == ExecutionResult.Error)
                     break;
 
             }

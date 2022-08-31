@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace KpiEngine.Engine.TestEfficacy
 {
-    internal class TestEfficacyKpiEngine : ITestEfficacyKpiEngine
+    internal class TestEfficacyKpiEngine : KpiBaseEngine , ITestEfficacyKpiEngine
     {
         private const string kpiKey = "Kpi0001";
 
@@ -18,80 +18,66 @@ namespace KpiEngine.Engine.TestEfficacy
         private readonly JqlGetter jqlGetter;
 
         public TestEfficacyKpiEngine(JqlGetter jqlGetter)
+            :base()
         {
             this.jqlGetter = jqlGetter;
         }
 
-        public KpiOutput Execute(KpiInput input)
+        protected override KpiOutput KernelExecute(KpiInput input)
         {
-            try
-            {
-                if (!checkEvaluation(input))
-                    return null;
 
-                var firstDate = getPreviousDate(input.JiraRelease);
-                var lastDate = getLastDate(input.JiraRelease);
+            var firstDate = getPreviousDate(input.JiraRelease);
+            var lastDate = getLastDate(input.JiraRelease);
 
-                string jqlString = "project = \"{0}\" and issuetype = Bug and \"Fixing Date[Date]\" > {1} and \"Fixing Date[Date]\" <= {2} and fixVersion = \"{3}\" and status = Fixed";
+            string jqlString = "project = \"{0}\" and issuetype = Bug and \"Fixing Date[Date]\" > {1} and \"Fixing Date[Date]\" <= {2} and fixVersion = \"{3}\" and status = Fixed";
 
-                string preReleaseJsql = String.Format(
-                    jqlString,
-                    input.JiraRelease.Project,
-                    firstDate.ToString("yyyy-MM-dd"),
-                    input.JiraRelease.ReleaseDate.ToString("yyyy-MM-dd"),
-                    input.JiraRelease.Id);
+            string preReleaseJsql = String.Format(
+                jqlString,
+                input.JiraRelease.Project,
+                firstDate.ToString("yyyy-MM-dd"),
+                input.JiraRelease.ReleaseDate.ToString("yyyy-MM-dd"),
+                input.JiraRelease.Id);
 
-                string postReleaseJsql = String.Format(
-                    jqlString,
-                    input.JiraRelease.Project,
-                    input.JiraRelease.ReleaseDate.ToString("yyyy-MM-dd"),
-                    lastDate.ToString("yyyy-MM-dd"),
-                    input.JiraRelease.Id);
+            string postReleaseJsql = String.Format(
+                jqlString,
+                input.JiraRelease.Project,
+                input.JiraRelease.ReleaseDate.ToString("yyyy-MM-dd"),
+                lastDate.ToString("yyyy-MM-dd"),
+                input.JiraRelease.Id);
 
 
-                var preReleaseIssues = this.jqlGetter.Execute(preReleaseJsql);
+            var preReleaseIssues = this.jqlGetter.Execute(preReleaseJsql);
 
-                var postReleaseIssues = this.jqlGetter.Execute(postReleaseJsql);
+            var postReleaseIssues = this.jqlGetter.Execute(postReleaseJsql);
 
-                double postCount = postReleaseIssues.Count();
-                double preCount = preReleaseIssues.Count();
+            double postCount = postReleaseIssues.Count();
+            double preCount = preReleaseIssues.Count();
 
-                double? kpiResult = preCount > 0 ?
-                        postCount /
-                        preCount :
-                        new double?();
+            double? kpiResult = preCount > 0 ?
+                    postCount /
+                    preCount :
+                    new double?();
 
-                var kpiValue = getKpiKeyValue(input, kpiResult);
+            var kpiValue = getKpiKeyValue(input, kpiResult);
 
-                var processResult = (kpiResult.HasValue) ?
-                    new ProcessResult(
-                         ExecutionResult.Ok,
-                         String.Empty) :
-                    new ProcessResult(
-                         ExecutionResult.Error,
-                         "Kpi not evaluable: pre release bugs not found");
-
-                return new KpiOutput(
-                    this.getKpiInfo(), 
-                    processResult,
-                    kpiValue);
-
-            }
-            catch (Exception ex)
-            {
-                return new KpiOutput(
-                    this.getKpiInfo(),
-                    new ProcessResult(
+            var processResult = (kpiResult.HasValue) ?
+                new ProcessResult(
+                        ExecutionResult.Ok,
+                        String.Empty) :
+                new ProcessResult(
                         ExecutionResult.Error,
-                        ex.Message), 
-                    null);
-            }
+                        "Kpi not evaluable: pre release bugs not found");
+
+            return new KpiOutput(
+                this.getKpiInfo(), 
+                processResult,
+                kpiValue);
 
         }
 
         #region Private methods
 
-        private bool checkEvaluation(KpiInput input)
+        protected override bool checkEvaluation(KpiInput input)
         {
             var lagDate = DateTimeUtilities.AddToDate(DateTime.Now, 0, -monthLag, 0, true);
             if(lagDate < input.JiraRelease.ReleaseDate)
@@ -99,21 +85,26 @@ namespace KpiEngine.Engine.TestEfficacy
             return true;
         }
 
-        private KpiInfo getKpiInfo()
+        protected override DateTime getReferenceDate(KpiInput input)
+        {
+            return input.JiraRelease.ReleaseDate;
+        }
+
+        protected override KpiInfo getKpiInfo()
         {
             return new KpiInfo(kpiKey, kpiDescription);
         }
 
-        private KpiValue getKpiKeyValue(KpiInput input, double? value)
+        protected override IEnumerable<KpiKey> getKpiKeys(KpiInput input)
         {
             var kpiKeys = new List<KpiKey>();
 
             kpiKeys.Add(new KpiKey("Project", input.JiraRelease.Project));
             kpiKeys.Add(new KpiKey("Release", input.JiraRelease.ReleaseName));
 
-            return new KpiValue(kpiKeys, value);
-
+            return kpiKeys;
         }
+
 
         private DateTime getPreviousDate(JiraProjectRelease release)
         {

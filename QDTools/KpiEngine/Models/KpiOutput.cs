@@ -14,7 +14,7 @@ namespace KpiEngine.Models
             KpiValue kpiValue)
         {
             KpiInfo = kpiInfo;
-            ExecutionResult = executionResult;
+            ProcessResult = executionResult;
             KpiValue = kpiValue;
         }
 
@@ -23,7 +23,7 @@ namespace KpiEngine.Models
         /// </summary>
         public KpiInfo KpiInfo { get; }
 
-        public ProcessResult ExecutionResult { get; }   
+        public ProcessResult ProcessResult { get; }   
 
         public KpiValue KpiValue { get; }
     }

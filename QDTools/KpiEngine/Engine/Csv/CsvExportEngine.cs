@@ -36,8 +36,9 @@ namespace KpiEngine.Engine.Csv
                 {
                     Kpi = line.KpiInfo.Key,
                     KpiDescription = line.KpiInfo.Description,
-                    KpiResult = line.ExecutionResult.Result.ToString(),
-                    KpiResultMessage = line.ExecutionResult.Message,
+                    KpiResult = line.ProcessResult.Result.ToString(),
+                    KpiResultMessage = line.ProcessResult.Message,
+                    ReferenceDate = line.KpiValue.ReferenceDate,
                     KpiValue = line.KpiValue.Value,
                     KpiKeys = String.Join("#", line.KpiValue.Keys.Select(k => k.KeyValue))
 

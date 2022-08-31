@@ -11,6 +11,8 @@ namespace KpiEngine.Engine.Csv
         public string Kpi { get; set; }
         public string KpiDescription { get; set; }
 
+        public DateTime ReferenceDate { get; set; }
+
         public string KpiKeys { get; set; }
 
         public string KpiResult { get; set; }
