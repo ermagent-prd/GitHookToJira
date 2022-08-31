@@ -59,8 +59,6 @@ namespace JiraTools.Engine
             return result;
         }
 
-
-
         #endregion
 
         #region Private methods

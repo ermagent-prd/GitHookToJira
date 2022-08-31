@@ -93,8 +93,8 @@ namespace KpiEngine.Engine.TestEfficacy
 
         private bool checkEvaluation(KpiInput input)
         {
-            var months = DateTime.Now.Subtract(input.JiraRelease.ReleaseDate).Days / (365.25 / 12);
-            if (months < monthLag)
+            var lagDate = DateTimeUtilities.AddToDate(DateTime.Now, 0, -monthLag, 0, true);
+            if(lagDate < input.JiraRelease.ReleaseDate)
                 return false;
             return true;
         }
