@@ -13,9 +13,10 @@ namespace KpiEngine.Engine
         private readonly Lazy<IEnumerable<IKpiEngine>> engines;
 
         public ReleasesKpiEnginesExecutor(
-            ITestEfficacyKpiEngine efficacyEngine)
+            ITestEfficacyKpiEngine efficacyEngine,
+            IDefectRemovalEfficencyEngine dreEngine)
         {
-            this.engines = new Lazy<IEnumerable<IKpiEngine>>(() => { return getEngines(efficacyEngine); }); 
+            this.engines = new Lazy<IEnumerable<IKpiEngine>>(() => { return getEngines(efficacyEngine, dreEngine); }); 
         }
 
         public IEnumerable<KpiOutput> Execute(JiraProjectRelease release, Boolean stopOnFailure)
@@ -38,10 +39,14 @@ namespace KpiEngine.Engine
             return result;
         }
 
-        private IEnumerable<IKpiEngine> getEngines(ITestEfficacyKpiEngine efficacyEngine)
+        private IEnumerable<IKpiEngine> getEngines(
+            ITestEfficacyKpiEngine efficacyEngine,
+            IDefectRemovalEfficencyEngine dreEngine)
         {
             var result = new List<IKpiEngine>();
-            result.Add(efficacyEngine);
+            //result.Add(efficacyEngine);
+            result.Add(dreEngine);
+            
             return result;
         }
     }

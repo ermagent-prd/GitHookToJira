@@ -31,6 +31,8 @@ namespace KpiEngine.Container
             container.RegisterType<IProjectReleaseLoopEngine, ProjectReleaseLoopEngine>(); 
             container.RegisterType<IJiraReleasesLoader, JiraReleasesLoader>();
             container.RegisterType<ITestEfficacyKpiEngine, TestEfficacyKpiEngine>();
+            container.RegisterType<IDefectRemovalEfficencyEngine, DefectRemovalEfficencyEngine>();
+
             container.RegisterType<IReleasesKpiEnginesExecutor, ReleasesKpiEnginesExecutor>();
             container.RegisterType<ICsvExportEngine, CsvExportEngine>();
             container.RegisterType<ElasticExporterEngine>();
