@@ -1,4 +1,5 @@
 ﻿using JiraTools.Engine;
+using KpiEngine.Engine.Elastic;
 using KpiEngine.Models;
 using QDToolsUtilities;
 using System;
@@ -15,10 +16,13 @@ namespace KpiEngine.Engine.TestEfficacy
 
         private readonly JqlGetter jqlGetter;
 
-        public DefectRemovalEfficencyEngine(JqlGetter jqlGetter)
+        private readonly IElasticChecker elasticSearch;
+
+        public DefectRemovalEfficencyEngine(JqlGetter jqlGetter, IElasticChecker elasticSearch)
             :base()
         {
             this.jqlGetter = jqlGetter;
+            this.elasticSearch = elasticSearch; 
         }
 
         protected override KpiOutput KernelExecute(KpiInput input)
@@ -78,6 +82,11 @@ namespace KpiEngine.Engine.TestEfficacy
 
         protected override bool checkEvaluation(KpiInput input)
         {
+            //Elastic store check
+            var isStored = this.elasticSearch.Execute(getUniqueKey(getKpiInfo(), getKpiKeys(input)));
+            if (isStored)
+                return false;
+
             return true;
         }
 

@@ -21,7 +21,7 @@ namespace ElasticTools.Container
         {
             Container.RegisterType<ServiceManagerContainer>();
             Container.RegisterType<ElasticDocPostEngine>();
-            
+            Container.RegisterType<IElasticSearchEngine,ElasticSearchEngine>();
 
         }
 

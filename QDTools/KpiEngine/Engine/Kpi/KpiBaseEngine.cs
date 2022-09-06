@@ -1,6 +1,7 @@
 ﻿using KpiEngine.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace KpiEngine.Engine
 {
@@ -45,10 +46,20 @@ namespace KpiEngine.Engine
 
             var refDate = getReferenceDate(input);
 
-            return new KpiValue(input.JiraRelease.Project, refDate, kpiKeys, value);
+            var kpiInfo = getKpiInfo();
+
+            return new KpiValue(
+                input.JiraRelease.Project,
+                refDate,
+                getUniqueKey(kpiInfo, kpiKeys),
+                kpiKeys,
+                value);
         }
 
-
+        protected string getUniqueKey(KpiInfo kpiInfo,IEnumerable<KpiKey> keys)
+        {
+            return kpiInfo.Key + "-" + String.Join("-", keys.Select(k => k.KeyValue));
+        }
         #endregion
     }
 }

@@ -27,6 +27,7 @@ namespace KpiEngine.Container
 
             container.AddNewExtension<JiraToolsContainerExtension>();
             container.AddNewExtension<SvnToolsContainerExtension>();
+            container.AddNewExtension<ElasticToolsContainerExtension>();
 
             container.RegisterType<IProjectReleaseLoopEngine, ProjectReleaseLoopEngine>(); 
             container.RegisterType<IJiraReleasesLoader, JiraReleasesLoader>();
@@ -36,6 +37,8 @@ namespace KpiEngine.Container
             container.RegisterType<IReleasesKpiEnginesExecutor, ReleasesKpiEnginesExecutor>();
             container.RegisterType<ICsvExportEngine, CsvExportEngine>();
             container.RegisterType<ElasticExporterEngine>();
+            container.RegisterType<IElasticChecker, ElasticChecker>();
+            
 
             container.RegisterType<IKpiEvaluatorEngine, KpiEvaluatorEngine>();
 

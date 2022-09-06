@@ -8,10 +8,12 @@ namespace KpiEngine.Models
         public KpiValue(
             string project,
             DateTime referenceDate, 
+            string uniqueKey,
             IEnumerable<KpiKey> keys, double? value)
         {
             this.Project = project;
             this.ReferenceDate = referenceDate;
+            this.UniqueKey = uniqueKey; 
             this.Keys = keys;
             this.Value = value;
         }
@@ -19,6 +21,8 @@ namespace KpiEngine.Models
         public string Project { get; }
 
         public DateTime ReferenceDate { get; }
+
+        public String UniqueKey { get; }
 
         public IEnumerable<KpiKey> Keys { get; }
 
