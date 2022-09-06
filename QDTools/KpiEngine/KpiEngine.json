@@ -27,15 +27,21 @@
   },
 
   "ElasticParameters": {
-    "url": "http://10.102.2.17:5601/",
+    "url": "http://10.102.2.17:9200",
     "indexName": "kpi_shl"
 
   },
   "KpiCoreParameters": {
     "Filters": {
       "JiraProjects": [
-        "ERMAS"
-
+        "ERMAS",
+        "MRM",
+        "ECA",
+        "ESMP",
+        "SMW",
+        "MPBS",
+        "ERMPAT",
+        "SSO"
       ],
       "MinReleaseDate": "2021-10-31T00:00:00Z"
     }

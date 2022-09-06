@@ -1,6 +1,7 @@
 ﻿using ElasticTools.Service;
 using Nest;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ElasticTools.Engine
 {
@@ -15,14 +16,19 @@ namespace ElasticTools.Engine
 
         public BulkResponse Execute<TDocument>(IEnumerable<TDocument> docs) where TDocument : class
         {
-            return this.client.Service.IndexMany<TDocument>(docs);
+            var task =  this.IndexMany<TDocument>(docs);
 
-            /*
-             * System.ObjectDisposedException: 'Impossibile accedere a un oggetto eliminato.
-Nome oggetto: 'System.Net.Sockets.NetworkStream'.'
+            task.Wait();
 
-             */
+            return task.Result; 
+
         }
+
+        private async Task<BulkResponse> IndexMany<TDocument>(IEnumerable<TDocument> docs) where TDocument : class
+        {
+            return await this.client.Service.IndexManyAsync<TDocument>(docs);
+        }
+
 
     }
 }

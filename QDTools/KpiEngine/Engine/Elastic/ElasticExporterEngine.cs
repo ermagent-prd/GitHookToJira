@@ -16,7 +16,7 @@ namespace KpiEngine.Engine.Elastic
             this.elasticEngine = engine;
         }
 
-        public void Execute(IEnumerable<KpiOutput> kpiResult)
+        public bool Execute(IEnumerable<KpiOutput> kpiResult)
         {
             var validResults = kpiResult
                 .Where(r => r.ProcessResult.Result == ExecutionResult.Ok && r.KpiValue.Value.HasValue)
@@ -31,9 +31,9 @@ namespace KpiEngine.Engine.Elastic
                     KpiValue = r.KpiValue.Value.Value
                 });
 
-            this.elasticEngine.Execute<KpiElkDocument>(validResults);
+            var bulkResult = this.elasticEngine.Execute<KpiElkDocument>(validResults);
 
-
+            return bulkResult.IsValid;
 
         }
     }
