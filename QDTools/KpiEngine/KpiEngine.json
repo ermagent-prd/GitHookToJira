@@ -18,11 +18,11 @@
       "schema": "http",
       "address": "10.102.2.26",
       "port": 9000,
-      "user": "sonarscan",
-      "password": "qubescan"
+      "user": "******",
+      "password": "******"
     },
     "database": {
-      "connectionstring": "server=erm-almcode-01;database=sonarapidata;user=sonar;password=sonar"
+      "connectionstring": "server=erm-almcode-01;database=sonarapidata;user=****;password=*****"
     }
   },
 
