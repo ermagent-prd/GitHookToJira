@@ -7,8 +7,8 @@
     "Password": ""
   },
   "JiraParameters": {
-    "User": "pierluigi.nanni@prometeia.com",
-    "Token": "GOojveJqyGUAgi6mzSAu3FAA",
+    "User": "*****************",
+    "Token": "********************",
     "Url": "https://prometeia.atlassian.net/",
     "IssueApi": "rest/api/3/issue/",
     "MaxIssuesPerRequest": 10
