@@ -1,3 +1,0 @@
-docker login -u sirimalla # Da cmd
-docker tag prometeia/buildtools piern/msbuildwtask:host-10.0.14393-ver-1
-docker push piern/msbuildwtask:host-10.0.14393-ver-1

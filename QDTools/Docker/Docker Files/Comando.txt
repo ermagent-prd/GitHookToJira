@@ -1,2 +1,0 @@
-docker build -t piern/msbuildtools2019:w2016 .
-è possibile specificare il dockerfile aggiungendo - < <path to docker file>
